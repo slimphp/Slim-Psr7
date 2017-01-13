@@ -93,6 +93,29 @@ class Uri implements UriInterface
     /**
      * Create new Uri.
      *
+     * @param string $url Fully qualified URI
+     */
+    public function __construct($uri = '')
+    {
+        if (!is_string($uri) && !method_exists($uri, '__toString')) {
+            throw new InvalidArgumentException('Uri must be a string');
+        }
+
+        $parts = parse_url($uri);
+        $this->scheme = isset($parts['scheme']) ? $this->filterScheme($parts['scheme']) : '';
+        $this->user = isset($parts['user']) ? $parts['user'] : '';
+        $this->password = isset($parts['pass']) ? $parts['pass'] : '';
+        $this->host = isset($parts['host']) ? $parts['host'] : '';
+        $this->port = isset($parts['port']) ? $this->filterPort($parts['port']) : null;
+        $this->path = isset($parts['path']) ? $parts['path'] : '';
+        $this->query = isset($parts['query']) ? $this->filterQuery($parts['query']) : '';
+        $this->fragment = isset($parts['fragment']) ? $this->filterQuery($parts['fragment']) : '';
+    }
+
+
+    /**
+     * Create new Uri from components.
+     *
      * @param string $scheme   Uri scheme.
      * @param string $host     Uri host.
      * @param int    $port     Uri port number.
@@ -102,51 +125,28 @@ class Uri implements UriInterface
      * @param string $user     Uri user.
      * @param string $password Uri password.
      */
-    public function __construct(
+    public static function createFromComponents(
         $scheme,
         $host,
         $port = null,
-        $path = '/',
+        $path = '',
         $query = '',
         $fragment = '',
         $user = '',
         $password = ''
     ) {
-        $this->scheme = $this->filterScheme($scheme);
-        $this->host = $host;
-        $this->port = $this->filterPort($port);
-        $this->path = empty($path) ? '/' : $this->filterPath($path);
-        $this->query = $this->filterQuery($query);
-        $this->fragment = $this->filterQuery($fragment);
-        $this->user = $user;
-        $this->password = $password;
-    }
 
-    /**
-     * Create new Uri from string.
-     *
-     * @param  string $uri Complete Uri string
-     *     (i.e., https://user:pass@host:443/path?query).
-     *
-     * @return self
-     */
-    public static function createFromString($uri)
-    {
-        if (!is_string($uri) && !method_exists($uri, '__toString')) {
-            throw new InvalidArgumentException('Uri must be a string');
-        }
+        $uri = new static();
 
-        $parts = parse_url($uri);
-        $scheme = isset($parts['scheme']) ? $parts['scheme'] : '';
-        $user = isset($parts['user']) ? $parts['user'] : '';
-        $pass = isset($parts['pass']) ? $parts['pass'] : '';
-        $host = isset($parts['host']) ? $parts['host'] : '';
-        $port = isset($parts['port']) ? $parts['port'] : null;
-        $path = isset($parts['path']) ? $parts['path'] : '';
-        $query = isset($parts['query']) ? $parts['query'] : '';
-        $fragment = isset($parts['fragment']) ? $parts['fragment'] : '';
+        $uri = $uri->withScheme($scheme)
+            ->withHost($host)
+            ->withPort($port)
+            ->withPath($path)
+            ->withQuery($query)
+            ->withFragment($fragment)
+            ->withUserInfo($user, $password);
 
-        return new static($scheme, $host, $port, $path, $query, $fragment, $user, $pass);
+        return $uri;
     }
 
     /**
@@ -196,6 +196,9 @@ class Uri implements UriInterface
         // parse_url() requires a full URL. As we don't extract the domain name or scheme,
         // we use a stand-in.
         $requestUri = parse_url('http://example.com' . $env->get('REQUEST_URI'), PHP_URL_PATH);
+        if (!is_string($requestUri)) {
+            $requestUri = '';
+        }
 
         $basePath = '';
         $virtualPath = $requestUri;
@@ -213,15 +216,16 @@ class Uri implements UriInterface
         $queryString = $env->get('QUERY_STRING', '');
         if ($queryString === '') {
             $queryString = parse_url('http://example.com' . $env->get('REQUEST_URI'), PHP_URL_QUERY);
+            if (!is_string($queryString)) {
+                $queryString = '';
+            }
         }
 
         // Fragment
         $fragment = '';
 
         // Build Uri
-        $uri = new static($scheme, $host, $port, $virtualPath, $queryString, $fragment, $username, $password);
-
-        return $uri;
+        return static::createFromComponents($scheme, $host, $port, $virtualPath, $queryString, $fragment, $username, $password);
     }
 
     /********************************************************************************

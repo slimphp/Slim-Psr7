@@ -21,16 +21,7 @@ class UriTest extends \PHPUnit_Framework_TestCase
 
     public function uriFactory()
     {
-        $scheme = 'https';
-        $host = 'example.com';
-        $port = 443;
-        $path = '/foo/bar';
-        $query = 'abc=123';
-        $fragment = 'section3';
-        $user = 'josh';
-        $password = 'sekrit';
-
-        return new Uri($scheme, $host, $port, $path, $query, $fragment, $user, $password);
+        return new Uri('https://josh:sekrit@example.com:443/foo/bar?abc=123#section3');
     }
 
     /********************************************************************************
@@ -92,90 +83,42 @@ class UriTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAuthorityWithUsername()
     {
-        $scheme = 'https';
-        $user = 'josh';
-        $password = '';
-        $host = 'example.com';
-        $path = '/foo/bar';
-        $port = 443;
-        $query = 'abc=123';
-        $fragment = 'section3';
-        $uri = new Uri($scheme, $host, $port, $path, $query, $fragment, $user, $password);
+        $uri = new Uri('https://josh@example.com/foo/bar?abc=123#section3');
 
         $this->assertEquals('josh@example.com', $uri->getAuthority());
     }
 
     public function testGetAuthority()
     {
-        $scheme = 'https';
-        $user = '';
-        $password = '';
-        $host = 'example.com';
-        $path = '/foo/bar';
-        $port = 443;
-        $query = 'abc=123';
-        $fragment = 'section3';
-        $uri = new Uri($scheme, $host, $port, $path, $query, $fragment, $user, $password);
+        $uri = new Uri('https://example.com/foo/bar?abc=123#section3');
 
         $this->assertEquals('example.com', $uri->getAuthority());
     }
 
     public function testGetAuthorityWithNonStandardPort()
     {
-        $scheme = 'https';
-        $user = '';
-        $password = '';
-        $host = 'example.com';
-        $path = '/foo/bar';
-        $port = 400;
-        $query = 'abc=123';
-        $fragment = 'section3';
-        $uri = new Uri($scheme, $host, $port, $path, $query, $fragment, $user, $password);
+        $uri = new Uri('https://example.com:400/foo/bar?abc=123#section3');
 
         $this->assertEquals('example.com:400', $uri->getAuthority());
     }
 
     public function testGetUserInfoWithUsernameAndPassword()
     {
-        $scheme = 'https';
-        $user = 'josh';
-        $password = 'sekrit';
-        $host = 'example.com';
-        $path = '/foo/bar';
-        $port = 443;
-        $query = 'abc=123';
-        $fragment = 'section3';
-        $uri = new Uri($scheme, $host, $port, $path, $query, $fragment, $user, $password);
+        $uri = new Uri('https://josh:sekrit@example.com/foo/bar?abc=123#section3');
 
         $this->assertEquals('josh:sekrit', $uri->getUserInfo());
     }
 
     public function testGetUserInfoWithUsername()
     {
-        $scheme = 'https';
-        $user = 'josh';
-        $password = '';
-        $host = 'example.com';
-        $path = '/foo/bar';
-        $port = 443;
-        $query = 'abc=123';
-        $fragment = 'section3';
-        $uri = new Uri($scheme, $host, $port, $path, $query, $fragment, $user, $password);
+        $uri = new Uri('https://josh@example.com/foo/bar?abc=123#section3');
 
         $this->assertEquals('josh', $uri->getUserInfo());
     }
 
     public function testGetUserInfoNone()
     {
-        $scheme = 'https';
-        $user = '';
-        $password = '';
-        $host = 'example.com';
-        $path = '/foo/bar';
-        $port = 443;
-        $query = 'abc=123';
-        $fragment = 'section3';
-        $uri = new Uri($scheme, $host, $port, $path, $query, $fragment, $user, $password);
+        $uri = new Uri('https://example.com/foo/bar?abc=123#section3');
 
         $this->assertEquals('', $uri->getUserInfo());
     }
@@ -210,15 +153,15 @@ class UriTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPortWithSchemeAndNonDefaultPort()
     {
-        $uri = new Uri('https', 'www.example.com', 4000);
+        $uri = new Uri('https://www.example.com:4000');
 
         $this->assertEquals(4000, $uri->getPort());
     }
 
     public function testGetPortWithSchemeAndDefaultPort()
     {
-        $uriHppt = new Uri('http', 'www.example.com', 80);
-        $uriHppts = new Uri('https', 'www.example.com', 443);
+        $uriHppt = new Uri('http://www.example.com:80');
+        $uriHppts = new Uri('https://www.example.com:443');
 
         $this->assertNull($uriHppt->getPort());
         $this->assertNull($uriHppts->getPort());
@@ -226,14 +169,14 @@ class UriTest extends \PHPUnit_Framework_TestCase
 
     public function testGetPortWithoutSchemeAndPort()
     {
-        $uri = new Uri('', 'www.example.com');
+        $uri = new Uri('www.example.com');
 
         $this->assertNull($uri->getPort());
     }
 
     public function testGetPortWithSchemeWithoutPort()
     {
-        $uri = new Uri('http', 'www.example.com');
+        $uri = new Uri('http://www.example.com');
 
         $this->assertNull($uri->getPort());
     }
@@ -437,27 +380,36 @@ class UriTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Slim\Psr7\Uri::createFromString
+     * @covers Slim\Psr7\Uri::createFromComponents
      */
-    public function testCreateFromString()
+    public function testCreateFromComponents()
     {
-        $uri = Uri::createFromString('https://example.com:8080/foo/bar?abc=123');
+        $scheme = 'https';
+        $user = 'josh';
+        $password = 'sekrit';
+        $host = 'example.com';
+        $path = '/foo/bar';
+        $port = 8080;
+        $query = 'abc=123';
+        $fragment = 'section3';
+        $uri = Uri::createFromComponents($scheme, $host, $port, $path, $query, $fragment, $user, $password);
 
         $this->assertEquals('https', $uri->getScheme());
         $this->assertEquals('example.com', $uri->getHost());
         $this->assertEquals('8080', $uri->getPort());
         $this->assertEquals('/foo/bar', $uri->getPath());
         $this->assertEquals('abc=123', $uri->getQuery());
+        $this->assertEquals('josh:sekrit', $uri->getUserInfo());
     }
 
     /**
-     * @covers Slim\Psr7\Uri::createFromString
+     * @covers Slim\Psr7\Uri::__construct
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Uri must be a string
      */
     public function testCreateFromStringWithInvalidType()
     {
-        Uri::createFromString(['https://example.com:8080/foo/bar?abc=123']);
+        new Uri(['https://example.com:8080/foo/bar?abc=123']);
     }
 
     public function testCreateEnvironment()

@@ -24,7 +24,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         $env = Environment::mock($envData);
 
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
         $headers = Headers::createFromEnvironment($env);
         $cookies = [
             'user' => 'john',
@@ -148,7 +148,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testGetMethodWithOverrideHeader()
     {
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers([
             'HTTP_X_HTTP_METHOD_OVERRIDE' => 'PUT',
         ]);
@@ -163,7 +163,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testGetMethodWithOverrideParameterFromBodyObject()
     {
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers([
             'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
@@ -180,7 +180,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testGetMethodOverrideParameterFromBodyArray()
     {
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers([
             'Content-Type' => 'application/x-www-form-urlencoded',
         ]);
@@ -203,7 +203,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateRequestWithInvalidMethodString()
     {
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
@@ -216,7 +216,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateRequestWithInvalidMethodOther()
     {
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
@@ -296,7 +296,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testIsXhr()
     {
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers([
             'Content-Type' => 'application/x-www-form-urlencoded',
             'X-Requested-With' => 'XMLHttpRequest',
@@ -355,7 +355,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testGetUri()
     {
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
@@ -368,8 +368,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testWithUri()
     {
         // Uris
-        $uri1 = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
-        $uri2 = Uri::createFromString('https://example2.com:443/test?xyz=123');
+        $uri1 = new Uri('https://example.com:443/foo/bar?abc=123');
+        $uri2 = new Uri('https://example2.com:443/test?xyz=123');
 
         // Request
         $headers = new Headers();
@@ -833,7 +833,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testGetParsedBodyAfterCallReparseBody()
     {
-        $uri = Uri::createFromString('https://example.com:443/?one=1');
+        $uri = new Uri('https://example.com:443/?one=1');
         $headers = new Headers([
             'Content-Type' => 'application/x-www-form-urlencoded;charset=utf8',
         ]);
@@ -860,7 +860,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetParsedBodyAsArray()
     {
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers([
             'Content-Type' => 'application/json;charset=utf8',
         ]);
