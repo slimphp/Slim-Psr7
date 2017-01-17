@@ -61,17 +61,11 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('GET', $this->requestFactory()->getMethod());
     }
 
-    public function testGetOriginalMethod()
-    {
-        $this->assertEquals('GET', $this->requestFactory()->getOriginalMethod());
-    }
-
     public function testWithMethod()
     {
         $request = $this->requestFactory()->withMethod('PUT');
 
         $this->assertAttributeEquals('PUT', 'method', $request);
-        $this->assertAttributeEquals('PUT', 'originalMethod', $request);
     }
 
     /**
@@ -86,7 +80,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     {
         $request = $this->requestFactory()->withMethod(null);
 
-        $this->assertAttributeEquals(null, 'originalMethod', $request);
+        $this->assertAttributeEquals(null, 'method', $request);
     }
 
     /**
@@ -126,79 +120,6 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers Slim\Psr7\Request::createFromEnvironment
-     */
-    public function testCreateFromEnvironmentWithMultipartMethodOverride()
-    {
-        $_POST['_METHOD'] = 'PUT';
-
-        $env = Environment::mock([
-            'SCRIPT_NAME' => '/index.php',
-            'REQUEST_URI' => '/foo',
-            'REQUEST_METHOD' => 'POST',
-            'HTTP_CONTENT_TYPE' => 'multipart/form-data; boundary=---foo'
-        ]);
-
-        $request = Request::createFromEnvironment($env);
-        unset($_POST);
-
-        $this->assertEquals('POST', $request->getOriginalMethod());
-        $this->assertEquals('PUT', $request->getMethod());
-    }
-
-    public function testGetMethodWithOverrideHeader()
-    {
-        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
-        $headers = new Headers([
-            'HTTP_X_HTTP_METHOD_OVERRIDE' => 'PUT',
-        ]);
-        $cookies = [];
-        $serverParams = [];
-        $body = new RequestBody();
-        $request = new Request('POST', $uri, $headers, $cookies, $serverParams, $body);
-
-        $this->assertEquals('PUT', $request->getMethod());
-        $this->assertEquals('POST', $request->getOriginalMethod());
-    }
-
-    public function testGetMethodWithOverrideParameterFromBodyObject()
-    {
-        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
-        $headers = new Headers([
-            'Content-Type' => 'application/x-www-form-urlencoded',
-        ]);
-        $cookies = [];
-        $serverParams = [];
-        $body = new RequestBody();
-        $body->write('_METHOD=PUT');
-        $body->rewind();
-        $request = new Request('POST', $uri, $headers, $cookies, $serverParams, $body);
-
-        $this->assertEquals('PUT', $request->getMethod());
-        $this->assertEquals('POST', $request->getOriginalMethod());
-    }
-
-    public function testGetMethodOverrideParameterFromBodyArray()
-    {
-        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
-        $headers = new Headers([
-            'Content-Type' => 'application/x-www-form-urlencoded',
-        ]);
-        $cookies = [];
-        $serverParams = [];
-        $body = new RequestBody();
-        $body->write('_METHOD=PUT');
-        $body->rewind();
-        $request = new Request('POST', $uri, $headers, $cookies, $serverParams, $body);
-        $request->registerMediaTypeParser('application/x-www-form-urlencoded', function ($input) {
-            parse_str($input, $body);
-            return $body; // <-- Array
-        });
-
-        $this->assertEquals('PUT', $request->getMethod());
-    }
-
-    /**
      * @expectedException \InvalidArgumentException
      */
     public function testCreateRequestWithInvalidMethodString()
@@ -227,7 +148,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsGet()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'GET');
 
@@ -237,7 +158,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsPost()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'POST');
 
@@ -247,7 +168,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsPut()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'PUT');
 
@@ -257,7 +178,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsPatch()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'PATCH');
 
@@ -267,7 +188,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsDelete()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'DELETE');
 
@@ -277,7 +198,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsHead()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'HEAD');
 
@@ -287,7 +208,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsOptions()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'OPTIONS');
 
