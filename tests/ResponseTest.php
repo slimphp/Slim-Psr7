@@ -2,17 +2,17 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Http
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Http/blob/master/LICENSE (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
-namespace Slim\Tests\Http;
+namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
-use Slim\Http\Body;
-use Slim\Http\Headers;
-use Slim\Http\Response;
+use Slim\Psr7\Body;
+use Slim\Psr7\Headers;
+use Slim\Psr7\Response;
 
 class ResponseTest extends TestCase
 {
@@ -25,7 +25,7 @@ class ResponseTest extends TestCase
         $response = new Response();
 
         $this->assertAttributeEquals(200, 'status', $response);
-        $this->assertAttributeInstanceOf('\Slim\Http\Headers', 'headers', $response);
+        $this->assertAttributeInstanceOf('\Slim\Psr7\Headers', 'headers', $response);
         $this->assertAttributeInstanceOf('\Psr\Http\Message\StreamInterface', 'body', $response);
     }
 
@@ -143,7 +143,7 @@ class ResponseTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Response::withRedirect
+     * @covers Slim\Psr7\Response::withRedirect
      */
     public function testWithRedirect()
     {

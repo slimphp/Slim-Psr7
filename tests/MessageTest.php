@@ -2,15 +2,15 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Http
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Http/blob/master/LICENSE (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
-namespace Slim\Tests\Http;
+namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
-use Slim\Http\Headers;
-use Slim\Tests\Http\Mocks\MessageStub;
+use Slim\Psr7\Headers;
+use Slim\Tests\Psr7\Mocks\MessageStub;
 
 class MessageTest extends TestCase
 {
@@ -19,7 +19,7 @@ class MessageTest extends TestCase
      ******************************************************************************/
 
     /**
-     * @covers Slim\Http\Message::getProtocolVersion
+     * @covers Slim\Psr7\Message::getProtocolVersion
      */
     public function testGetProtocolVersion()
     {
@@ -30,7 +30,7 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Message::withProtocolVersion
+     * @covers Slim\Psr7\Message::withProtocolVersion
      */
     public function testWithProtocolVersion()
     {
@@ -41,7 +41,7 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Message::withProtocolVersion
+     * @covers Slim\Psr7\Message::withProtocolVersion
      * @expectedException \InvalidArgumentException
      */
     public function testWithProtocolVersionInvalidThrowsException()
@@ -55,7 +55,7 @@ class MessageTest extends TestCase
      ******************************************************************************/
 
     /**
-     * @covers Slim\Http\Message::getHeaders
+     * @covers Slim\Psr7\Message::getHeaders
      */
     public function testGetHeaders()
     {
@@ -79,7 +79,7 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Message::hasHeader
+     * @covers Slim\Psr7\Message::hasHeader
      */
     public function testHasHeader()
     {
@@ -94,7 +94,7 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Message::getHeaderLine
+     * @covers Slim\Psr7\Message::getHeaderLine
      */
     public function testGetHeaderLine()
     {
@@ -111,7 +111,7 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Message::getHeader
+     * @covers Slim\Psr7\Message::getHeader
      */
     public function testGetHeader()
     {
@@ -128,7 +128,7 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Message::withHeader
+     * @covers Slim\Psr7\Message::withHeader
      */
     public function testWithHeader()
     {
@@ -142,7 +142,7 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Message::withAddedHeader
+     * @covers Slim\Psr7\Message::withAddedHeader
      */
     public function testWithAddedHeader()
     {
@@ -156,7 +156,7 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Message::withoutHeader
+     * @covers Slim\Psr7\Message::withoutHeader
      */
     public function testWithoutHeader()
     {
@@ -178,7 +178,7 @@ class MessageTest extends TestCase
      ******************************************************************************/
 
     /**
-     * @covers Slim\Http\Message::getBody
+     * @covers Slim\Psr7\Message::getBody
      */
     public function testGetBody()
     {
@@ -190,7 +190,7 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Message::withBody
+     * @covers Slim\Psr7\Message::withBody
      */
     public function testWithBody()
     {
@@ -205,10 +205,10 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\Slim\Http\Body
+     * @return \PHPUnit_Framework_MockObject_MockObject|\Slim\Psr7\Body
      */
     protected function getBody()
     {
-        return $this->getMockBuilder('Slim\Http\Body')->disableOriginalConstructor()->getMock();
+        return $this->getMockBuilder('Slim\Psr7\Body')->disableOriginalConstructor()->getMock();
     }
 }

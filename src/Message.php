@@ -2,11 +2,11 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Http
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Http/blob/master/LICENSE (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
-namespace Slim\Http;
+namespace Slim\Psr7;
 
 use InvalidArgumentException;
 use Psr\Http\Message\MessageInterface;
@@ -19,8 +19,8 @@ use Psr\Http\Message\StreamInterface;
  * the HTTP request and response, as defined in the PSR-7 MessageInterface.
  *
  * @link https://github.com/php-fig/http-message/blob/master/src/MessageInterface.php
- * @see Slim\Http\Request
- * @see Slim\Http\Response
+ * @see Slim\Psr7\Request
+ * @see Slim\Psr7\Response
  */
 abstract class Message implements MessageInterface
 {
@@ -46,7 +46,7 @@ abstract class Message implements MessageInterface
     /**
      * Headers
      *
-     * @var \Slim\Http\HeadersInterface
+     * @var \Slim\Psr7\HeadersInterface
      */
     protected $headers;
 

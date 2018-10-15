@@ -2,21 +2,21 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Http
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Http/blob/master/LICENSE (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
-namespace Slim\Tests\Http;
+namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
-use Slim\Http\Collection;
-use Slim\Http\Environment;
-use Slim\Http\Headers;
-use Slim\Http\Request;
-use Slim\Http\RequestBody;
-use Slim\Http\UploadedFile;
-use Slim\Http\Uri;
+use Slim\Psr7\Collection;
+use Slim\Psr7\Environment;
+use Slim\Psr7\Headers;
+use Slim\Psr7\Request;
+use Slim\Psr7\RequestBody;
+use Slim\Psr7\UploadedFile;
+use Slim\Psr7\Uri;
 
 class RequestTest extends TestCase
 {
@@ -98,7 +98,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Request::createFromGlobals
+     * @covers Slim\Psr7\Request::createFromGlobals
      */
     public function testCreateFromGlobals()
     {
@@ -114,7 +114,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Request::createFromGlobals
+     * @covers Slim\Psr7\Request::createFromGlobals
      */
     public function testCreateFromGlobalsWithMultipart()
     {
@@ -569,8 +569,8 @@ class RequestTest extends TestCase
      ******************************************************************************/
 
     /**
-     * @covers Slim\Http\Request::withUploadedFiles
-     * @covers Slim\Http\Request::getUploadedFiles
+     * @covers Slim\Psr7\Request::withUploadedFiles
+     * @covers Slim\Psr7\Request::getUploadedFiles
      */
     public function testWithUploadedFiles()
     {

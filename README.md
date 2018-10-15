@@ -1,12 +1,12 @@
-# Slim-Http
+# Slim PSR-7
 
 Strict PSR-7 implementation used by the Slim Framework, but you may use it
 separately with any framework compatible with the PSR-7 standard.
 
-[![Build Status](https://travis-ci.org/slimphp/Slim-Http.svg?branch=master)](https://travis-ci.org/slimphp/Slim-Http)
-[![Coverage Status](https://coveralls.io/repos/slimphp/Slim-Http/badge.svg?branch=master&service=github)](https://coveralls.io/github/slimphp/Slim-Http?branch=master)
-[![Total Downloads](https://poser.pugx.org/slim/http/downloads)](https://packagist.org/packages/slim/http)
-[![License](https://poser.pugx.org/slim/http/license)](https://packagist.org/packages/slim/http)
+[![Build Status](https://travis-ci.org/slimphp/Slim-Psr7.svg?branch=master)](https://travis-ci.org/slimphp/Slim-Psr7)
+[![Coverage Status](https://coveralls.io/repos/slimphp/Slim-Psr7/badge.svg?branch=master&service=github)](https://coveralls.io/github/slimphp/Slim-Psr7?branch=master)
+[![Total Downloads](https://poser.pugx.org/slim/psr7/downloads)](https://packagist.org/packages/slim/psr7)
+[![License](https://poser.pugx.org/slim/psr7/license)](https://packagist.org/packages/slim/psr7)
 
 ## Installation
 
@@ -14,10 +14,10 @@ It's recommended that you use [Composer](https://getcomposer.org/) to install
 this library.
 
 ```bash
-$ composer require slim/http "^0.1"
+$ composer require slim/psr7 "^0.1"
 ```
 
-This will install the `slim/http` component and all required dependencies.
+This will install the `slim/psr7` component and all required dependencies.
 PHP 7.0, or newer, is required.
 
 ## Usage

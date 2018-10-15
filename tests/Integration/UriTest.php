@@ -2,15 +2,15 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Http
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Http/blob/master/LICENSE (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
-namespace Slim\Tests\Http\Integration;
+namespace Slim\Tests\Psr7\Integration;
 
 use Http\Psr7Test\UriIntegrationTest;
 use Psr\Http\Message\UriInterface;
-use Slim\Http\Uri;
+use Slim\Psr7\Uri;
 
 class UriTest extends UriIntegrationTest
 {

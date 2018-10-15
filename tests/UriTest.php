@@ -2,16 +2,16 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Http
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Http/blob/master/LICENSE (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
-namespace Slim\Tests\Http;
+namespace Slim\Tests\Psr7;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Slim\Http\Environment;
-use Slim\Http\Uri;
+use Slim\Psr7\Environment;
+use Slim\Psr7\Uri;
 
 class UriTest extends TestCase
 {
@@ -292,7 +292,7 @@ class UriTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Uri::withPath
+     * @covers Slim\Psr7\Uri::withPath
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Uri path must be a string
      */
@@ -339,7 +339,7 @@ class UriTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Uri::withQuery
+     * @covers Slim\Psr7\Uri::withQuery
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Uri query must be a string
      */
@@ -379,7 +379,7 @@ class UriTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Uri::withFragment
+     * @covers Slim\Psr7\Uri::withFragment
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Uri fragment must be a string
      */
@@ -406,7 +406,7 @@ class UriTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Uri::createFromString
+     * @covers Slim\Psr7\Uri::createFromString
      */
     public function testCreateFromString()
     {
@@ -420,7 +420,7 @@ class UriTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Uri::createFromString
+     * @covers Slim\Psr7\Uri::createFromString
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Uri must be a string
      */
@@ -553,16 +553,16 @@ class UriTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Uri::createFromGlobals
+     * @covers Slim\Psr7\Uri::createFromGlobals
      * @ticket 1380
      */
     public function testWithPathWhenBaseRootIsEmpty()
     {
-        $globals = \Slim\Http\Environment::mock([
+        $globals = \Slim\Psr7\Environment::mock([
             'SCRIPT_NAME' => '/index.php',
             'REQUEST_URI' => '/bar',
         ]);
-        $uri = \Slim\Http\Uri::createFromGlobals($globals);
+        $uri = \Slim\Psr7\Uri::createFromGlobals($globals);
 
         $this->assertEquals('http://localhost/test', (string) $uri->withPath('test'));
     }

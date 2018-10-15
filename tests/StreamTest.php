@@ -2,14 +2,14 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Http
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Http/blob/master/LICENSE (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
-namespace Slim\Tests\Http;
+namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
-use Slim\Http\Stream;
+use Slim\Psr7\Stream;
 
 class StreamTest extends TestCase
 {
@@ -31,7 +31,7 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Stream::isPipe
+     * @covers Slim\Psr7\Stream::isPipe
      */
     public function testIsPipe()
     {
@@ -48,7 +48,7 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Stream::isReadable
+     * @covers Slim\Psr7\Stream::isReadable
      */
     public function testIsPipeReadable()
     {
@@ -58,7 +58,7 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Stream::isSeekable
+     * @covers Slim\Psr7\Stream::isSeekable
      */
     public function testPipeIsNotSeekable()
     {
@@ -68,7 +68,7 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Stream::seek
+     * @covers Slim\Psr7\Stream::seek
      * @expectedException \RuntimeException
      */
     public function testCannotSeekPipe()
@@ -79,7 +79,7 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Stream::tell
+     * @covers Slim\Psr7\Stream::tell
      * @expectedException \RuntimeException
      */
     public function testCannotTellPipe()
@@ -90,7 +90,7 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Stream::rewind
+     * @covers Slim\Psr7\Stream::rewind
      * @expectedException \RuntimeException
      */
     public function testCannotRewindPipe()
@@ -101,7 +101,7 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Stream::getSize
+     * @covers Slim\Psr7\Stream::getSize
      */
     public function testPipeGetSizeYieldsNull()
     {
@@ -111,7 +111,7 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Stream::close
+     * @covers Slim\Psr7\Stream::close
      */
     public function testClosePipe()
     {
@@ -125,7 +125,7 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Stream::__toString
+     * @covers Slim\Psr7\Stream::__toString
      */
     public function testPipeToString()
     {
@@ -135,7 +135,7 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @covers Slim\Http\Stream::getContents
+     * @covers Slim\Psr7\Stream::getContents
      */
 
     public function testPipeGetContents()
