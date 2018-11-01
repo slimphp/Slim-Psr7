@@ -10,7 +10,7 @@ namespace Slim\Tests\Psr7\Integration;
 
 use Http\Psr7Test\UriIntegrationTest;
 use Psr\Http\Message\UriInterface;
-use Slim\Psr7\Uri;
+use Slim\Psr7\Factory\UriFactory;
 
 class UriTest extends UriIntegrationTest
 {
@@ -23,6 +23,6 @@ class UriTest extends UriIntegrationTest
      */
     public function createUri($uri)
     {
-        return Uri::createFromString($uri);
+        return (new UriFactory())->createUri($uri);
     }
 }

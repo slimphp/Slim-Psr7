@@ -8,20 +8,21 @@
  */
 namespace Slim\Tests\Psr7\Integration;
 
+use Psr\Http\Message\UriInterface;
+use Slim\Psr7\Factory\UriFactory;
 use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
-use Slim\Psr7\Uri;
 
 trait BaseTestFactories
 {
 
     /**
      * @param $uri
-     * @return Uri
+     * @return UriInterface
      */
     protected function buildUri($uri)
     {
-        return Uri::createFromString($uri);
+        return (new UriFactory())->createUri($uri);
     }
 
     /**

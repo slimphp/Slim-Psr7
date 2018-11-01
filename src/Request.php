@@ -100,35 +100,6 @@ class Request extends Message implements ServerRequestInterface
     protected $uploadedFiles;
 
     /**
-     * Create new HTTP request with data extracted from the application
-     * Environment object
-     *
-     * @param array $globals The global server variables.
-     *
-     * @return static
-     */
-    public static function createFromGlobals(array $globals)
-    {
-        $method = isset($globals['REQUEST_METHOD']) ? $globals['REQUEST_METHOD'] : null;
-        $uri = Uri::createFromGlobals($globals);
-        $headers = Headers::createFromGlobals($globals);
-        $cookies = Cookies::parseHeader($headers->get('Cookie', []));
-        $serverParams = $globals;
-        $body = new RequestBody();
-        $uploadedFiles = UploadedFile::createFromGlobals($globals);
-
-        $request = new static($method, $uri, $headers, $cookies, $serverParams, $body, $uploadedFiles);
-
-        if ($method === 'POST' &&
-            in_array($request->getMediaType(), ['application/x-www-form-urlencoded', 'multipart/form-data'])
-        ) {
-            // parsed body must be $_POST
-            $request = $request->withParsedBody($_POST);
-        }
-        return $request;
-    }
-
-    /**
      * Create new HTTP request.
      *
      * Adds a host header when none was provided and a host is defined in uri.

@@ -22,6 +22,6 @@ class ServerRequestTest extends ServerRequestIntegrationTest
      */
     public function createSubject()
     {
-        return new Request('GET', $this->buildUri('/'), new Headers(), [], $_SERVER, $this->buildStream(''));
+        return new Request('GET', $this->buildUri('/'), new Headers(), $_COOKIE, $_SERVER, $this->buildStream(''));
     }
 }
