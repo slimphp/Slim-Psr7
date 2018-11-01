@@ -2,9 +2,9 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Psr7;
 

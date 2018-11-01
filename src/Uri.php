@@ -2,15 +2,14 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Psr7;
 
 use InvalidArgumentException;
 use \Psr\Http\Message\UriInterface;
-use Slim\Psr7\Environment;
 
 /**
  * Value object representing a URI.
@@ -93,29 +92,6 @@ class Uri implements UriInterface
     /**
      * Create new Uri.
      *
-     * @param string $url Fully qualified URI
-     */
-    public function __construct($uri = '')
-    {
-        if (!is_string($uri) && !method_exists($uri, '__toString')) {
-            throw new InvalidArgumentException('Uri must be a string');
-        }
-
-        $parts = parse_url($uri);
-        $this->scheme = isset($parts['scheme']) ? $this->filterScheme($parts['scheme']) : '';
-        $this->user = isset($parts['user']) ? $parts['user'] : '';
-        $this->password = isset($parts['pass']) ? $parts['pass'] : '';
-        $this->host = isset($parts['host']) ? $parts['host'] : '';
-        $this->port = isset($parts['port']) ? $this->filterPort($parts['port']) : null;
-        $this->path = isset($parts['path']) ? $parts['path'] : '';
-        $this->query = isset($parts['query']) ? $this->filterQuery($parts['query']) : '';
-        $this->fragment = isset($parts['fragment']) ? $this->filterQuery($parts['fragment']) : '';
-    }
-
-
-    /**
-     * Create new Uri from components.
-     *
      * @param string $scheme   Uri scheme.
      * @param string $host     Uri host.
      * @param int    $port     Uri port number.
@@ -125,39 +101,64 @@ class Uri implements UriInterface
      * @param string $user     Uri user.
      * @param string $password Uri password.
      */
-    public static function createFromComponents(
+    public function __construct(
         $scheme,
         $host,
         $port = null,
-        $path = '',
+        $path = '/',
         $query = '',
         $fragment = '',
         $user = '',
         $password = ''
     ) {
+        $this->scheme = $this->filterScheme($scheme);
+        $this->host = $this->filterHost($host);
+        $this->port = $this->filterPort($port);
+        $this->path = $this->filterPath($path);
+        $this->query = $this->filterQuery($query);
+        $this->fragment = $this->filterQuery($fragment);
+        $this->user = $user;
+        $this->password = $password;
+    }
 
-        $uri = new static();
+    /**
+     * Create new Uri from string.
+     *
+     * @param  string $uri Complete Uri string
+     *     (i.e., https://user:pass@host:443/path?query).
+     *
+     * @return self
+     */
+    public static function createFromString($uri)
+    {
+        if (!is_string($uri) && !method_exists($uri, '__toString')) {
+            throw new InvalidArgumentException('Uri must be a string');
+        }
 
-        $uri = $uri->withScheme($scheme)
-            ->withHost($host)
-            ->withPort($port)
-            ->withPath($path)
-            ->withQuery($query)
-            ->withFragment($fragment)
-            ->withUserInfo($user, $password);
+        $parts = parse_url($uri);
+        $scheme = isset($parts['scheme']) ? $parts['scheme'] : '';
+        $user = isset($parts['user']) ? $parts['user'] : '';
+        $pass = isset($parts['pass']) ? $parts['pass'] : '';
+        $host = isset($parts['host']) ? $parts['host'] : '';
+        $port = isset($parts['port']) ? $parts['port'] : null;
+        $path = isset($parts['path']) ? $parts['path'] : '';
+        $query = isset($parts['query']) ? $parts['query'] : '';
+        $fragment = isset($parts['fragment']) ? $parts['fragment'] : '';
 
-        return $uri;
+        return new static($scheme, $host, $port, $path, $query, $fragment, $user, $pass);
     }
 
     /**
      * Create new Uri from environment.
      *
-     * @param Environment $env
+     * @param array $globals The global server variables.
      *
      * @return self
      */
-    public static function createFromEnvironment(Environment $env)
+    public static function createFromGlobals(array $globals)
     {
+        $env = new Collection($globals);
+
         // Scheme
         $isSecure = $env->get('HTTPS');
         $scheme = (empty($isSecure) || $isSecure === 'off') ? 'http' : 'https';
@@ -178,7 +179,7 @@ class Uri implements UriInterface
         if (preg_match('/^(\[[a-fA-F0-9:.]+\])(:\d+)?\z/', $host, $matches)) {
             $host = $matches[1];
 
-            if ($matches[2]) {
+            if (isset($matches[2])) {
                 $port = (int) substr($matches[2], 1);
             }
         } else {
@@ -189,43 +190,21 @@ class Uri implements UriInterface
             }
         }
 
-        // Path
-        $requestScriptName = parse_url($env->get('SCRIPT_NAME'), PHP_URL_PATH);
-        $requestScriptDir = dirname($requestScriptName);
-
-        // parse_url() requires a full URL. As we don't extract the domain name or scheme,
-        // we use a stand-in.
-        $requestUri = parse_url('http://example.com' . $env->get('REQUEST_URI'), PHP_URL_PATH);
-        if (!is_string($requestUri)) {
-            $requestUri = '';
-        }
-
-        $basePath = '';
-        $virtualPath = $requestUri;
-        if (stripos($requestUri, $requestScriptName) === 0) {
-            $basePath = $requestScriptName;
-        } elseif ($requestScriptDir !== '/' && stripos($requestUri, $requestScriptDir) === 0) {
-            $basePath = $requestScriptDir;
-        }
-
-        if ($basePath) {
-            $virtualPath = ltrim(substr($requestUri, strlen($basePath)), '/');
-        }
+        $requestUri = $env->get('REQUEST_URI');
 
         // Query string
         $queryString = $env->get('QUERY_STRING', '');
         if ($queryString === '') {
             $queryString = parse_url('http://example.com' . $env->get('REQUEST_URI'), PHP_URL_QUERY);
-            if (!is_string($queryString)) {
-                $queryString = '';
-            }
         }
 
         // Fragment
         $fragment = '';
 
         // Build Uri
-        return static::createFromComponents($scheme, $host, $port, $virtualPath, $queryString, $fragment, $username, $password);
+        $uri = new static($scheme, $host, $port, $requestUri, $queryString, $fragment, $username, $password);
+
+        return $uri;
     }
 
     /********************************************************************************
@@ -296,7 +275,7 @@ class Uri implements UriInterface
             throw new InvalidArgumentException('Uri scheme must be a string');
         }
 
-        $scheme = str_replace('://', '', strtolower((string)$scheme));
+        $scheme = str_replace('://', '', strtolower($scheme));
         if (!isset($valid[$scheme])) {
             throw new InvalidArgumentException('Uri scheme must be one of: "", "https", "http"');
         }
@@ -332,7 +311,7 @@ class Uri implements UriInterface
         $host = $this->getHost();
         $port = $this->getPort();
 
-        return ($userInfo ? $userInfo . '@' : '') . $host . ($port !== null ? ':' . $port : '');
+        return ($userInfo !== '' ? $userInfo . '@' : '') . $host . ($port !== null ? ':' . $port : '');
     }
 
     /**
@@ -352,7 +331,13 @@ class Uri implements UriInterface
      */
     public function getUserInfo()
     {
-        return $this->user . ($this->password ? ':' . $this->password : '');
+        $info = $this->user;
+
+        if (isset($this->password) && $this->password !== '') {
+            $info .= ':' . $this->password;
+        }
+
+        return $info;
     }
 
     /**
@@ -372,10 +357,31 @@ class Uri implements UriInterface
     public function withUserInfo($user, $password = null)
     {
         $clone = clone $this;
-        $clone->user = $user;
-        $clone->password = $password ? $password : '';
+        $clone->user = $this->filterUserInfo($user);
+        if ($clone->user !== '') {
+            $clone->password = isset($password) ? $this->filterUserInfo($password) : '';
+        } else {
+            $clone->password = '';
+        }
 
         return $clone;
+    }
+
+    /**
+     * Filters the user info string.
+     *
+     * @param string $query The raw uri query string.
+     * @return string The percent-encoded query string.
+     */
+    protected function filterUserInfo($query)
+    {
+        return preg_replace_callback(
+            '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=]+|%(?![A-Fa-f0-9]{2}))/u',
+            function ($match) {
+                return rawurlencode($match[0]);
+            },
+            $query
+        );
     }
 
     /**
@@ -409,9 +415,32 @@ class Uri implements UriInterface
     public function withHost($host)
     {
         $clone = clone $this;
-        $clone->host = $host;
+        $clone->host = $this->filterHost($host);
 
         return $clone;
+    }
+
+    /**
+     * Filter Uri host.
+     *
+     * If the supplied host is an IPv6 address, then it is converted to a reference
+     * as per RFC 2373.
+     *
+     * @param  string $host The host to filter.
+     * @return string
+     * @throws \InvalidArgumentException for invalid host names.
+     */
+    protected function filterHost($host)
+    {
+        if (!is_string($host) && !method_exists($host, '__toString')) {
+            throw new InvalidArgumentException('Uri host must be a string');
+        }
+
+        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            $host = '[' . $host . ']';
+        }
+
+        return strtolower($host);
     }
 
     /**
@@ -627,7 +656,7 @@ class Uri implements UriInterface
         if (!is_string($query) && !method_exists($query, '__toString')) {
             throw new InvalidArgumentException('Uri query must be a string');
         }
-        $query = ltrim((string)$query, '?');
+        $query = ltrim($query, '?');
         $clone = clone $this;
         $clone->query = $this->filterQuery($query);
 
@@ -695,7 +724,7 @@ class Uri implements UriInterface
         if (!is_string($fragment) && !method_exists($fragment, '__toString')) {
             throw new InvalidArgumentException('Uri fragment must be a string');
         }
-        $fragment = ltrim((string)$fragment, '#');
+        $fragment = ltrim($fragment, '#');
         $clone = clone $this;
         $clone->fragment = $this->filterQuery($fragment);
 
@@ -739,11 +768,11 @@ class Uri implements UriInterface
 
         $path = '/' . ltrim($path, '/');
 
-        return ($scheme ? $scheme . ':' : '')
-            . ($authority ? '//' . $authority : '')
+        return ($scheme !== '' ? $scheme . ':' : '')
+            . ($authority !== '' ? '//' . $authority : '')
             . $path
-            . ($query ? '?' . $query : '')
-            . ($fragment ? '#' . $fragment : '');
+            . ($query !== '' ? '?' . $query : '')
+            . ($fragment !== '' ? '#' . $fragment : '');
     }
 
     /**
@@ -760,7 +789,7 @@ class Uri implements UriInterface
         $scheme = $this->getScheme();
         $authority = $this->getAuthority();
 
-        return ($scheme ? $scheme . ':' : '')
-            . ($authority ? '//' . $authority : '');
+        return ($scheme !== '' ? $scheme . ':' : '')
+            . ($authority !== '' ? '//' . $authority : '');
     }
 }

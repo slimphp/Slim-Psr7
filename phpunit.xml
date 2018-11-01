@@ -4,7 +4,7 @@
          colors="true"
          bootstrap="tests/bootstrap.php">
     <testsuites>
-        <testsuite name="Slim\Psr7">
+        <testsuite name="slim\http">
             <directory>tests/</directory>
         </testsuite>
     </testsuites>

@@ -2,16 +2,17 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Tests\Psr7;
 
+use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Headers;
 use Slim\Tests\Psr7\Mocks\MessageStub;
 
-class MessageTest extends \PHPUnit_Framework_TestCase
+class MessageTest extends TestCase
 {
     /*******************************************************************************
      * Protocol

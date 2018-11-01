@@ -2,13 +2,13 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
-
 namespace Slim\Tests\Psr7;
 
+use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Slim\Psr7\Collection;
 use Slim\Psr7\Environment;
@@ -18,21 +18,21 @@ use Slim\Psr7\RequestBody;
 use Slim\Psr7\UploadedFile;
 use Slim\Psr7\Uri;
 
-class RequestTest extends \PHPUnit_Framework_TestCase
+class RequestTest extends TestCase
 {
     public function requestFactory($envData = [])
     {
         $env = Environment::mock($envData);
 
-        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
-        $headers = Headers::createFromEnvironment($env);
+        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $headers = Headers::createFromGlobals($env);
         $cookies = [
             'user' => 'john',
             'id' => '123',
         ];
-        $serverParams = $env->all();
+        $serverParams = $env;
         $body = new RequestBody();
-        $uploadedFiles = UploadedFile::createFromEnvironment($env);
+        $uploadedFiles = UploadedFile::createFromGlobals($env);
         $request = new Request('GET', $uri, $headers, $cookies, $serverParams, $body, $uploadedFiles);
 
         return $request;
@@ -61,17 +61,25 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('GET', $this->requestFactory()->getMethod());
     }
 
-    public function testGetOriginalMethod()
-    {
-        $this->assertEquals('GET', $this->requestFactory()->getOriginalMethod());
-    }
-
     public function testWithMethod()
     {
         $request = $this->requestFactory()->withMethod('PUT');
 
         $this->assertAttributeEquals('PUT', 'method', $request);
-        $this->assertAttributeEquals('PUT', 'originalMethod', $request);
+    }
+
+    public function testWithMethodCaseSensitive()
+    {
+        $request = $this->requestFactory()->withMethod('pOsT');
+
+        $this->assertAttributeEquals('pOsT', 'method', $request);
+    }
+
+    public function testWithAllAllowedCharactersMethod()
+    {
+        $request = $this->requestFactory()->withMethod("!#$%&'*+.^_`|~09AZ-");
+
+        $this->assertAttributeEquals("!#$%&'*+.^_`|~09AZ-", 'method', $request);
     }
 
     /**
@@ -79,20 +87,20 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function testWithMethodInvalid()
     {
-        $this->requestFactory()->withMethod('FOO');
+        $this->requestFactory()->withMethod('B@R');
     }
 
     public function testWithMethodNull()
     {
         $request = $this->requestFactory()->withMethod(null);
 
-        $this->assertAttributeEquals(null, 'originalMethod', $request);
+        $this->assertAttributeEquals(null, 'method', $request);
     }
 
     /**
-     * @covers Slim\Psr7\Request::createFromEnvironment
+     * @covers Slim\Psr7\Request::createFromGlobals
      */
-    public function testCreateFromEnvironment()
+    public function testCreateFromGlobals()
     {
         $env = Environment::mock([
             'SCRIPT_NAME' => '/index.php',
@@ -100,15 +108,15 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             'REQUEST_METHOD' => 'POST',
         ]);
 
-        $request = Request::createFromEnvironment($env);
+        $request = Request::createFromGlobals($env);
         $this->assertEquals('POST', $request->getMethod());
-        $this->assertEquals($env->all(), $request->getServerParams());
+        $this->assertEquals($env, $request->getServerParams());
     }
 
     /**
-     * @covers Slim\Psr7\Request::createFromEnvironment
+     * @covers Slim\Psr7\Request::createFromGlobals
      */
-    public function testCreateFromEnvironmentWithMultipart()
+    public function testCreateFromGlobalsWithMultipart()
     {
         $_POST['foo'] = 'bar';
 
@@ -119,83 +127,10 @@ class RequestTest extends \PHPUnit_Framework_TestCase
             'HTTP_CONTENT_TYPE' => 'multipart/form-data; boundary=---foo'
         ]);
 
-        $request = Request::createFromEnvironment($env);
+        $request = Request::createFromGlobals($env);
         unset($_POST);
 
         $this->assertEquals(['foo' => 'bar'], $request->getParsedBody());
-    }
-
-    /**
-     * @covers Slim\Psr7\Request::createFromEnvironment
-     */
-    public function testCreateFromEnvironmentWithMultipartMethodOverride()
-    {
-        $_POST['_METHOD'] = 'PUT';
-
-        $env = Environment::mock([
-            'SCRIPT_NAME' => '/index.php',
-            'REQUEST_URI' => '/foo',
-            'REQUEST_METHOD' => 'POST',
-            'HTTP_CONTENT_TYPE' => 'multipart/form-data; boundary=---foo'
-        ]);
-
-        $request = Request::createFromEnvironment($env);
-        unset($_POST);
-
-        $this->assertEquals('POST', $request->getOriginalMethod());
-        $this->assertEquals('PUT', $request->getMethod());
-    }
-
-    public function testGetMethodWithOverrideHeader()
-    {
-        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
-        $headers = new Headers([
-            'HTTP_X_HTTP_METHOD_OVERRIDE' => 'PUT',
-        ]);
-        $cookies = [];
-        $serverParams = [];
-        $body = new RequestBody();
-        $request = new Request('POST', $uri, $headers, $cookies, $serverParams, $body);
-
-        $this->assertEquals('PUT', $request->getMethod());
-        $this->assertEquals('POST', $request->getOriginalMethod());
-    }
-
-    public function testGetMethodWithOverrideParameterFromBodyObject()
-    {
-        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
-        $headers = new Headers([
-            'Content-Type' => 'application/x-www-form-urlencoded',
-        ]);
-        $cookies = [];
-        $serverParams = [];
-        $body = new RequestBody();
-        $body->write('_METHOD=PUT');
-        $body->rewind();
-        $request = new Request('POST', $uri, $headers, $cookies, $serverParams, $body);
-
-        $this->assertEquals('PUT', $request->getMethod());
-        $this->assertEquals('POST', $request->getOriginalMethod());
-    }
-
-    public function testGetMethodOverrideParameterFromBodyArray()
-    {
-        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
-        $headers = new Headers([
-            'Content-Type' => 'application/x-www-form-urlencoded',
-        ]);
-        $cookies = [];
-        $serverParams = [];
-        $body = new RequestBody();
-        $body->write('_METHOD=PUT');
-        $body->rewind();
-        $request = new Request('POST', $uri, $headers, $cookies, $serverParams, $body);
-        $request->registerMediaTypeParser('application/x-www-form-urlencoded', function ($input) {
-            parse_str($input, $body);
-            return $body; // <-- Array
-        });
-
-        $this->assertEquals('PUT', $request->getMethod());
     }
 
     /**
@@ -203,12 +138,12 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateRequestWithInvalidMethodString()
     {
-        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
+        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
         $body = new RequestBody();
-        $request = new Request('FOO', $uri, $headers, $cookies, $serverParams, $body);
+        $request = new Request('B@R', $uri, $headers, $cookies, $serverParams, $body);
     }
 
     /**
@@ -216,7 +151,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateRequestWithInvalidMethodOther()
     {
-        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
+        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
@@ -227,7 +162,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsGet()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'GET');
 
@@ -237,7 +172,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsPost()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'POST');
 
@@ -247,7 +182,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsPut()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'PUT');
 
@@ -257,7 +192,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsPatch()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'PATCH');
 
@@ -267,7 +202,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsDelete()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'DELETE');
 
@@ -277,7 +212,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsHead()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'HEAD');
 
@@ -287,7 +222,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testIsOptions()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'originalMethod');
+        $prop = new ReflectionProperty($request, 'method');
         $prop->setAccessible(true);
         $prop->setValue($request, 'OPTIONS');
 
@@ -296,7 +231,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testIsXhr()
     {
-        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
+        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers([
             'Content-Type' => 'application/x-www-form-urlencoded',
             'X-Requested-With' => 'XMLHttpRequest',
@@ -355,7 +290,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testGetUri()
     {
-        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
+        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
@@ -368,8 +303,8 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testWithUri()
     {
         // Uris
-        $uri1 = new Uri('https://example.com:443/foo/bar?abc=123');
-        $uri2 = new Uri('https://example2.com:443/test?xyz=123');
+        $uri1 = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri2 = Uri::createFromString('https://example2.com:443/test?xyz=123');
 
         // Request
         $headers = new Headers();
@@ -380,6 +315,42 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $clone = $request->withUri($uri2);
 
         $this->assertAttributeSame($uri2, 'uri', $clone);
+    }
+
+    public function testWithUriPreservesHost()
+    {
+        // When `$preserveHost` is set to `true`, this method interacts with
+        // the Host header in the following ways:
+
+        // - If the the Host header is missing or empty, and the new URI contains
+        //   a host component, this method MUST update the Host header in the returned
+        //   request.
+        $uri1 = Uri::createFromString('');
+        $uri2 = Uri::createFromString('http://example2.com/test');
+
+        // Request
+        $headers = new Headers();
+        $cookies = [];
+        $serverParams = [];
+        $body = new RequestBody();
+        $request = new Request('GET', $uri1, $headers, $cookies, $serverParams, $body);
+
+        $clone = $request->withUri($uri2, true);
+        $this->assertSame('example2.com', $clone->getHeaderLine('Host'));
+
+        // - If the Host header is missing or empty, and the new URI does not contain a
+        //   host component, this method MUST NOT update the Host header in the returned
+        //   request.
+        $uri3 = Uri::createFromString('');
+
+        $clone = $request->withUri($uri3, true);
+        $this->assertSame('', $clone->getHeaderLine('Host'));
+
+        // - If a Host header is present and non-empty, this method MUST NOT update
+        //   the Host header in the returned request.
+        $request = $request->withHeader('Host', 'example.com');
+        $clone = $request->withUri($uri2, true);
+        $this->assertSame('example.com', $clone->getHeaderLine('Host'));
     }
 
     public function testGetContentType()
@@ -751,6 +722,36 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['foo' => 'bar'], $request->getParsedBody());
     }
 
+    public function testGetParsedBodyInvalidJson()
+    {
+        $method = 'GET';
+        $uri = new Uri('https', 'example.com', 443, '/foo/bar', 'abc=123', '', '');
+        $headers = new Headers();
+        $headers->set('Content-Type', 'application/json;charset=utf8');
+        $cookies = [];
+        $serverParams = [];
+        $body = new RequestBody();
+        $body->write('{foo}bar');
+        $request = new Request($method, $uri, $headers, $cookies, $serverParams, $body);
+
+        $this->assertNull($request->getParsedBody());
+    }
+
+    public function testGetParsedBodySemiValidJson()
+    {
+        $method = 'GET';
+        $uri = new Uri('https', 'example.com', 443, '/foo/bar', 'abc=123', '', '');
+        $headers = new Headers();
+        $headers->set('Content-Type', 'application/json;charset=utf8');
+        $cookies = [];
+        $serverParams = [];
+        $body = new RequestBody();
+        $body->write('"foo bar"');
+        $request = new Request($method, $uri, $headers, $cookies, $serverParams, $body);
+
+        $this->assertNull($request->getParsedBody());
+    }
+
     public function testGetParsedBodyWithJsonStructuredSuffix()
     {
         $method = 'GET';
@@ -811,6 +812,43 @@ class RequestTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Josh', $request->getParsedBody()->name);
     }
 
+    /**
+     * Will fail if a simple_xml warning is created
+     */
+    public function testInvalidXmlIsQuietForTextXml()
+    {
+        $method = 'GET';
+        $uri = new Uri('https', 'example.com', 443, '/foo/bar', 'abc=123', '', '');
+        $headers = new Headers();
+        $headers->set('Content-Type', 'text/xml');
+        $cookies = [];
+        $serverParams = [];
+        $body = new RequestBody();
+        $body->write('<person><name>Josh</name></invalid]>');
+        $request = new Request($method, $uri, $headers, $cookies, $serverParams, $body);
+
+        $this->assertEquals(null, $request->getParsedBody());
+    }
+
+    /**
+     * Will fail if a simple_xml warning is created
+     */
+    public function testInvalidXmlIsQuietForApplicationXml()
+    {
+        $method = 'GET';
+        $uri = new Uri('https', 'example.com', 443, '/foo/bar', 'abc=123', '', '');
+        $headers = new Headers();
+        $headers->set('Content-Type', 'application/xml');
+        $cookies = [];
+        $serverParams = [];
+        $body = new RequestBody();
+        $body->write('<person><name>Josh</name></invalid]>');
+        $request = new Request($method, $uri, $headers, $cookies, $serverParams, $body);
+
+        $this->assertEquals(null, $request->getParsedBody());
+    }
+
+
     public function testGetParsedBodyWhenAlreadyParsed()
     {
         $request = $this->requestFactory();
@@ -833,7 +871,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
 
     public function testGetParsedBodyAfterCallReparseBody()
     {
-        $uri = new Uri('https://example.com:443/?one=1');
+        $uri = Uri::createFromString('https://example.com:443/?one=1');
         $headers = new Headers([
             'Content-Type' => 'application/x-www-form-urlencoded;charset=utf8',
         ]);
@@ -860,7 +898,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetParsedBodyAsArray()
     {
-        $uri = new Uri('https://example.com:443/foo/bar?abc=123');
+        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers([
             'Content-Type' => 'application/json;charset=utf8',
         ]);
@@ -1049,7 +1087,7 @@ class RequestTest extends \PHPUnit_Framework_TestCase
     public function testGetProtocolVersion()
     {
         $env = Environment::mock(['SERVER_PROTOCOL' => 'HTTP/1.0']);
-        $request = Request::createFromEnvironment($env);
+        $request = Request::createFromGlobals($env);
 
         $this->assertEquals('1.0', $request->getProtocolVersion());
     }

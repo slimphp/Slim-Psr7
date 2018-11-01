@@ -2,14 +2,13 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Psr7;
 
 use InvalidArgumentException;
-use Slim\Psr7\CookiesInterface;
 
 /**
  * Cookie helper
@@ -157,7 +156,7 @@ class Cookies implements CookiesInterface
      * Parse HTTP request `Cookie:` header and extract
      * into a PHP associative array.
      *
-     * @param  string $header The raw HTTP request `Cookie:` header
+     * @param  string|string[] $header The raw HTTP request `Cookie:` header
      *
      * @return array Associative array of cookie names and values
      *

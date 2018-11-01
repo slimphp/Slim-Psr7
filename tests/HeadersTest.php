@@ -2,55 +2,59 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Tests\Psr7;
 
+use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Slim\Psr7\Environment;
 use Slim\Psr7\Headers;
 
-class HeadersTest extends \PHPUnit_Framework_TestCase
+class HeadersTest extends TestCase
 {
-    public function testCreateFromEnvironment()
+    public function testCreateFromGlobals()
     {
         $e = Environment::mock([
             'HTTP_ACCEPT' => 'application/json',
         ]);
-        $h = Headers::createFromEnvironment($e);
+        $h = Headers::createFromGlobals($e);
         $prop = new ReflectionProperty($h, 'data');
         $prop->setAccessible(true);
 
         $this->assertTrue(is_array($prop->getValue($h)['accept']));
         $this->assertEquals('application/json', $prop->getValue($h)['accept']['value'][0]);
+        $this->assertEquals('Accept', $prop->getValue($h)['accept']['originalKey']);
     }
 
-    public function testCreateFromEnvironmentWithSpecialHeaders()
+    public function testCreateFromGlobalsWithSpecialHeaders()
     {
         $e = Environment::mock([
             'CONTENT_TYPE' => 'application/json',
         ]);
-        $h = Headers::createFromEnvironment($e);
+        $h = Headers::createFromGlobals($e);
         $prop = new ReflectionProperty($h, 'data');
         $prop->setAccessible(true);
 
         $this->assertTrue(is_array($prop->getValue($h)['content-type']));
         $this->assertEquals('application/json', $prop->getValue($h)['content-type']['value'][0]);
+        $this->assertEquals('Content-Type', $prop->getValue($h)['content-type']['originalKey']);
     }
 
-    public function testCreateFromEnvironmentIgnoresHeaders()
+    public function testCreateFromGlobalsIgnoresHeaders()
     {
         $e = Environment::mock([
             'CONTENT_TYPE' => 'text/csv',
             'HTTP_CONTENT_LENGTH' => 1230, // <-- Ignored
         ]);
-        $h = Headers::createFromEnvironment($e);
+        $h = Headers::createFromGlobals($e);
         $prop = new ReflectionProperty($h, 'data');
         $prop->setAccessible(true);
 
         $this->assertNotContains('content-length', $prop->getValue($h));
+        $this->assertEquals('Content-Type', $prop->getValue($h)['content-type']['originalKey']);
     }
 
     public function testConstructor()
@@ -219,9 +223,29 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     {
         $e = Environment::mock([]);
         $en = Headers::determineAuthorization($e);
-        $h = Headers::createFromEnvironment($e);
+        $h = Headers::createFromGlobals($e);
 
-        $this->assertEquals('electrolytes', $en->get('HTTP_AUTHORIZATION'));
-        $this->assertEquals(['electrolytes'], $h->get('Authorization'));
+        $this->assertEquals('electrolytes', $en['HTTP_AUTHORIZATION']);
+        $this->assertEquals(['electrolytes'], $h['Authorization']);
+    }
+
+    public function testDetermineAuthorizationHonoursHttpAuthorizationKey()
+    {
+        $e = Environment::mock(['HTTP_AUTHORIZATION' => 'foo']);
+        $en = Headers::determineAuthorization($e);
+        $h = Headers::createFromGlobals($e);
+
+        $this->assertEquals('foo', $en['HTTP_AUTHORIZATION']);
+        $this->assertEquals(['foo'], $h['Authorization']);
+    }
+
+    public function testDetermineAuthorizationWhenEmpty()
+    {
+        $e = Environment::mock(['HTTP_AUTHORIZATION' => '']);
+        $en = Headers::determineAuthorization($e);
+        $h = Headers::createFromGlobals($e);
+
+        $this->assertEquals('electrolytes', $en['HTTP_AUTHORIZATION']);
+        $this->assertEquals(['electrolytes'], $h['Authorization']);
     }
 }

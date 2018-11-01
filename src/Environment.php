@@ -2,23 +2,19 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Psr7;
-
-use Slim\Psr7\Collection;
-use Slim\Psr7\EnvironmentInterface;
 
 /**
  * Environment
  *
- * This class decouples the Slim application from the global PHP environment.
- * This is particularly useful for unit testing, but it also lets us create
- * custom sub-requests.
+ * This class allows for mocking the global PHP environment.
+ * This is particularly useful for unit testing.
  */
-class Environment extends Collection implements EnvironmentInterface
+class Environment
 {
     /**
      * Create mock environment
@@ -29,14 +25,25 @@ class Environment extends Collection implements EnvironmentInterface
      */
     public static function mock(array $userData = [])
     {
-        $data = array_merge([
+        //Validates if default protocol is HTTPS to set default port 443
+        if ((isset($userData['HTTPS']) && $userData['HTTPS'] !== 'off') ||
+            ((isset($userData['REQUEST_SCHEME']) && $userData['REQUEST_SCHEME'] === 'https'))) {
+            $defscheme = 'https';
+            $defport = 443;
+        } else {
+            $defscheme = 'http';
+            $defport = 80;
+        }
+
+        return array_merge([
             'SERVER_PROTOCOL'      => 'HTTP/1.1',
             'REQUEST_METHOD'       => 'GET',
+            'REQUEST_SCHEME'       => $defscheme,
             'SCRIPT_NAME'          => '',
             'REQUEST_URI'          => '',
             'QUERY_STRING'         => '',
             'SERVER_NAME'          => 'localhost',
-            'SERVER_PORT'          => 80,
+            'SERVER_PORT'          => $defport,
             'HTTP_HOST'            => 'localhost',
             'HTTP_ACCEPT'          => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
             'HTTP_ACCEPT_LANGUAGE' => 'en-US,en;q=0.8',
@@ -46,7 +53,5 @@ class Environment extends Collection implements EnvironmentInterface
             'REQUEST_TIME'         => time(),
             'REQUEST_TIME_FLOAT'   => microtime(true),
         ], $userData);
-
-        return new static($data);
     }
 }

@@ -2,44 +2,17 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Tests\Psr7;
 
+use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Environment;
 
-class EnvironmentTest extends \PHPUnit_Framework_TestCase
+class EnvironmentTest extends TestCase
 {
-    /**
-     * Server settings for the default HTTP request
-     * used by this script's tests.
-     */
-    public function setUp()
-    {
-        $_SERVER['DOCUMENT_ROOT'] = '/var/www';
-        $_SERVER['SCRIPT_NAME'] = '/foo/index.php';
-        $_SERVER['REQUEST_URI'] = '/foo/index.php/bar/xyz';
-        $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
-        $_SERVER['SERVER_NAME'] = 'slim';
-        $_SERVER['SERVER_PORT'] = '80';
-        $_SERVER['REQUEST_METHOD'] = 'GET';
-        $_SERVER['QUERY_STRING'] = 'one=1&two=2&three=3';
-        $_SERVER['HTTPS'] = '';
-        $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-    }
-
-    /**
-     * Test environment from globals
-     */
-    public function testEnvironmentFromGlobals()
-    {
-        $env = new Environment($_SERVER);
-
-        $this->assertEquals($_SERVER, $env->all());
-    }
-
     /**
      * Test environment from mock data
      */
@@ -50,9 +23,36 @@ class EnvironmentTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => '/foo/bar?abc=123',
         ]);
 
-        $this->assertInstanceOf('\Slim\Psr7\CollectionInterface', $env);
-        $this->assertEquals('/foo/bar/index.php', $env->get('SCRIPT_NAME'));
-        $this->assertEquals('/foo/bar?abc=123', $env->get('REQUEST_URI'));
-        $this->assertEquals('localhost', $env->get('HTTP_HOST'));
+        $this->assertEquals('/foo/bar/index.php', $env['SCRIPT_NAME']);
+        $this->assertEquals('/foo/bar?abc=123', $env['REQUEST_URI']);
+        $this->assertEquals('localhost', $env['HTTP_HOST']);
+    }
+
+    /**
+     * Test environment from mock data with HTTPS
+     */
+    public function testMockHttps()
+    {
+        $env = Environment::mock([
+            'HTTPS' => 'on'
+        ]);
+
+        $this->assertInternalType('array', $env);
+        $this->assertEquals('on', $env['HTTPS']);
+        $this->assertEquals(443, $env['SERVER_PORT']);
+    }
+
+    /**
+     * Test environment from mock data with REQUEST_SCHEME
+     */
+    public function testMockRequestScheme()
+    {
+        $env = Environment::mock([
+            'REQUEST_SCHEME' => 'https'
+        ]);
+
+        $this->assertInternalType('array', $env);
+        $this->assertEquals('https', $env['REQUEST_SCHEME']);
+        $this->assertEquals(443, $env['SERVER_PORT']);
     }
 }

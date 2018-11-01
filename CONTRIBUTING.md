@@ -17,6 +17,6 @@ All pull requests must adhere to the [PSR-2 standard](https://github.com/php-fig
 ## Unit Testing
 
 All pull requests must be accompanied by passing unit tests and complete code 
-coverage. Slim-Psr7 uses phpunit for testing.
+coverage. The Slim Framework uses phpunit for testing.
 
 [Learn about PHPUnit](https://github.com/sebastianbergmann/phpunit/)

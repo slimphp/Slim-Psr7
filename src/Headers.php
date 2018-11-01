@@ -2,14 +2,11 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Psr7;
-
-use Slim\Psr7\Collection;
-use Slim\Psr7\HeadersInterface;
 
 /**
  * Headers
@@ -42,21 +39,21 @@ class Headers extends Collection implements HeadersInterface
 
     /**
      * Create new headers collection with data extracted from
-     * the application Environment object
+     * the PHP global environment
      *
-     * @param Environment $environment The Slim application Environment
+     * @param array $globals Global server variables
      *
      * @return self
      */
-    public static function createFromEnvironment(Environment $environment)
+    public static function createFromGlobals(array $globals)
     {
         $data = [];
-        $environment = self::determineAuthorization($environment);
-        foreach ($environment as $key => $value) {
+        $globals = self::determineAuthorization($globals);
+        foreach ($globals as $key => $value) {
             $key = strtoupper($key);
             if (isset(static::$special[$key]) || strpos($key, 'HTTP_') === 0) {
                 if ($key !== 'HTTP_CONTENT_LENGTH') {
-                    $data[$key] =  $value;
+                    $data[self::reconstructOriginalKey($key)] =  $value;
                 }
             }
         }
@@ -68,24 +65,24 @@ class Headers extends Collection implements HeadersInterface
      * If HTTP_AUTHORIZATION does not exist tries to get it from
      * getallheaders() when available.
      *
-     * @param Environment $environment The Slim application Environment
+     * @param array $globals The Slim application Environment
      *
-     * @return Environment
+     * @return array
      */
 
-    public static function determineAuthorization(Environment $environment)
+    public static function determineAuthorization(array $globals)
     {
-        $authorization = $environment->get('HTTP_AUTHORIZATION');
+        $authorization = isset($globals['HTTP_AUTHORIZATION']) ? $globals['HTTP_AUTHORIZATION'] : null;
 
-        if (null === $authorization && is_callable('getallheaders')) {
+        if (empty($authorization) && is_callable('getallheaders')) {
             $headers = getallheaders();
             $headers = array_change_key_case($headers, CASE_LOWER);
             if (isset($headers['authorization'])) {
-                $environment->set('HTTP_AUTHORIZATION', $headers['authorization']);
+                $globals['HTTP_AUTHORIZATION'] = $headers['authorization'];
             }
         }
 
-        return $environment;
+        return $globals;
     }
 
     /**
@@ -218,5 +215,26 @@ class Headers extends Collection implements HeadersInterface
         }
 
         return $key;
+    }
+
+    /**
+     * Reconstruct original header name
+     *
+     * This method takes an HTTP header name from the Environment
+     * and returns it as it was probably formatted by the actual client.
+     *
+     * @param string $key An HTTP header key from the $_SERVER global variable
+     *
+     * @return string The reconstructed key
+     *
+     * @example CONTENT_TYPE => Content-Type
+     * @example HTTP_USER_AGENT => User-Agent
+     */
+    private static function reconstructOriginalKey($key)
+    {
+        if (strpos($key, 'HTTP_') === 0) {
+            $key = substr($key, 5);
+        }
+        return strtr(ucwords(strtr(strtolower($key), '_', ' ')), ' ', '-');
     }
 }

@@ -2,18 +2,19 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Tests\Psr7;
 
+use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Slim\Psr7\Body;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Response;
 
-class ResponseTest extends \PHPUnit_Framework_TestCase
+class ResponseTest extends TestCase
 {
     /*******************************************************************************
      * Create
@@ -273,8 +274,8 @@ class ResponseTest extends \PHPUnit_Framework_TestCase
 
     public function testToString()
     {
-        $output = 'HTTP/1.1 404 Not Found' . PHP_EOL .
-                  'X-Foo: Bar' . PHP_EOL . PHP_EOL .
+        $output = 'HTTP/1.1 404 Not Found' . Response::EOL .
+                  'X-Foo: Bar' . Response::EOL . Response::EOL .
                   'Where am I?';
         $this->expectOutputString($output);
         $response = new Response();

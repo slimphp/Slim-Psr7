@@ -2,12 +2,13 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Tests\Psr7;
 
+use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Environment;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Request;
@@ -16,7 +17,7 @@ use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
 use Slim\Psr7\Uri;
 
-class UploadedFilesTest extends \PHPUnit_Framework_TestCase
+class UploadedFilesTest extends TestCase
 {
     static private $filename = './phpUxcOty';
 
@@ -63,35 +64,35 @@ class UploadedFilesTest extends \PHPUnit_Framework_TestCase
      * @param array $input The input array to parse.
      * @param array $expected The expected normalized output.
      *
-     * @dataProvider providerCreateFromEnvironment
+     * @dataProvider providerCreateFromGlobals
      */
-    public function testCreateFromEnvironmentFromFilesSuperglobal(array $input, array $expected)
+    public function testCreateFromGlobalsFromFilesSuperglobal(array $input, array $expected)
     {
         $_FILES = $input;
 
-        $uploadedFile = UploadedFile::createFromEnvironment(Environment::mock());
+        $uploadedFile = UploadedFile::createFromGlobals(Environment::mock());
         $this->assertEquals($expected, $uploadedFile);
     }
 
     /**
      * @param array $input The input array to parse.
      *
-     * @dataProvider providerCreateFromEnvironment
+     * @dataProvider providerCreateFromGlobals
      */
-    public function testCreateFromEnvironmentFromUserData(array $input)
+    public function testCreateFromGlobalsFromUserData(array $input)
     {
         //If slim.files provided - it will return what was provided
         $userData['slim.files'] = $input;
 
-        $uploadedFile = UploadedFile::createFromEnvironment(Environment::mock($userData));
+        $uploadedFile = UploadedFile::createFromGlobals(Environment::mock($userData));
         $this->assertEquals($input, $uploadedFile);
     }
 
-    public function testCreateFromEnvironmentWithoutFile()
+    public function testCreateFromGlobalsWithoutFile()
     {
         unset($_FILES);
 
-        $uploadedFile = UploadedFile::createFromEnvironment(Environment::mock());
+        $uploadedFile = UploadedFile::createFromGlobals(Environment::mock());
         $this->assertEquals([], $uploadedFile);
     }
 
@@ -143,12 +144,12 @@ class UploadedFilesTest extends \PHPUnit_Framework_TestCase
     /**
      * @depends testConstructor
      * @param UploadedFile $uploadedFile
+     * @expectedException \InvalidArgumentException
      */
     public function testMoveToNotWritable(UploadedFile $uploadedFile)
     {
         $tempName = uniqid('file-');
         $path = 'some_random_dir' . DIRECTORY_SEPARATOR . $tempName;
-        $this->setExpectedException('\InvalidArgumentException');
         $uploadedFile->moveTo($path);
     }
 
@@ -173,7 +174,7 @@ class UploadedFilesTest extends \PHPUnit_Framework_TestCase
     /**
      * @depends testMoveTo
      * @param UploadedFile $uploadedFile
-     * @expectedException RuntimeException
+     * @expectedException \RuntimeException
      */
     public function testMoveToCannotBeDoneTwice(UploadedFile $uploadedFile)
     {
@@ -191,11 +192,10 @@ class UploadedFilesTest extends \PHPUnit_Framework_TestCase
      *
      * @depends testConstructor
      * @param UploadedFile $uploadedFile
+     * @expectedException \RuntimeException
      */
     public function testMoveToAgain(UploadedFile $uploadedFile)
     {
-        $this->setExpectedException('\RuntimeException');
-
         $tempName = uniqid('file-');
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
         $uploadedFile->moveTo($path);
@@ -206,11 +206,10 @@ class UploadedFilesTest extends \PHPUnit_Framework_TestCase
      *
      * @depends testConstructor
      * @param UploadedFile $uploadedFile
+     * @expectedException \RuntimeException
      */
     public function testMovedStream($uploadedFile)
     {
-        $this->setExpectedException('\RuntimeException');
-
         $uploadedFile->getStream();
     }
 
@@ -218,9 +217,11 @@ class UploadedFilesTest extends \PHPUnit_Framework_TestCase
     {
         $uploadedFile = $this->generateNewTmpFile();
         $uploadedFile->moveTo('php://temp');
+
+        $this->addToAssertionCount(1);  // does not throw an exception
     }
 
-    public function providerCreateFromEnvironment()
+    public function providerCreateFromGlobals()
     {
         return [
             // no nest: <input name="avatar" type="file">
@@ -474,11 +475,11 @@ class UploadedFilesTest extends \PHPUnit_Framework_TestCase
         $env = Environment::mock();
 
         $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
-        $headers = Headers::createFromEnvironment($env);
+        $headers = Headers::createFromGlobals($env);
         $cookies = [];
         $serverParams = $env->all();
         $body = new RequestBody();
-        $uploadedFiles = UploadedFile::createFromEnvironment($env);
+        $uploadedFiles = UploadedFile::createFromGlobals($env);
         $request = new Request('GET', $uri, $headers, $cookies, $serverParams, $body, $uploadedFiles);
 
         return $request;

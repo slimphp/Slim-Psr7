@@ -2,9 +2,9 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Psr7;
 
@@ -12,7 +12,6 @@ use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
-use Slim\Psr7\HeadersInterface;
 
 /**
  * Response
@@ -118,6 +117,13 @@ class Response extends Message implements ResponseInterface
     ];
 
     /**
+     * EOL characters used for HTTP response.
+     *
+     * @var string
+     */
+     const EOL = "\r\n";
+
+    /**
      * Create new HTTP response.
      *
      * @param int                   $status  The response status code.
@@ -176,7 +182,7 @@ class Response extends Message implements ResponseInterface
      * @param string $reasonPhrase The reason phrase to use with the
      *     provided status code; if none is provided, implementations MAY
      *     use the defaults as suggested in the HTTP specification.
-     * @return self
+     * @return static
      * @throws \InvalidArgumentException For invalid status code arguments.
      */
     public function withStatus($code, $reasonPhrase = '')
@@ -254,7 +260,7 @@ class Response extends Message implements ResponseInterface
      * Proxies to the underlying stream and writes the provided data to it.
      *
      * @param string $data
-     * @return self
+     * @return $this
      */
     public function write($data)
     {
@@ -277,7 +283,7 @@ class Response extends Message implements ResponseInterface
      *
      * @param  string|UriInterface $url    The redirect destination.
      * @param  int|null            $status The redirect HTTP status code.
-     * @return self
+     * @return static
      */
     public function withRedirect($url, $status = null)
     {
@@ -306,7 +312,7 @@ class Response extends Message implements ResponseInterface
      * @param  int    $status The HTTP status code.
      * @param  int    $encodingOptions Json encoding options
      * @throws \RuntimeException
-     * @return self
+     * @return static
      */
     public function withJson($data, $status = null, $encodingOptions = 0)
     {
@@ -382,7 +388,7 @@ class Response extends Message implements ResponseInterface
      */
     public function isRedirect()
     {
-        return in_array($this->getStatusCode(), [301, 302, 303, 307]);
+        return in_array($this->getStatusCode(), [301, 302, 303, 307, 308]);
     }
 
     /**
@@ -461,11 +467,11 @@ class Response extends Message implements ResponseInterface
             $this->getStatusCode(),
             $this->getReasonPhrase()
         );
-        $output .= PHP_EOL;
+        $output .= Response::EOL;
         foreach ($this->getHeaders() as $name => $values) {
-            $output .= sprintf('%s: %s', $name, $this->getHeaderLine($name)) . PHP_EOL;
+            $output .= sprintf('%s: %s', $name, $this->getHeaderLine($name)) . Response::EOL;
         }
-        $output .= PHP_EOL;
+        $output .= Response::EOL;
         $output .= (string)$this->getBody();
 
         return $output;

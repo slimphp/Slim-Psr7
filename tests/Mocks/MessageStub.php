@@ -2,16 +2,16 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Tests\Psr7\Mocks;
 
 use Slim\Psr7\Message;
 
 /**
- * Mock object for Slim\Psr7\Tests\MessageTest
+ * Mock object for Slim\Psr7\MessageTest
  */
 class MessageStub extends Message
 {

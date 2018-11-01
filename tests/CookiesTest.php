@@ -2,18 +2,19 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Tests\Psr7;
 
+use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use ReflectionClass;
 use InvalidArgumentException;
 use Slim\Psr7\Cookies;
 
-class CookiesTest extends \PHPUnit_Framework_TestCase
+class CookiesTest extends TestCase
 {
     public function testConstructor()
     {
@@ -224,9 +225,11 @@ class CookiesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test_date=Works; expires=' . $formattedStringDate, $cookieStringDate);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     */
     public function testParseHeaderException()
     {
-        $this->setExpectedException(InvalidArgumentException::class);
         Cookies::parseHeader(new \StdClass);
     }
 }

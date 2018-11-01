@@ -2,9 +2,9 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim
+ * @link      https://github.com/slimphp/Slim-Psr7
  * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim/blob/3.x/LICENSE.md (MIT License)
+ * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Psr7;
 
@@ -40,6 +40,7 @@ abstract class Message implements MessageInterface
         '1.0' => true,
         '1.1' => true,
         '2.0' => true,
+        '2'   => true,
     ];
 
     /**
@@ -216,6 +217,9 @@ abstract class Message implements MessageInterface
      */
     public function withHeader($name, $value)
     {
+        $this->validateHeaderName($name);
+        $this->validateHeaderValue($value);
+
         $clone = clone $this;
         $clone->headers->set($name, $value);
 
@@ -240,6 +244,9 @@ abstract class Message implements MessageInterface
      */
     public function withAddedHeader($name, $value)
     {
+        $this->validateHeaderName($name);
+        $this->validateHeaderValue($value);
+
         $clone = clone $this;
         $clone->headers->add($name, $value);
 
@@ -264,6 +271,48 @@ abstract class Message implements MessageInterface
         $clone->headers->remove($name);
 
         return $clone;
+    }
+
+    /**
+     * @param string $name
+     * @throws \InvalidArgumentException
+     */
+    protected function validateHeaderName($name)
+    {
+        if (!is_string($name) || empty($name)) {
+            throw new InvalidArgumentException('Header names must be a non empty strings');
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9\'`#$%&*+.^_|~!-]+$/', $name)) {
+            throw new InvalidArgumentException("'$name' is not valid header name");
+        }
+    }
+
+    /**
+     * @param string|string[] $value
+     * @throws \InvalidArgumentException
+     */
+    protected function validateHeaderValue($value)
+    {
+        if (!is_array($value)) {
+            $value = [$value];
+        } elseif (empty($value)) {
+            throw new InvalidArgumentException('Header values must be non empty strings');
+        }
+
+        foreach ($value as $v) {
+            if (!is_string($v) && ! is_numeric($v)) {
+                throw new InvalidArgumentException('Header values must be strings or numeric');
+            }
+
+            $v = (string) $v;
+            if (preg_match("#(?:(?:(?<!\r)\n)|(?:\r(?!\n))|(?:\r\n(?![ \t])))#", $v)) {
+                throw new InvalidArgumentException("'$v' is not valid header value");
+            }
+            if (preg_match('/[^\x09\x0a\x0d\x20-\x7E\x80-\xFE]/', $v)) {
+                throw new InvalidArgumentException("'$value' is not valid header value");
+            }
+        }
     }
 
     /*******************************************************************************
