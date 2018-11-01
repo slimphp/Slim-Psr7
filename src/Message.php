@@ -19,8 +19,8 @@ use Psr\Http\Message\StreamInterface;
  * the HTTP request and response, as defined in the PSR-7 MessageInterface.
  *
  * @link https://github.com/php-fig/http-message/blob/master/src/MessageInterface.php
- * @see Slim\Psr7\Request
- * @see Slim\Psr7\Response
+ * @see \Slim\Psr7\Request
+ * @see \Slim\Psr7\Response
  */
 abstract class Message implements MessageInterface
 {
@@ -301,7 +301,7 @@ abstract class Message implements MessageInterface
         }
 
         foreach ($value as $v) {
-            if (!is_string($v) && ! is_numeric($v)) {
+            if (!is_string($v) && !is_numeric($v)) {
                 throw new InvalidArgumentException('Header values must be strings or numeric');
             }
 
@@ -310,7 +310,7 @@ abstract class Message implements MessageInterface
                 throw new InvalidArgumentException("'$v' is not valid header value");
             }
             if (preg_match('/[^\x09\x0a\x0d\x20-\x7E\x80-\xFE]/', $v)) {
-                throw new InvalidArgumentException("'$value' is not valid header value");
+                throw new InvalidArgumentException("'$v' is not valid header value");
             }
         }
     }
