@@ -29,8 +29,7 @@
   "require-dev": {
     "squizlabs/php_codesniffer": "^2.5",
     "phpunit/phpunit": "^6.0|^7.0",
-    "php-http/psr7-integration-tests": "dev-master",
-    "phpstan/phpstan": "^0.9"
+    "php-http/psr7-integration-tests": "dev-master"
   },
   "provide": {
     "psr/http-message-implementation": "1.0"
