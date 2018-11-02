@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Slim\Psr7\Collection;
 use Slim\Psr7\Environment;
+use Slim\Psr7\Factory\UriFactory;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Request;
 use Slim\Psr7\RequestBody;
@@ -24,7 +25,7 @@ class RequestTest extends TestCase
     {
         $env = Environment::mock($envData);
 
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = (new UriFactory())->createUri('https://example.com:443/foo/bar?abc=123');
         $headers = Headers::createFromGlobals($env);
         $cookies = [
             'user' => 'john',
@@ -98,47 +99,11 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @covers Slim\Psr7\Request::createFromGlobals
-     */
-    public function testCreateFromGlobals()
-    {
-        $env = Environment::mock([
-            'SCRIPT_NAME' => '/index.php',
-            'REQUEST_URI' => '/foo',
-            'REQUEST_METHOD' => 'POST',
-        ]);
-
-        $request = Request::createFromGlobals($env);
-        $this->assertEquals('POST', $request->getMethod());
-        $this->assertEquals($env, $request->getServerParams());
-    }
-
-    /**
-     * @covers Slim\Psr7\Request::createFromGlobals
-     */
-    public function testCreateFromGlobalsWithMultipart()
-    {
-        $_POST['foo'] = 'bar';
-
-        $env = Environment::mock([
-            'SCRIPT_NAME' => '/index.php',
-            'REQUEST_URI' => '/foo',
-            'REQUEST_METHOD' => 'POST',
-            'HTTP_CONTENT_TYPE' => 'multipart/form-data; boundary=---foo'
-        ]);
-
-        $request = Request::createFromGlobals($env);
-        unset($_POST);
-
-        $this->assertEquals(['foo' => 'bar'], $request->getParsedBody());
-    }
-
-    /**
      * @expectedException \InvalidArgumentException
      */
     public function testCreateRequestWithInvalidMethodString()
     {
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = (new UriFactory())->createUri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
@@ -151,7 +116,7 @@ class RequestTest extends TestCase
      */
     public function testCreateRequestWithInvalidMethodOther()
     {
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = (new UriFactory())->createUri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
@@ -231,7 +196,7 @@ class RequestTest extends TestCase
 
     public function testIsXhr()
     {
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = (new UriFactory())->createUri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers([
             'Content-Type' => 'application/x-www-form-urlencoded',
             'X-Requested-With' => 'XMLHttpRequest',
@@ -290,7 +255,7 @@ class RequestTest extends TestCase
 
     public function testGetUri()
     {
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = (new UriFactory())->createUri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
@@ -303,8 +268,8 @@ class RequestTest extends TestCase
     public function testWithUri()
     {
         // Uris
-        $uri1 = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
-        $uri2 = Uri::createFromString('https://example2.com:443/test?xyz=123');
+        $uri1 = (new UriFactory())->createUri('https://example.com:443/foo/bar?abc=123');
+        $uri2 = (new UriFactory())->createUri('https://example2.com:443/test?xyz=123');
 
         // Request
         $headers = new Headers();
@@ -325,8 +290,8 @@ class RequestTest extends TestCase
         // - If the the Host header is missing or empty, and the new URI contains
         //   a host component, this method MUST update the Host header in the returned
         //   request.
-        $uri1 = Uri::createFromString('');
-        $uri2 = Uri::createFromString('http://example2.com/test');
+        $uri1 = (new UriFactory())->createUri('');
+        $uri2 = (new UriFactory())->createUri('http://example2.com/test');
 
         // Request
         $headers = new Headers();
@@ -341,7 +306,7 @@ class RequestTest extends TestCase
         // - If the Host header is missing or empty, and the new URI does not contain a
         //   host component, this method MUST NOT update the Host header in the returned
         //   request.
-        $uri3 = Uri::createFromString('');
+        $uri3 = (new UriFactory())->createUri('');
 
         $clone = $request->withUri($uri3, true);
         $this->assertSame('', $clone->getHeaderLine('Host'));
@@ -577,9 +542,10 @@ class RequestTest extends TestCase
         $files = [new UploadedFile('foo.txt'), new UploadedFile('bar.txt')];
 
         $request = $this->requestFactory();
+        $prevUploaded = $request->getUploadedFiles();
         $clone = $request->withUploadedFiles($files);
 
-        $this->assertEquals([], $request->getUploadedFiles());
+        $this->assertEquals($prevUploaded, $request->getUploadedFiles());
         $this->assertEquals($files, $clone->getUploadedFiles());
     }
 
@@ -871,7 +837,7 @@ class RequestTest extends TestCase
 
     public function testGetParsedBodyAfterCallReparseBody()
     {
-        $uri = Uri::createFromString('https://example.com:443/?one=1');
+        $uri = (new UriFactory())->createUri('https://example.com:443/?one=1');
         $headers = new Headers([
             'Content-Type' => 'application/x-www-form-urlencoded;charset=utf8',
         ]);
@@ -898,7 +864,7 @@ class RequestTest extends TestCase
      */
     public function testGetParsedBodyAsArray()
     {
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
+        $uri = (new UriFactory())->createUri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers([
             'Content-Type' => 'application/json;charset=utf8',
         ]);
@@ -1078,17 +1044,5 @@ class RequestTest extends TestCase
                    ->withHeader('Content-Type', 'application/x-www-form-urlencoded');
 
         $this->assertEquals(['abc' => 'xyz', 'foo' => 'bar'], $request->getParams());
-    }
-
-    /*******************************************************************************
-     * Protocol
-     ******************************************************************************/
-
-    public function testGetProtocolVersion()
-    {
-        $env = Environment::mock(['SERVER_PROTOCOL' => 'HTTP/1.0']);
-        $request = Request::createFromGlobals($env);
-
-        $this->assertEquals('1.0', $request->getProtocolVersion());
     }
 }
