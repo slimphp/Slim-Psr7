@@ -2,27 +2,26 @@ sudo: false
 
 language: php
 
-php:
-  - 7.0
-  - 7.1
-  - 7.2
-  - 7.3
-  - nightly
+dist: trusty
 
 matrix:
+  include:
+    - php: 7.1
+      env: ANALYSIS='true'
+    - php: 7.2
+    - php: 7.3
+    - php: nightly
   allow_failures:
     - php: nightly
 
 before_script:
-  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then composer require satooshi/php-coveralls:^0.7 squizlabs/php_codesniffer:^2.5 -n ; fi
-  - if [[ "$TRAVIS_PHP_VERSION" == '7.1' ]]; then composer require phpstan/phpstan:^0.10 -n ; fi
-  - if [[ "$TRAVIS_PHP_VERSION" != '7.0' ]]; then composer install -n ; fi
+  - composer update
 
 script:
-  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then mkdir -p build/logs && phpunit --coverage-clover build/logs/clover.xml ; fi
-  - if [[ "$TRAVIS_PHP_VERSION" != '7.0' ]]; then vendor/bin/phpunit ; fi
-  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then vendor/bin/phpcs ; fi
-  - if [[ "$TRAVIS_PHP_VERSION" == '7.1' ]]; then vendor/bin/phpstan analyse src/ ; fi
+  - if [[ "$ANALYSIS" != 'true' ]]; then vendor/bin/phpunit ; fi
+  - if [[ "$ANALYSIS" == 'true' ]]; then vendor/bin/phpunit --coverage-clover clover.xml ; fi
+  - if [[ "$ANALYSIS" == 'true' ]]; then vendor/bin/phpcs ; fi
+  - if [[ "$ANALYSIS" == 'true' ]]; then vendor/bin/phpstan analyse ; fi
 
 after_script:
-  - if [[ "$TRAVIS_PHP_VERSION" == '7.0' ]]; then php vendor/bin/coveralls -v ; fi
+  - if [[ "$ANALYSIS" == 'true' ]]; then php vendor/bin/coveralls --coverage_clover=clover.xml -v ; fi
