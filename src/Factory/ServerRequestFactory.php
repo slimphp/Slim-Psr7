@@ -11,14 +11,16 @@ declare(strict_types=1);
 
 namespace Slim\Psr7\Factory;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use Slim\Psr7\Cookies;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Request;
+use Slim\Psr7\RequestBody;
+use Slim\Psr7\UploadedFile;
 
 class ServerRequestFactory implements ServerRequestFactoryInterface
 {
@@ -74,5 +76,33 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         }
 
         return new Request($method, $uri, $headers, $cookies, $serverParams, $body);
+    }
+
+    /**
+     * Create new ServerRequest from environment.
+     *
+     * Note: This method is not part of PSR-17
+     */
+    public static function createFromGlobals() : Request
+    {
+        $server = $_SERVER;
+
+        $method = isset($server['REQUEST_METHOD']) ? $server['REQUEST_METHOD'] : 'GET';
+        $uri = (new UriFactory())->createFromGlobals($server);
+        $headers = Headers::createFromGlobals($server);
+        $cookies = Cookies::parseHeader($headers->get('Cookie', []));
+        $body = new RequestBody();
+        $uploadedFiles = UploadedFile::createFromGlobals($server);
+
+        $request = new Request($method, $uri, $headers, $cookies, $server, $body, $uploadedFiles);
+
+        if ($method === 'POST' &&
+             \in_array($request->getMediaType(), ['application/x-www-form-urlencoded', 'multipart/form-data'])
+        ) {
+            // parsed body must be $_POST
+            $request = $request->withParsedBody($_POST);
+        }
+
+        return $request;
     }
 }
