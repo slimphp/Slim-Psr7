@@ -83,7 +83,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      *
      * Note: This method is not part of PSR-17
      */
-    public static function createFromGlobals() : Request
+    public static function createFromGlobals(): Request
     {
         $server = $_SERVER;
 
@@ -96,8 +96,8 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 
         $request = new Request($method, $uri, $headers, $cookies, $server, $body, $uploadedFiles);
 
-        if ($method === 'POST' &&
-             \in_array($request->getMediaType(), ['application/x-www-form-urlencoded', 'multipart/form-data'])
+        if ($method === 'POST'
+            && \in_array($request->getMediaType(), ['application/x-www-form-urlencoded', 'multipart/form-data'])
         ) {
             // parsed body must be $_POST
             $request = $request->withParsedBody($_POST);
