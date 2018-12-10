@@ -219,16 +219,6 @@ class HeadersTest extends TestCase
         $this->assertEquals('foo-bar', $h->normalizeKey('http-foo-bar'));
     }
 
-    public function testDetermineAuthorization()
-    {
-        $e = Environment::mock([]);
-        $en = Headers::determineAuthorization($e);
-        $h = Headers::createFromGlobals($e);
-
-        $this->assertEquals('electrolytes', $en['HTTP_AUTHORIZATION']);
-        $this->assertEquals(['electrolytes'], $h['Authorization']);
-    }
-
     public function testDetermineAuthorizationHonoursHttpAuthorizationKey()
     {
         $e = Environment::mock(['HTTP_AUTHORIZATION' => 'foo']);
@@ -245,7 +235,7 @@ class HeadersTest extends TestCase
         $en = Headers::determineAuthorization($e);
         $h = Headers::createFromGlobals($e);
 
-        $this->assertEquals('electrolytes', $en['HTTP_AUTHORIZATION']);
-        $this->assertEquals(['electrolytes'], $h['Authorization']);
+        $this->assertEquals('', $en['HTTP_AUTHORIZATION']);
+        $this->assertEquals([''], $h['Authorization']);
     }
 }
