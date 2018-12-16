@@ -233,16 +233,12 @@ class Request extends Message implements ServerRequestInterface
     /**
      * Validate the HTTP method
      *
-     * @param  null|string $method
+     * @param  string $method
      * @return string
      * @throws \InvalidArgumentException on invalid HTTP method.
      */
     protected function filterMethod($method)
     {
-        if ($method === null) {
-            return '';
-        }
-
         if (!is_string($method)) {
             throw new InvalidArgumentException(sprintf(
                 'Unsupported HTTP method; must be a string, received %s',
@@ -406,9 +402,8 @@ class Request extends Message implements ServerRequestInterface
         if ($query) {
             $path .= '?' . $query;
         }
-        $this->requestTarget = $path;
 
-        return $this->requestTarget;
+        return $path;
     }
 
     /**
