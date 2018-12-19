@@ -3,18 +3,17 @@
  * Slim Framework (https://slimframework.com)
  *
  * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
+ * @copyright Copyright (c) 2011-2018 Josh Lockhart
  * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Psr7;
 
-use Closure;
 use InvalidArgumentException;
-use Psr\Http\Message\UploadedFileInterface;
-use RuntimeException;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
+use Psr\Http\Message\UriInterface;
+use RuntimeException;
 
 /**
  * Request
@@ -81,16 +80,9 @@ class Request extends Message implements ServerRequestInterface
     /**
      * The request body parsed (if possible) into a PHP array or object
      *
-     * @var null|array|object|false
+     * @var null|array|object
      */
-    protected $bodyParsed = false;
-
-    /**
-     * List of request body parsers (e.g., url-encoded, JSON, XML, multipart)
-     *
-     * @var callable[]
-     */
-    protected $bodyParsers = [];
+    protected $bodyParsed;
 
     /**
      * List of uploaded files
@@ -138,45 +130,6 @@ class Request extends Message implements ServerRequestInterface
         if (!$this->headers->has('Host') || $this->uri->getHost() !== '') {
             $this->headers->set('Host', $this->uri->getHost());
         }
-
-        $this->registerMediaTypeParser('application/json', function ($input) {
-            $result = json_decode($input, true);
-            if (!is_array($result)) {
-                return null;
-            }
-            return $result;
-        });
-
-        $this->registerMediaTypeParser('application/xml', function ($input) {
-            $backup = libxml_disable_entity_loader(true);
-            $backup_errors = libxml_use_internal_errors(true);
-            $result = simplexml_load_string($input);
-            libxml_disable_entity_loader($backup);
-            libxml_clear_errors();
-            libxml_use_internal_errors($backup_errors);
-            if ($result === false) {
-                return null;
-            }
-            return $result;
-        });
-
-        $this->registerMediaTypeParser('text/xml', function ($input) {
-            $backup = libxml_disable_entity_loader(true);
-            $backup_errors = libxml_use_internal_errors(true);
-            $result = simplexml_load_string($input);
-            libxml_disable_entity_loader($backup);
-            libxml_clear_errors();
-            libxml_use_internal_errors($backup_errors);
-            if ($result === false) {
-                return null;
-            }
-            return $result;
-        });
-
-        $this->registerMediaTypeParser('application/x-www-form-urlencoded', function ($input) {
-            parse_str($input, $data);
-            return $data;
-        });
     }
 
     /**
@@ -258,115 +211,6 @@ class Request extends Message implements ServerRequestInterface
         }
 
         return $method;
-    }
-
-    /**
-     * Does this request use a given method?
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @param  string $method HTTP method
-     * @return bool
-     */
-    public function isMethod($method)
-    {
-        return $this->getMethod() === $method;
-    }
-
-    /**
-     * Is this a GET request?
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return bool
-     */
-    public function isGet()
-    {
-        return $this->isMethod('GET');
-    }
-
-    /**
-     * Is this a POST request?
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return bool
-     */
-    public function isPost()
-    {
-        return $this->isMethod('POST');
-    }
-
-    /**
-     * Is this a PUT request?
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return bool
-     */
-    public function isPut()
-    {
-        return $this->isMethod('PUT');
-    }
-
-    /**
-     * Is this a PATCH request?
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return bool
-     */
-    public function isPatch()
-    {
-        return $this->isMethod('PATCH');
-    }
-
-    /**
-     * Is this a DELETE request?
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return bool
-     */
-    public function isDelete()
-    {
-        return $this->isMethod('DELETE');
-    }
-
-    /**
-     * Is this a HEAD request?
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return bool
-     */
-    public function isHead()
-    {
-        return $this->isMethod('HEAD');
-    }
-
-    /**
-     * Is this a OPTIONS request?
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return bool
-     */
-    public function isOptions()
-    {
-        return $this->isMethod('OPTIONS');
-    }
-
-    /**
-     * Is this an XHR request?
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return bool
-     */
-    public function isXhr()
-    {
-        return $this->getHeaderLine('X-Requested-With') === 'XMLHttpRequest';
     }
 
     /*******************************************************************************
@@ -504,93 +348,6 @@ class Request extends Message implements ServerRequestInterface
         return $clone;
     }
 
-    /**
-     * Get request content type.
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return string|null The request content type, if known
-     */
-    public function getContentType()
-    {
-        $result = $this->getHeader('Content-Type');
-
-        return $result ? $result[0] : null;
-    }
-
-    /**
-     * Get request media type, if known.
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return string|null The request media type, minus content-type params
-     */
-    public function getMediaType()
-    {
-        $contentType = $this->getContentType();
-        if ($contentType) {
-            $contentTypeParts = preg_split('/\s*[;,]\s*/', $contentType);
-
-            return strtolower($contentTypeParts[0]);
-        }
-
-        return null;
-    }
-
-    /**
-     * Get request media type params, if known.
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return array
-     */
-    public function getMediaTypeParams()
-    {
-        $contentType = $this->getContentType();
-        $contentTypeParams = [];
-        if ($contentType) {
-            $contentTypeParts = preg_split('/\s*[;,]\s*/', $contentType);
-            $contentTypePartsLength = count($contentTypeParts);
-            for ($i = 1; $i < $contentTypePartsLength; $i++) {
-                $paramParts = explode('=', $contentTypeParts[$i]);
-                $contentTypeParams[strtolower($paramParts[0])] = $paramParts[1];
-            }
-        }
-
-        return $contentTypeParams;
-    }
-
-    /**
-     * Get request content character set, if known.
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return string|null
-     */
-    public function getContentCharset()
-    {
-        $mediaTypeParams = $this->getMediaTypeParams();
-        if (isset($mediaTypeParams['charset'])) {
-            return $mediaTypeParams['charset'];
-        }
-
-        return null;
-    }
-
-    /**
-     * Get request content length, if known.
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return int|null
-     */
-    public function getContentLength()
-    {
-        $result = $this->headers->get('Content-Length');
-
-        return $result ? (int)$result[0] : null;
-    }
-
     /*******************************************************************************
      * Cookies
      ******************************************************************************/
@@ -608,27 +365,6 @@ class Request extends Message implements ServerRequestInterface
     public function getCookieParams()
     {
         return $this->cookies;
-    }
-
-    /**
-     * Fetch cookie value from cookies sent by the client to the server.
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @param string $key     The attribute name.
-     * @param mixed  $default Default value to return if the attribute does not exist.
-     *
-     * @return mixed
-     */
-    public function getCookieParam($key, $default = null)
-    {
-        $cookies = $this->getCookieParams();
-        $result = $default;
-        if (isset($cookies[$key])) {
-            $result = $cookies[$key];
-        }
-
-        return $result;
     }
 
     /**
@@ -775,22 +511,6 @@ class Request extends Message implements ServerRequestInterface
         return $this->serverParams;
     }
 
-    /**
-     * Retrieve a server parameter.
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @param  string $key
-     * @param  mixed  $default
-     * @return mixed
-     */
-    public function getServerParam($key, $default = null)
-    {
-        $serverParams = $this->getServerParams();
-
-        return isset($serverParams[$key]) ? $serverParams[$key] : $default;
-    }
-
     /*******************************************************************************
      * Attributes
      ******************************************************************************/
@@ -855,29 +575,6 @@ class Request extends Message implements ServerRequestInterface
     }
 
     /**
-     * Create a new instance with the specified derived request attributes.
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * This method allows setting all new derived request attributes as
-     * described in getAttributes().
-     *
-     * This method MUST be implemented in such a way as to retain the
-     * immutability of the message, and MUST return a new instance that has the
-     * updated attributes.
-     *
-     * @param  array $attributes New attributes
-     * @return static
-     */
-    public function withAttributes(array $attributes)
-    {
-        $clone = clone $this;
-        $clone->attributes = new Collection($attributes);
-
-        return $clone;
-    }
-
-    /**
      * Return an instance that removes the specified derived request attribute.
      *
      * This method allows removing a single derived request attribute as
@@ -921,36 +618,7 @@ class Request extends Message implements ServerRequestInterface
      */
     public function getParsedBody()
     {
-        if ($this->bodyParsed !== false) {
-            return $this->bodyParsed;
-        }
-
-        if (!$this->body) {
-            return null;
-        }
-
-        $mediaType = $this->getMediaType();
-
-        // look for a media type with a structured syntax suffix (RFC 6839)
-        $parts = explode('+', $mediaType);
-        if (count($parts) >= 2) {
-            $mediaType = 'application/' . $parts[count($parts)-1];
-        }
-
-        if (isset($this->bodyParsers[$mediaType]) === true) {
-            $body = (string)$this->getBody();
-            $parsed = $this->bodyParsers[$mediaType]($body);
-
-            if (!is_null($parsed) && !is_object($parsed) && !is_array($parsed)) {
-                throw new RuntimeException(
-                    'Request body media type parser return value must be an array, an object, or null'
-                );
-            }
-            $this->bodyParsed = $parsed;
-            return $this->bodyParsed;
-        }
-
-        return null;
+        return $this->bodyParsed;
     }
 
     /**
@@ -991,129 +659,5 @@ class Request extends Message implements ServerRequestInterface
         $clone->bodyParsed = $data;
 
         return $clone;
-    }
-
-    /**
-     * Force Body to be parsed again.
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return $this
-     */
-    public function reparseBody()
-    {
-        $this->bodyParsed = false;
-
-        return $this;
-    }
-
-    /**
-     * Register media type parser.
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @param string   $mediaType A HTTP media type (excluding content-type
-     *     params).
-     * @param callable $callable  A callable that returns parsed contents for
-     *     media type.
-     */
-    public function registerMediaTypeParser($mediaType, callable $callable)
-    {
-        if ($callable instanceof Closure) {
-            $callable = $callable->bindTo($this);
-        }
-        $this->bodyParsers[$mediaType] = $callable;
-    }
-
-    /*******************************************************************************
-     * Parameters (e.g., POST and GET data)
-     ******************************************************************************/
-
-    /**
-     * Fetch request parameter value from body or query string (in that order).
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @param  string $key The parameter key.
-     * @param  string $default The default value.
-     *
-     * @return mixed The parameter value.
-     */
-    public function getParam($key, $default = null)
-    {
-        $postParams = $this->getParsedBody();
-        $getParams = $this->getQueryParams();
-        $result = $default;
-        if (is_array($postParams) && isset($postParams[$key])) {
-            $result = $postParams[$key];
-        } elseif (is_object($postParams) && property_exists($postParams, $key)) {
-            $result = $postParams->$key;
-        } elseif (isset($getParams[$key])) {
-            $result = $getParams[$key];
-        }
-
-        return $result;
-    }
-
-    /**
-     * Fetch parameter value from request body.
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @param string $key
-     * @param mixed $default
-     *
-     * @return mixed
-     */
-    public function getParsedBodyParam($key, $default = null)
-    {
-        $postParams = $this->getParsedBody();
-        $result = $default;
-        if (is_array($postParams) && isset($postParams[$key])) {
-            $result = $postParams[$key];
-        } elseif (is_object($postParams) && property_exists($postParams, $key)) {
-            $result = $postParams->$key;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Fetch parameter value from query string.
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @param string $key
-     * @param mixed $default
-     *
-     * @return mixed
-     */
-    public function getQueryParam($key, $default = null)
-    {
-        $getParams = $this->getQueryParams();
-        $result = $default;
-        if (isset($getParams[$key])) {
-            $result = $getParams[$key];
-        }
-
-        return $result;
-    }
-
-    /**
-     * Fetch associative array of body and query string parameters.
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return array
-     */
-    public function getParams()
-    {
-        $params = $this->getQueryParams();
-        $postParams = $this->getParsedBody();
-        if ($postParams) {
-            $params = array_merge($params, (array)$postParams);
-        }
-
-        return $params;
     }
 }

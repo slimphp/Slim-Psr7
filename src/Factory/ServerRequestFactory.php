@@ -96,9 +96,9 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 
         $request = new Request($method, $uri, $headers, $cookies, $server, $body, $uploadedFiles);
 
-        if ($method === 'POST'
-            && \in_array($request->getMediaType(), ['application/x-www-form-urlencoded', 'multipart/form-data'])
-        ) {
+        $type = $request->getHeader('Content-Type')[0] ?? null;
+
+        if ($method === 'POST' && \in_array($type, ['application/x-www-form-urlencoded', 'multipart/form-data'])) {
             // parsed body must be $_POST
             $request = $request->withParsedBody($_POST);
         }
