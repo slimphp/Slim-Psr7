@@ -91,13 +91,6 @@ class RequestTest extends TestCase
         $this->requestFactory()->withMethod('B@R');
     }
 
-    public function testWithMethodNull()
-    {
-        $request = $this->requestFactory()->withMethod(null);
-
-        $this->assertAttributeEquals(null, 'method', $request);
-    }
-
     /**
      * @expectedException \InvalidArgumentException
      */
