@@ -19,9 +19,9 @@ use Slim\Psr7\Uri;
 
 class UploadedFilesTest extends TestCase
 {
-    static private $filename = './phpUxcOty';
+    private static $filename = './phpUxcOty';
 
-    static private $tmpFiles = ['./phpUxcOty'];
+    private static $tmpFiles = ['./phpUxcOty'];
     /**
      * @beforeClass
      */
