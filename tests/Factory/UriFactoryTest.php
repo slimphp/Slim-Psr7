@@ -166,50 +166,6 @@ class UriFactoryTest extends UriFactoryTestCase
         $this->assertEquals('/f%27oo%20bar/baz', $uri->getPath());
     }
 
-    public function testGetBaseUrl()
-    {
-        $globals = Environment::mock([
-            'SCRIPT_NAME' => '/foo/index.php',
-            'REQUEST_URI' => '/foo/bar',
-            'QUERY_STRING' => 'abc=123',
-            'HTTP_HOST' => 'example.com:80',
-            'SERVER_PORT' => 80
-        ]);
-        $uri = $this->createUriFactory()->createFromGlobals($globals);
-
-        $this->assertEquals('http://example.com', $uri->getBaseUrl());
-    }
-
-    public function testGetBaseUrlWithNoBasePath()
-    {
-        $globals = Environment::mock([
-            'SCRIPT_NAME' => '/index.php',
-            'REQUEST_URI' => '/foo/bar',
-            'QUERY_STRING' => 'abc=123',
-            'HTTP_HOST' => 'example.com:80',
-            'SERVER_PORT' => 80
-        ]);
-        $uri = $this->createUriFactory()->createFromGlobals($globals);
-
-        $this->assertEquals('http://example.com', $uri->getBaseUrl());
-    }
-
-    public function testGetBaseUrlWithAuthority()
-    {
-        $globals = Environment::mock([
-            'SCRIPT_NAME' => '/foo/index.php',
-            'REQUEST_URI' => '/foo/bar',
-            'PHP_AUTH_USER' => 'josh',
-            'PHP_AUTH_PW' => 'sekrit',
-            'QUERY_STRING' => 'abc=123',
-            'HTTP_HOST' => 'example.com:8080',
-            'SERVER_PORT' => 8080
-        ]);
-        $uri = $this->createUriFactory()->createFromGlobals($globals);
-
-        $this->assertEquals('http://josh:sekrit@example.com:8080', $uri->getBaseUrl());
-    }
-
     /**
      * @covers \Slim\Psr7\Factory\UriFactory::createFromGlobals
      * @ticket 1380
@@ -260,11 +216,5 @@ class UriFactoryTest extends UriFactoryTestCase
     {
         $expected = 'https://0:0@0:1/0?0#0';
         $this->assertSame($expected, (string)$this->createUriFactory()->createUri($expected));
-    }
-
-    public function testGetBaseUrlDistinguishZeroFromEmptyString()
-    {
-        $expected = 'https://0:0@0:1/0?0#0';
-        $this->assertSame('https://0:0@0:1', (string)$this->createUriFactory()->createUri($expected)->getBaseUrl());
     }
 }

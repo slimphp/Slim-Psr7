@@ -3,7 +3,7 @@
  * Slim Framework (https://slimframework.com)
  *
  * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
+ * @copyright Copyright (c) 2011-2018 Josh Lockhart
  * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
  */
 namespace Slim\Psr7;
@@ -687,23 +687,5 @@ class Uri implements UriInterface
             . $path
             . ($query !== '' ? '?' . $query : '')
             . ($fragment !== '' ? '#' . $fragment : '');
-    }
-
-    /**
-     * Return the fully qualified base URL.
-     *
-     * Note that this method never includes a trailing /
-     *
-     * This method is not part of PSR-7.
-     *
-     * @return string
-     */
-    public function getBaseUrl()
-    {
-        $scheme = $this->getScheme();
-        $authority = $this->getAuthority();
-
-        return ($scheme !== '' ? $scheme . ':' : '')
-            . ($authority !== '' ? '//' . $authority : '');
     }
 }
