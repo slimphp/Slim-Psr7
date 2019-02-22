@@ -91,7 +91,7 @@ class UriFactoryTest extends UriFactoryTestCase
     {
         $globals = Environment::mock([
             'SCRIPT_NAME' => '/index.php',
-            'REQUEST_URI' => '/foo/bar',
+            'REQUEST_URI' => '/foo/bar?baz=1',
             'PHP_AUTH_USER' => 'josh',
             'PHP_AUTH_PW' => 'sekrit',
             'QUERY_STRING' => 'abc=123',
