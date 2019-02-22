@@ -91,7 +91,7 @@ class UriFactory implements UriFactoryInterface
             }
         }
 
-        $requestUri = $env->get('REQUEST_URI');
+        $requestUri = \current(\explode('?', $env->get('REQUEST_URI')));
 
         // Query string
         $queryString = $env->get('QUERY_STRING', '');
