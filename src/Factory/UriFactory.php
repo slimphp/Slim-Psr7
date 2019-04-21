@@ -70,13 +70,13 @@ class UriFactory implements UriFactoryInterface
 
         // Authority: Host
         if ($env->has('HTTP_HOST')) {
-            $host = $env->get('HTTP_HOST');
+            $host = $env->get('HTTP_HOST', '');
         } else {
-            $host = $env->get('SERVER_NAME');
+            $host = $env->get('SERVER_NAME', '');
         }
 
         // Authority: Port
-        $port = (int)$env->get('SERVER_PORT', 80);
+        $port = (int) $env->get('SERVER_PORT', 80);
         if (preg_match('/^(\[[a-fA-F0-9:.]+\])(:\d+)?\z/', $host, $matches)) {
             $host = $matches[1];
 
@@ -91,12 +91,12 @@ class UriFactory implements UriFactoryInterface
             }
         }
 
-        $requestUri = \current(\explode('?', $env->get('REQUEST_URI')));
+        $requestUri = \current(\explode('?', $env->get('REQUEST_URI', '')));
 
         // Query string
         $queryString = $env->get('QUERY_STRING', '');
         if ($queryString === '') {
-            $queryString = parse_url('http://example.com' . $env->get('REQUEST_URI'), PHP_URL_QUERY);
+            $queryString = parse_url('http://example.com' . $env->get('REQUEST_URI', ''), PHP_URL_QUERY);
         }
 
         // Fragment
