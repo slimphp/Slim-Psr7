@@ -73,13 +73,18 @@ class Headers extends Collection implements HeadersInterface
     public static function determineAuthorization(array $globals)
     {
         $authorization = isset($globals['HTTP_AUTHORIZATION']) ? $globals['HTTP_AUTHORIZATION'] : null;
+        if (!empty($authorization) || !is_callable('getallheaders')) {
+            return $globals;
+        }
 
-        if (empty($authorization) && is_callable('getallheaders')) {
-            $headers = getallheaders();
-            $headers = array_change_key_case($headers, CASE_LOWER);
-            if (isset($headers['authorization'])) {
-                $globals['HTTP_AUTHORIZATION'] = $headers['authorization'];
-            }
+        $headers = getallheaders();
+        if (!is_array($headers)) {
+            return $globals;
+        }
+
+        $headers = array_change_key_case($headers, CASE_LOWER);
+        if (isset($headers['authorization'])) {
+            $globals['HTTP_AUTHORIZATION'] = $headers['authorization'];
         }
 
         return $globals;
