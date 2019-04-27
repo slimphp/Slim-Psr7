@@ -20,10 +20,15 @@
       "name": "Rob Allen",
       "email": "rob@akrabat.com",
       "homepage": "http://akrabat.com"
+    },
+    {
+      "name": "Pierre Berube",
+      "email": "pierre@lgse.com",
+      "homepage": "http://www.lgse.com"
     }
   ],
   "require": {
-    "php": ">=7.1.0",
+    "php": "^7.1",
     "fig/http-message-util":  "^1.1",
     "psr/http-factory": "^1.0",
     "psr/http-message": "^1.0"
@@ -52,9 +57,11 @@
   "scripts": {
       "test": [
           "@phpunit",
-          "@phpcs"
+          "@phpcs",
+          "@phpstan"
       ],
       "phpunit": "php vendor/bin/phpunit",
-      "phpcs": "php vendor/bin/phpcs"
+      "phpcs": "php vendor/bin/phpcs",
+      "phpstan": "php -d memory_limit=-1 vendor/bin/phpstan analyse src"
   }
 }
