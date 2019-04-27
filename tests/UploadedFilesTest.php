@@ -9,7 +9,9 @@ declare(strict_types=1);
 
 namespace Slim\Tests\Psr7;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use ReflectionProperty;
 use RuntimeException;
 use Slim\Psr7\Environment;
 use Slim\Psr7\Stream;
@@ -54,7 +56,7 @@ class UploadedFilesTest extends TestCase
     }
 
     /**
-     * @param array $input The input array to parse.
+     * @param array $input    The input array to parse.
      * @param array $expected The expected normalized output.
      *
      * @dataProvider providerCreateFromGlobals
@@ -122,7 +124,9 @@ class UploadedFilesTest extends TestCase
 
     /**
      * @depends testConstructor
+     *
      * @param UploadedFile $uploadedFile
+     *
      * @return UploadedFile
      */
     public function testGetStream(UploadedFile $uploadedFile)
@@ -136,7 +140,9 @@ class UploadedFilesTest extends TestCase
 
     /**
      * @depends testConstructor
+     *
      * @param UploadedFile $uploadedFile
+     *
      * @expectedException InvalidArgumentException
      */
     public function testMoveToNotWritable(UploadedFile $uploadedFile)
@@ -148,7 +154,9 @@ class UploadedFilesTest extends TestCase
 
     /**
      * @depends testConstructor
+     *
      * @param UploadedFile $uploadedFile
+     *
      * @return UploadedFile
      */
     public function testMoveTo(UploadedFile $uploadedFile)
@@ -166,7 +174,9 @@ class UploadedFilesTest extends TestCase
 
     /**
      * @depends testMoveTo
+     *
      * @param UploadedFile $uploadedFile
+     *
      * @expectedException RuntimeException
      */
     public function testMoveToCannotBeDoneTwice(UploadedFile $uploadedFile)
@@ -184,7 +194,9 @@ class UploadedFilesTest extends TestCase
      * This test must run after testMoveTo
      *
      * @depends testConstructor
+     *
      * @param UploadedFile $uploadedFile
+     *
      * @expectedException RuntimeException
      */
     public function testMoveToAgain(UploadedFile $uploadedFile)
@@ -198,10 +210,12 @@ class UploadedFilesTest extends TestCase
      * This test must run after testMoveTo
      *
      * @depends testConstructor
+     *
      * @param UploadedFile $uploadedFile
+     *
      * @expectedException RuntimeException
      */
-    public function testMovedStream($uploadedFile)
+    public function testMovedStream(UploadedFile $uploadedFile)
     {
         $uploadedFile->getStream();
     }
@@ -209,9 +223,19 @@ class UploadedFilesTest extends TestCase
     public function testMoveToStream()
     {
         $uploadedFile = $this->generateNewTmpFile();
-        $uploadedFile->moveTo('php://temp');
 
-        $this->addToAssertionCount(1);  // does not throw an exception
+        $fileProperty = new ReflectionProperty($uploadedFile, 'file');
+        $fileProperty->setAccessible(true);
+        $fileName = $fileProperty->getValue($uploadedFile);
+
+        $contents = file_get_contents($fileName);
+
+        ob_start();
+        $uploadedFile->moveTo('php://output');
+        $movedFileContents = ob_get_clean();
+
+        $this->assertEquals($contents, $movedFileContents);
+        $this->assertFileNotExists($fileName);
     }
 
     public function providerCreateFromGlobals()
