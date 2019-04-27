@@ -230,6 +230,20 @@ class HeadersTest extends TestCase
         $this->assertEquals(['foo'], $h['Authorization']);
     }
 
+    public function testDetermineAuthorizationReturnsEarlyIfHeadersIsNotArray()
+    {
+        $e = Environment::mock([]);
+        $GLOBALS['getallheaders_return'] = false;
+
+        $en = Headers::determineAuthorization($e);
+        $h = Headers::createFromGlobals($e);
+
+        unset($GLOBALS['getallheaders_return']);
+
+        $this->assertFalse(isset($en['HTTP_AUTHORIZATION']));
+        $this->assertNull($h['Authorization']);
+    }
+
     public function testDetermineAuthorizationWhenEmpty()
     {
         $e = Environment::mock(['HTTP_AUTHORIZATION' => '']);
