@@ -65,24 +65,27 @@ class Headers extends Collection implements HeadersInterface
     }
 
     /**
-     * If HTTP_AUTHORIZATION does not exist tries to get it from
-     * getallheaders() when available.
+     * If HTTP_AUTHORIZATION does not exist tries to get it from getallheaders() when available.
      *
-     * @param array $globals The Slim application Environment
+     * @param array $globals
      *
      * @return array
      */
-
     public static function determineAuthorization(array $globals)
     {
         $authorization = isset($globals['HTTP_AUTHORIZATION']) ? $globals['HTTP_AUTHORIZATION'] : null;
+        if (!empty($authorization)) {
+            return $globals;
+        }
 
-        if (empty($authorization) && is_callable('getallheaders')) {
-            $headers = getallheaders();
-            $headers = array_change_key_case($headers, CASE_LOWER);
-            if (isset($headers['authorization'])) {
-                $globals['HTTP_AUTHORIZATION'] = $headers['authorization'];
-            }
+        $headers = getallheaders();
+        if (!is_array($headers)) {
+            return $globals;
+        }
+
+        $headers = array_change_key_case($headers, CASE_LOWER);
+        if (isset($headers['authorization'])) {
+            $globals['HTTP_AUTHORIZATION'] = $headers['authorization'];
         }
 
         return $globals;
@@ -90,8 +93,7 @@ class Headers extends Collection implements HeadersInterface
 
     /**
      * Return array of HTTP header names and values.
-     * This method returns the _original_ header name
-     * as specified by the end user.
+     * This method returns the _original_ header name as specified by the end user.
      *
      * @return array
      */
