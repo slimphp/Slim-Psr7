@@ -24,9 +24,7 @@ class Environment
      */
     public static function mock(array $data = [])
     {
-        //Validates if default protocol is HTTPS to set default port 443
-        if (
-            (isset($data['HTTPS']) && $data['HTTPS'] !== 'off')
+        if ((isset($data['HTTPS']) && $data['HTTPS'] !== 'off')
             || ((isset($data['REQUEST_SCHEME']) && $data['REQUEST_SCHEME'] === 'https'))
         ) {
             $scheme = 'https';

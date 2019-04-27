@@ -12,6 +12,7 @@ namespace Slim\Psr7;
 use InvalidArgumentException;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
+use Slim\Psr7\Interfaces\HeadersInterface;
 
 /**
  * Abstract message (base class for Request and Response)
@@ -47,7 +48,7 @@ abstract class Message implements MessageInterface
     /**
      * Headers
      *
-     * @var \Slim\Psr7\HeadersInterface
+     * @var HeadersInterface
      */
     protected $headers;
 
