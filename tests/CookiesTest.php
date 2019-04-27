@@ -14,6 +14,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use ReflectionClass;
 use Slim\Psr7\Cookies;
+use stdClass;
 
 class CookiesTest extends TestCase
 {
@@ -37,7 +38,8 @@ class CookiesTest extends TestCase
             'path' => null,
             'expires' => null,
             'secure' => true,
-            'httponly' => true
+            'httponly' => true,
+            'samesite' => null
         ];
 
         $cookies = new Cookies;
@@ -61,7 +63,6 @@ class CookiesTest extends TestCase
         $prop = new ReflectionProperty($cookies, 'responseCookies');
         $prop->setAccessible(true);
 
-        // We expect all of these values with null/false defaults
         $expectedValue = [
             'foo' => [
                 'value' => 'bar',
@@ -70,7 +71,8 @@ class CookiesTest extends TestCase
                 'path' => null,
                 'expires' => null,
                 'secure' => false,
-                'httponly' => false
+                'httponly' => false,
+                'samesite' => null
             ]
         ];
 
@@ -87,7 +89,8 @@ class CookiesTest extends TestCase
             'path' => null,
             'expires' => null,
             'secure' => true,
-            'httponly' => true
+            'httponly' => true,
+            'samesite' => 'lax'
         ];
 
         $cookies->setDefaults($defaults);
@@ -96,7 +99,6 @@ class CookiesTest extends TestCase
         $prop = new ReflectionProperty($cookies, 'responseCookies');
         $prop->setAccessible(true);
 
-        // Wwe expect to have secure and httponly from defaults
         $expectedValue = [
             'foo' => [
                 'value' => 'bar',
@@ -105,7 +107,8 @@ class CookiesTest extends TestCase
                 'path' => null,
                 'expires' => null,
                 'secure' => true,
-                'httponly' => true
+                'httponly' => true,
+                'samesite' => 'lax'
             ]
         ];
 
@@ -122,13 +125,12 @@ class CookiesTest extends TestCase
             'path' => null,
             'expires' => null,
             'secure' => true,
-            'httponly' => true
+            'httponly' => true,
+            'samesite' => 'lax'
         ];
 
         $cookies->setDefaults($defaults);
-
-        // default has secure true, lets override it to false
-        $cookies->set('foo', ['value' => 'bar', 'secure' => false]);
+        $cookies->set('foo', ['value' => 'bar', 'secure' => false, 'samesite' => 'strict']);
 
         $prop = new ReflectionProperty($cookies, 'responseCookies');
         $prop->setAccessible(true);
@@ -141,7 +143,38 @@ class CookiesTest extends TestCase
                 'path' => null,
                 'expires' => null,
                 'secure' => false,
-                'httponly' => true
+                'httponly' => true,
+                'samesite' => 'strict'
+            ]
+        ];
+
+        $this->assertEquals($expectedValue, $prop->getValue($cookies));
+    }
+
+    public function testSetSameSiteCookieValuesAreCaseInsensitive()
+    {
+        $cookies = new Cookies();
+        $defaults = [
+            'value' => 'bacon',
+            'samesite' => 'lax'
+        ];
+
+        $cookies->setDefaults($defaults);
+        $cookies->set('breakfast', ['samesite' => 'StricT']);
+
+        $prop = new ReflectionProperty($cookies, 'responseCookies');
+        $prop->setAccessible(true);
+
+        $expectedValue = [
+            'breakfast' => [
+                'value' => 'bacon',
+                'domain' => null,
+                'hostonly' => null,
+                'path' => null,
+                'expires' => null,
+                'secure' => false,
+                'httponly' => false,
+                'samesite' => 'StricT',
             ]
         ];
 
@@ -202,7 +235,8 @@ class CookiesTest extends TestCase
                 'path' => '/',
                 'secure' => true,
                 'hostonly' => true,
-                'httponly' => true
+                'httponly' => true,
+                'samesite' => 'lax'
             ]
         ];
         $stringDate = '2016-01-01 12:00:00';
@@ -220,7 +254,7 @@ class CookiesTest extends TestCase
         $this->assertEquals('test=Works', $cookie);
         $this->assertEquals(
             'test_complex=Works; domain=example.com; path=/; expires='
-            . $formattedDate . '; secure; HostOnly; HttpOnly',
+            . $formattedDate . '; secure; HostOnly; HttpOnly; SameSite=lax',
             $cookieComplex
         );
         $this->assertEquals('test_date=Works; expires=' . $formattedStringDate, $cookieStringDate);
@@ -231,6 +265,6 @@ class CookiesTest extends TestCase
      */
     public function testParseHeaderException()
     {
-        Cookies::parseHeader(new \StdClass);
+        Cookies::parseHeader(new stdClass);
     }
 }
