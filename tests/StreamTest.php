@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Slim\Psr7\Stream;
 
 class StreamTest extends TestCase
@@ -31,9 +32,6 @@ class StreamTest extends TestCase
         }
     }
 
-    /**
-     * @covers \Slim\Psr7\Stream::isPipe
-     */
     public function testIsPipe()
     {
         $this->openPipeStream();
@@ -48,9 +46,6 @@ class StreamTest extends TestCase
         $this->assertFalse($fileStream->isPipe());
     }
 
-    /**
-     * @covers \Slim\Psr7\Stream::isReadable
-     */
     public function testIsPipeReadable()
     {
         $this->openPipeStream();
@@ -58,9 +53,6 @@ class StreamTest extends TestCase
         $this->assertTrue($this->pipeStream->isReadable());
     }
 
-    /**
-     * @covers \Slim\Psr7\Stream::isSeekable
-     */
     public function testPipeIsNotSeekable()
     {
         $this->openPipeStream();
@@ -69,7 +61,6 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @covers \Slim\Psr7\Stream::seek
      * @expectedException RuntimeException
      */
     public function testCannotSeekPipe()
@@ -80,7 +71,6 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @covers \Slim\Psr7\Stream::tell
      * @expectedException RuntimeException
      */
     public function testCannotTellPipe()
@@ -91,7 +81,6 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @covers \Slim\Psr7\Stream::rewind
      * @expectedException RuntimeException
      */
     public function testCannotRewindPipe()
@@ -101,9 +90,6 @@ class StreamTest extends TestCase
         $this->pipeStream->rewind();
     }
 
-    /**
-     * @covers \Slim\Psr7\Stream::getSize
-     */
     public function testPipeGetSizeYieldsNull()
     {
         $this->openPipeStream();
@@ -111,9 +97,6 @@ class StreamTest extends TestCase
         $this->assertNull($this->pipeStream->getSize());
     }
 
-    /**
-     * @covers \Slim\Psr7\Stream::close
-     */
     public function testClosePipe()
     {
         $this->openPipeStream();
@@ -125,19 +108,12 @@ class StreamTest extends TestCase
         $this->assertFalse($this->pipeStream->isPipe());
     }
 
-    /**
-     * @covers \Slim\Psr7\Stream::__toString
-     */
     public function testPipeToString()
     {
         $this->openPipeStream();
 
         $this->assertSame('', (string) $this->pipeStream);
     }
-
-    /**
-     * @covers \Slim\Psr7\Stream::getContents
-     */
 
     public function testPipeGetContents()
     {
