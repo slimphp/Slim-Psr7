@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Slim\Psr7;
 
 use InvalidArgumentException;
+use Slim\Psr7\Interfaces\CookiesInterface;
 
 class Cookies implements CookiesInterface
 {

@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace Slim\Psr7;
 
+use Slim\Psr7\Interfaces\HeadersInterface;
+
 /**
  * Headers
  *

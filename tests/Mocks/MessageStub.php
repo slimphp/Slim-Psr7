@@ -10,7 +10,7 @@ declare(strict_types=1);
 namespace Slim\Tests\Psr7\Mocks;
 
 use Psr\Http\Message\StreamInterface;
-use Slim\Psr7\HeadersInterface;
+use Slim\Psr7\Interfaces\HeadersInterface;
 use Slim\Psr7\Message;
 
 class MessageStub extends Message

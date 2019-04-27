@@ -13,6 +13,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Slim\Psr7\Interfaces\HeadersInterface;
 
 /**
  * Response

@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Slim\Psr7;
 
 use ArrayIterator;
+use Slim\Psr7\Interfaces\CollectionInterface;
 
 /**
  * Collection

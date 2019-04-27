@@ -7,7 +7,7 @@
 
 declare(strict_types=1);
 
-namespace Slim\Psr7;
+namespace Slim\Psr7\Interfaces;
 
 use ArrayAccess;
 use Countable;
