@@ -50,6 +50,9 @@
     }
   },
   "autoload-dev": {
+    "files": [
+      "tests/Assets/PhpFunctionOverrides.php"
+    ],
     "psr-4": {
       "Slim\\Tests\\Psr7\\": "tests"
     }
