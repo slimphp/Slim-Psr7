@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Slim\Psr7\Factory;
 
+use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -21,16 +22,26 @@ use Slim\Psr7\Request;
 
 class RequestFactory implements RequestFactoryInterface
 {
-    /** @var StreamFactoryInterface */
+    /**
+     * @var StreamFactoryInterface|StreamFactory
+     */
     protected $streamFactory;
-    /** @var UriFactoryInterface */
+
+    /**
+     * @var UriFactoryInterface|UriFactory
+     */
     protected $uriFactory;
 
+    /**
+     * @param StreamFactoryInterface|null $streamFactory
+     * @param UriFactoryInterface|null    $uriFactory
+     */
     public function __construct(StreamFactoryInterface $streamFactory = null, UriFactoryInterface $uriFactory = null)
     {
         if (!isset($streamFactory)) {
             $streamFactory = new StreamFactory();
         }
+
         if (!isset($uriFactory)) {
             $uriFactory = new UriFactory();
         }
@@ -54,7 +65,7 @@ class RequestFactory implements RequestFactoryInterface
         if (is_string($uri)) {
             $uri = $this->uriFactory->createUri($uri);
         } elseif (!$uri instanceof UriInterface) {
-            throw new \InvalidArgumentException('URI must either be string or instance of ' . UriInterface::class);
+            throw new InvalidArgumentException('URI must either be string or instance of ' . UriInterface::class);
         }
 
         $body = $this->streamFactory->createStream();

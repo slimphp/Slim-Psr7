@@ -2,10 +2,11 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Tests\Psr7\Integration;
 
 use Psr\Http\Message\UriInterface;
@@ -15,12 +16,11 @@ use Slim\Psr7\UploadedFile;
 
 trait BaseTestFactories
 {
-
     /**
-     * @param $uri
+     * @param string $uri
      * @return UriInterface
      */
-    protected function buildUri($uri)
+    protected function buildUri($uri): UriInterface
     {
         return (new UriFactory())->createUri($uri);
     }
@@ -29,7 +29,7 @@ trait BaseTestFactories
      * @param $data
      * @return Stream
      */
-    protected function buildStream($data)
+    protected function buildStream($data): Stream
     {
         if (!is_resource($data)) {
             $h = fopen('php://temp', 'w+');
@@ -42,11 +42,11 @@ trait BaseTestFactories
     }
 
     /**
-     * @param $data
+     * @param string $file
      * @return UploadedFile
      */
-    protected function buildUploadableFile($data)
+    protected function buildUploadedFile(string $file): UploadedFile
     {
-        return new UploadedFile($data);
+        return new UploadedFile($file);
     }
 }

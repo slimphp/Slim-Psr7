@@ -2,10 +2,11 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
@@ -13,9 +14,6 @@ use Slim\Psr7\Environment;
 
 class EnvironmentTest extends TestCase
 {
-    /**
-     * Test environment from mock data
-     */
     public function testMock()
     {
         $env = Environment::mock([
@@ -28,30 +26,22 @@ class EnvironmentTest extends TestCase
         $this->assertEquals('localhost', $env['HTTP_HOST']);
     }
 
-    /**
-     * Test environment from mock data with HTTPS
-     */
     public function testMockHttps()
     {
         $env = Environment::mock([
             'HTTPS' => 'on'
         ]);
 
-        $this->assertInternalType('array', $env);
         $this->assertEquals('on', $env['HTTPS']);
         $this->assertEquals(443, $env['SERVER_PORT']);
     }
 
-    /**
-     * Test environment from mock data with REQUEST_SCHEME
-     */
     public function testMockRequestScheme()
     {
         $env = Environment::mock([
             'REQUEST_SCHEME' => 'https'
         ]);
 
-        $this->assertInternalType('array', $env);
         $this->assertEquals('https', $env['REQUEST_SCHEME']);
         $this->assertEquals(443, $env['SERVER_PORT']);
     }

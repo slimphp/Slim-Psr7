@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Slim\Psr7\Factory;
 
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
@@ -21,14 +22,12 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
     /**
      * Create a new uploaded file.
      *
-     * If a size is not provided it will be determined by checking the size of
-     * the file.
+     * If a size is not provided it will be determined by checking the size of the file.
      *
      * @see http://php.net/manual/features.file-upload.post-method.php
      * @see http://php.net/manual/features.file-upload.errors.php
      *
-     * @param StreamInterface $stream Underlying stream representing the
-     *     uploaded file content.
+     * @param StreamInterface $stream Underlying stream representing the uploaded file content.
      * @param int $size in bytes
      * @param int $error PHP file upload error
      * @param string $clientFilename Filename as provided by the client, if any.
@@ -36,7 +35,7 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
      *
      * @return UploadedFileInterface
      *
-     * @throws \InvalidArgumentException If the file resource is not readable.
+     * @throws InvalidArgumentException If the file resource is not readable.
      */
     public function createUploadedFile(
         StreamInterface $stream,
@@ -48,7 +47,7 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
         $file = $stream->getMetadata('uri');
 
         if (!is_readable($file)) {
-            throw new \InvalidArgumentException('File is not readable');
+            throw new InvalidArgumentException('File is not readable');
         }
         if (!isset($size)) {
             $size = $stream->getSize();

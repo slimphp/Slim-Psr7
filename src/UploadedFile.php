@@ -2,10 +2,11 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim/blob/4.x/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Psr7;
 
 use RuntimeException;
@@ -177,13 +178,13 @@ class UploadedFile implements UploadedFileInterface
      * an exception.
      *
      * @return StreamInterface Stream representation of the uploaded file.
-     * @throws \RuntimeException in cases when no stream is available or can be
+     * @throws RuntimeException in cases when no stream is available or can be
      *     created.
      */
     public function getStream()
     {
         if ($this->moved) {
-            throw new \RuntimeException(sprintf('Uploaded file %s has already been moved', $this->name));
+            throw new RuntimeException(sprintf('Uploaded file %s has already been moved', $this->name));
         }
         if ($this->stream === null) {
             $this->stream = new Stream(fopen($this->file, 'r'));

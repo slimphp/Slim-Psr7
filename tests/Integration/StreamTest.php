@@ -2,12 +2,14 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Tests\Psr7\Integration;
 
+use InvalidArgumentException;
 use Http\Psr7Test\StreamIntegrationTest;
 use Psr\Http\Message\StreamInterface;
 use Slim\Psr7\Stream;
@@ -33,6 +35,6 @@ class StreamTest extends StreamIntegrationTest
             return new Stream($s);
         }
 
-        throw new \InvalidArgumentException();
+        throw new InvalidArgumentException();
     }
 }

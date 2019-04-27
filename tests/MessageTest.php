@@ -2,25 +2,22 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Tests\Psr7;
 
+use InvalidArgumentException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Slim\Psr7\Body;
 use Slim\Psr7\Headers;
 use Slim\Tests\Psr7\Mocks\MessageStub;
 
 class MessageTest extends TestCase
 {
-    /*******************************************************************************
-     * Protocol
-     ******************************************************************************/
-
-    /**
-     * @covers Slim\Psr7\Message::getProtocolVersion
-     */
     public function testGetProtocolVersion()
     {
         $message = new MessageStub();
@@ -29,9 +26,6 @@ class MessageTest extends TestCase
         $this->assertEquals('1.0', $message->getProtocolVersion());
     }
 
-    /**
-     * @covers Slim\Psr7\Message::withProtocolVersion
-     */
     public function testWithProtocolVersion()
     {
         $message = new MessageStub();
@@ -41,8 +35,7 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @covers Slim\Psr7\Message::withProtocolVersion
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testWithProtocolVersionInvalidThrowsException()
     {
@@ -50,13 +43,6 @@ class MessageTest extends TestCase
         $message->withProtocolVersion('3.0');
     }
 
-    /*******************************************************************************
-     * Headers
-     ******************************************************************************/
-
-    /**
-     * @covers Slim\Psr7\Message::getHeaders
-     */
     public function testGetHeaders()
     {
         $headers = new Headers();
@@ -78,9 +64,6 @@ class MessageTest extends TestCase
         $this->assertEquals($shouldBe, $message->getHeaders());
     }
 
-    /**
-     * @covers Slim\Psr7\Message::hasHeader
-     */
     public function testHasHeader()
     {
         $headers = new Headers();
@@ -93,9 +76,6 @@ class MessageTest extends TestCase
         $this->assertFalse($message->hasHeader('X-Bar'));
     }
 
-    /**
-     * @covers Slim\Psr7\Message::getHeaderLine
-     */
     public function testGetHeaderLine()
     {
         $headers = new Headers();
@@ -110,9 +90,6 @@ class MessageTest extends TestCase
         $this->assertEquals('', $message->getHeaderLine('X-Bar'));
     }
 
-    /**
-     * @covers Slim\Psr7\Message::getHeader
-     */
     public function testGetHeader()
     {
         $headers = new Headers();
@@ -127,9 +104,6 @@ class MessageTest extends TestCase
         $this->assertEquals([], $message->getHeader('X-Bar'));
     }
 
-    /**
-     * @covers Slim\Psr7\Message::withHeader
-     */
     public function testWithHeader()
     {
         $headers = new Headers();
@@ -141,9 +115,6 @@ class MessageTest extends TestCase
         $this->assertEquals('bar', $clone->getHeaderLine('X-Foo'));
     }
 
-    /**
-     * @covers Slim\Psr7\Message::withAddedHeader
-     */
     public function testWithAddedHeader()
     {
         $headers = new Headers();
@@ -155,9 +126,6 @@ class MessageTest extends TestCase
         $this->assertEquals('one,two', $clone->getHeaderLine('X-Foo'));
     }
 
-    /**
-     * @covers Slim\Psr7\Message::withoutHeader
-     */
     public function testWithoutHeader()
     {
         $headers = new Headers();
@@ -173,13 +141,6 @@ class MessageTest extends TestCase
         $this->assertEquals($shouldBe, $clone->getHeaders());
     }
 
-    /*******************************************************************************
-     * Body
-     ******************************************************************************/
-
-    /**
-     * @covers Slim\Psr7\Message::getBody
-     */
     public function testGetBody()
     {
         $body = $this->getBody();
@@ -189,9 +150,6 @@ class MessageTest extends TestCase
         $this->assertSame($body, $message->getBody());
     }
 
-    /**
-     * @covers Slim\Psr7\Message::withBody
-     */
     public function testWithBody()
     {
         $body = $this->getBody();
@@ -205,10 +163,13 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|\Slim\Psr7\Body
+     * @return MockObject|Body
      */
     protected function getBody()
     {
-        return $this->getMockBuilder('Slim\Psr7\Body')->disableOriginalConstructor()->getMock();
+        return $this
+            ->getMockBuilder(Body::class)
+            ->disableOriginalConstructor()
+            ->getMock();
     }
 }

@@ -2,14 +2,15 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2018 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim/blob/4.x/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Psr7;
 
 use InvalidArgumentException;
-use \Psr\Http\Message\UriInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Value object representing a URI.
@@ -157,7 +158,7 @@ class Uri implements UriInterface
      *
      * @param string $scheme The scheme to use with the new instance.
      * @return self A new instance with the specified scheme.
-     * @throws \InvalidArgumentException for invalid or unsupported schemes.
+     * @throws InvalidArgumentException for invalid or unsupported schemes.
      */
     public function withScheme($scheme)
     {
@@ -324,7 +325,7 @@ class Uri implements UriInterface
      *
      * @param string $host The hostname to use with the new instance.
      * @return self A new instance with the specified host.
-     * @throws \InvalidArgumentException for invalid hostnames.
+     * @throws InvalidArgumentException for invalid hostnames.
      */
     public function withHost($host)
     {
@@ -342,7 +343,7 @@ class Uri implements UriInterface
      *
      * @param  string $host The host to filter.
      * @return string
-     * @throws \InvalidArgumentException for invalid host names.
+     * @throws InvalidArgumentException for invalid host names.
      */
     protected function filterHost($host)
     {
@@ -392,7 +393,7 @@ class Uri implements UriInterface
      * @param null|int $port The port to use with the new instance; a null value
      *     removes the port information.
      * @return self A new instance with the specified port.
-     * @throws \InvalidArgumentException for invalid ports.
+     * @throws InvalidArgumentException for invalid ports.
      */
     public function withPort($port)
     {
@@ -484,7 +485,7 @@ class Uri implements UriInterface
      *
      * @param string $path The path to use with the new instance.
      * @return self A new instance with the specified path.
-     * @throws \InvalidArgumentException for invalid paths.
+     * @throws InvalidArgumentException for invalid paths.
      */
     public function withPath($path)
     {
@@ -563,7 +564,7 @@ class Uri implements UriInterface
      *
      * @param string $query The query string to use with the new instance.
      * @return self A new instance with the specified query string.
-     * @throws \InvalidArgumentException for invalid query strings.
+     * @throws InvalidArgumentException for invalid query strings.
      */
     public function withQuery($query)
     {

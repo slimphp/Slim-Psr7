@@ -2,10 +2,11 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Psr7;
 
 use InvalidArgumentException;
@@ -213,7 +214,7 @@ abstract class Message implements MessageInterface
      * @param string $name Case-insensitive header field name.
      * @param string|string[] $value Header value(s).
      * @return static
-     * @throws \InvalidArgumentException for invalid header names or values.
+     * @throws InvalidArgumentException for invalid header names or values.
      */
     public function withHeader($name, $value)
     {
@@ -244,7 +245,7 @@ abstract class Message implements MessageInterface
      * @param string $name Case-insensitive header field name to add.
      * @param string|string[] $value Header value(s).
      * @return static
-     * @throws \InvalidArgumentException for invalid header names or values.
+     * @throws InvalidArgumentException for invalid header names or values.
      */
     public function withAddedHeader($name, $value)
     {
@@ -287,7 +288,7 @@ abstract class Message implements MessageInterface
 
     /**
      * @param string $name
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function validateHeaderName($name)
     {
@@ -302,7 +303,7 @@ abstract class Message implements MessageInterface
 
     /**
      * @param string|string[] $value
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function validateHeaderValue($value)
     {
@@ -352,7 +353,7 @@ abstract class Message implements MessageInterface
      *
      * @param StreamInterface $body Body.
      * @return static
-     * @throws \InvalidArgumentException When the body is not valid.
+     * @throws InvalidArgumentException When the body is not valid.
      */
     public function withBody(StreamInterface $body)
     {
