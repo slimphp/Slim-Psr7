@@ -2,10 +2,11 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2018 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim/blob/4.x/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Psr7;
 
 use InvalidArgumentException;
@@ -14,6 +15,7 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
+use Slim\Psr7\Interfaces\HeadersInterface;
 
 /**
  * Request
@@ -172,7 +174,7 @@ class Request extends Message implements ServerRequestInterface
      *
      * @param string $method Case-sensitive method.
      * @return static
-     * @throws \InvalidArgumentException for invalid HTTP methods.
+     * @throws InvalidArgumentException for invalid HTTP methods.
      */
     public function withMethod($method)
     {
@@ -188,7 +190,7 @@ class Request extends Message implements ServerRequestInterface
      *
      * @param  string $method
      * @return string
-     * @throws \InvalidArgumentException on invalid HTTP method.
+     * @throws InvalidArgumentException on invalid HTTP method.
      */
     protected function filterMethod($method)
     {
@@ -478,7 +480,7 @@ class Request extends Message implements ServerRequestInterface
      *
      * @param array $uploadedFiles An array tree of UploadedFileInterface instances.
      * @return static
-     * @throws \InvalidArgumentException if an invalid structure is provided.
+     * @throws InvalidArgumentException if an invalid structure is provided.
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
@@ -641,7 +643,7 @@ class Request extends Message implements ServerRequestInterface
      * @param null|array|object $data The deserialized body data. This will
      *     typically be in an array or object.
      * @return static
-     * @throws \InvalidArgumentException if an unsupported argument type is
+     * @throws InvalidArgumentException if an unsupported argument type is
      *     provided.
      */
     public function withParsedBody($data)

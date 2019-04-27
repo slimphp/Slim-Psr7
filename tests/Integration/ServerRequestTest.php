@@ -2,13 +2,13 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Tests\Psr7\Integration;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Request;
 use Http\Psr7Test\ServerRequestIntegrationTest;
@@ -18,10 +18,17 @@ class ServerRequestTest extends ServerRequestIntegrationTest
     use BaseTestFactories;
 
     /**
-     * @return ServerRequestInterface that is used in the tests
+     * @return Request
      */
-    public function createSubject()
+    public function createSubject(): Request
     {
-        return new Request('GET', $this->buildUri('/'), new Headers(), $_COOKIE, $_SERVER, $this->buildStream(''));
+        return new Request(
+            'GET',
+            $this->buildUri('/'),
+            new Headers(),
+            $_COOKIE,
+            $_SERVER,
+            $this->buildStream('')
+        );
     }
 }

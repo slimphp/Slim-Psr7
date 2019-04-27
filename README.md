@@ -20,16 +20,14 @@ $ composer require slim/psr7 "^0.1"
 This will install the `slim/psr7` component and all required dependencies.
 PHP 7.0, or newer, is required.
 
-## Usage
-
-Coming soon.
-
 ## Tests
 
 To execute the test suite, you'll need phpunit.
 
 ```bash
-$ phpunit
+$ git clone https://github.com/slimphp/Slim
+$ composer install
+$ composer test
 ```
 
 ## Contributing
@@ -46,6 +44,7 @@ instead of using the issue tracker.
 - [Josh Lockhart](https://github.com/codeguy)
 - [Andrew Smith](https://github.com/silentworks)
 - [Rob Allen](https://github.com/akrabat)
+- [Pierre Bérubé](https://github.com/l0gicgate)
 - [All Contributors](../../contributors)
 
 ## License

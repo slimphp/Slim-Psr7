@@ -2,16 +2,17 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Tests\Psr7;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use ReflectionClass;
-use InvalidArgumentException;
 use Slim\Psr7\Cookies;
 
 class CookiesTest extends TestCase
@@ -60,7 +61,7 @@ class CookiesTest extends TestCase
         $prop = new ReflectionProperty($cookies, 'responseCookies');
         $prop->setAccessible(true);
 
-        //we expect all of these values with null/false defaults
+        // We expect all of these values with null/false defaults
         $expectedValue = [
             'foo' => [
                 'value' => 'bar',
@@ -95,7 +96,7 @@ class CookiesTest extends TestCase
         $prop = new ReflectionProperty($cookies, 'responseCookies');
         $prop->setAccessible(true);
 
-        //we expect to have secure and httponly from defaults
+        // Wwe expect to have secure and httponly from defaults
         $expectedValue = [
             'foo' => [
                 'value' => 'bar',
@@ -126,7 +127,7 @@ class CookiesTest extends TestCase
 
         $cookies->setDefaults($defaults);
 
-        //default has secure true, lets override it to false
+        // default has secure true, lets override it to false
         $cookies->set('foo', ['value' => 'bar', 'secure' => false]);
 
         $prop = new ReflectionProperty($cookies, 'responseCookies');
@@ -226,7 +227,7 @@ class CookiesTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testParseHeaderException()
     {

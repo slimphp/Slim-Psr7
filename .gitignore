@@ -1,5 +1,8 @@
-.idea/
-.vendor/
+.DS_Store
+.idea
+.tmp
+clover.xml
 composer.lock
-vendor/
-/.tmp
+coverage
+phpunit.xml
+vendor

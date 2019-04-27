@@ -2,29 +2,25 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Slim\Psr7\Environment;
-use Slim\Psr7\Headers;
-use Slim\Psr7\Request;
-use Slim\Psr7\RequestBody;
 use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
-use Slim\Psr7\Uri;
 
 class UploadedFilesTest extends TestCase
 {
     private static $filename = './phpUxcOty';
 
     private static $tmpFiles = ['./phpUxcOty'];
-    /**
-     * @beforeClass
-     */
+
     public static function setUpBeforeClass()
     {
         $fh = fopen(self::$filename, "w");
@@ -32,9 +28,6 @@ class UploadedFilesTest extends TestCase
         fclose($fh);
     }
 
-    /**
-     * @afterClass
-     */
     public static function tearDownAfterClass()
     {
         foreach (self::$tmpFiles as $filename) {
@@ -144,7 +137,7 @@ class UploadedFilesTest extends TestCase
     /**
      * @depends testConstructor
      * @param UploadedFile $uploadedFile
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      */
     public function testMoveToNotWritable(UploadedFile $uploadedFile)
     {
@@ -174,7 +167,7 @@ class UploadedFilesTest extends TestCase
     /**
      * @depends testMoveTo
      * @param UploadedFile $uploadedFile
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testMoveToCannotBeDoneTwice(UploadedFile $uploadedFile)
     {
@@ -192,7 +185,7 @@ class UploadedFilesTest extends TestCase
      *
      * @depends testConstructor
      * @param UploadedFile $uploadedFile
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testMoveToAgain(UploadedFile $uploadedFile)
     {
@@ -206,7 +199,7 @@ class UploadedFilesTest extends TestCase
      *
      * @depends testConstructor
      * @param UploadedFile $uploadedFile
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testMovedStream($uploadedFile)
     {
@@ -463,25 +456,5 @@ class UploadedFilesTest extends TestCase
                 ]
             ],
         ];
-    }
-
-    /**
-     * @param array $mockEnv An array representing a mock environment.
-     *
-     * @return Request
-     */
-    public function requestFactory(array $mockEnv)
-    {
-        $env = Environment::mock();
-
-        $uri = Uri::createFromString('https://example.com:443/foo/bar?abc=123');
-        $headers = Headers::createFromGlobals($env);
-        $cookies = [];
-        $serverParams = $env->all();
-        $body = new RequestBody();
-        $uploadedFiles = UploadedFile::createFromGlobals($env);
-        $request = new Request('GET', $uri, $headers, $cookies, $serverParams, $body, $uploadedFiles);
-
-        return $request;
     }
 }

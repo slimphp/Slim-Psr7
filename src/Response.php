@@ -2,16 +2,18 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2018 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim/blob/4.x/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Psr7;
 
 use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Slim\Psr7\Interfaces\HeadersInterface;
 
 /**
  * Response
@@ -179,7 +181,7 @@ class Response extends Message implements ResponseInterface
      *     provided status code; if none is provided, implementations MAY
      *     use the defaults as suggested in the HTTP specification.
      * @return static
-     * @throws \InvalidArgumentException For invalid status code arguments.
+     * @throws InvalidArgumentException For invalid status code arguments.
      */
     public function withStatus($code, $reasonPhrase = '')
     {
@@ -209,7 +211,7 @@ class Response extends Message implements ResponseInterface
      *
      * @param  int $status HTTP status code.
      * @return int
-     * @throws \InvalidArgumentException If an invalid HTTP status code is provided.
+     * @throws InvalidArgumentException If an invalid HTTP status code is provided.
      */
     protected function filterStatus($status)
     {

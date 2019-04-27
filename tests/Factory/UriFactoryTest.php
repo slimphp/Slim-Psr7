@@ -2,10 +2,11 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2018 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Tests\Psr7\Factory;
 
 use Interop\Http\Factory\UriFactoryTestCase;
@@ -73,9 +74,6 @@ class UriFactoryTest extends UriFactoryTestCase
         $this->assertEquals('', $uri->getUserInfo());
     }
 
-    /**
-     * @covers \Slim\Psr7\Factory\UriFactory::createUri
-     */
     public function testCreateFromString()
     {
         $uri = $this->createUriFactory()->createUri('https://example.com:8080/foo/bar?abc=123');
@@ -166,10 +164,6 @@ class UriFactoryTest extends UriFactoryTestCase
         $this->assertEquals('/f%27oo%20bar/baz', $uri->getPath());
     }
 
-    /**
-     * @covers \Slim\Psr7\Factory\UriFactory::createFromGlobals
-     * @ticket 1380
-     */
     public function testWithPathWhenBaseRootIsEmpty()
     {
         $globals = Environment::mock([

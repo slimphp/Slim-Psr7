@@ -2,15 +2,15 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Tests\Psr7;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Slim\Psr7\Environment;
 use Slim\Psr7\Uri;
 
 class UriTest extends TestCase
@@ -28,10 +28,6 @@ class UriTest extends TestCase
 
         return new Uri($scheme, $host, $port, $path, $query, $fragment, $user, $password);
     }
-
-    /********************************************************************************
-     * Scheme
-     *******************************************************************************/
 
     public function testGetScheme()
     {
@@ -76,10 +72,6 @@ class UriTest extends TestCase
     {
         $this->uriFactory()->withScheme([]);
     }
-
-    /********************************************************************************
-     * Authority
-     *******************************************************************************/
 
     public function testGetAuthorityWithUsernameAndPassword()
     {
@@ -198,10 +190,6 @@ class UriTest extends TestCase
         $this->uriFactory()->withPort('Foo');
     }
 
-    /********************************************************************************
-     * Path
-     *******************************************************************************/
-
     public function testGetPath()
     {
         $this->assertEquals('/foo/bar', $this->uriFactory()->getPath());
@@ -243,7 +231,6 @@ class UriTest extends TestCase
     }
 
     /**
-     * @covers Slim\Psr7\Uri::withPath
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Uri path must be a string
      */
@@ -251,10 +238,6 @@ class UriTest extends TestCase
     {
         $this->uriFactory()->withPath(['foo']);
     }
-
-    /********************************************************************************
-     * Query
-     *******************************************************************************/
 
     public function testGetQuery()
     {
@@ -290,7 +273,6 @@ class UriTest extends TestCase
     }
 
     /**
-     * @covers Slim\Psr7\Uri::withQuery
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Uri query must be a string
      */
@@ -298,10 +280,6 @@ class UriTest extends TestCase
     {
         $this->uriFactory()->withQuery(['foo']);
     }
-
-    /********************************************************************************
-     * Fragment
-     *******************************************************************************/
 
     public function testGetFragment()
     {
@@ -330,7 +308,6 @@ class UriTest extends TestCase
     }
 
     /**
-     * @covers Slim\Psr7\Uri::withFragment
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Uri fragment must be a string
      */
@@ -338,10 +315,6 @@ class UriTest extends TestCase
     {
         $this->uriFactory()->withFragment(['foo']);
     }
-
-    /********************************************************************************
-     * Helpers
-     *******************************************************************************/
 
     public function testToString()
     {

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Slim\Psr7\Factory;
 
+use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\UriFactoryInterface;
 use Slim\Psr7\Collection;
@@ -25,14 +26,14 @@ class UriFactory implements UriFactoryInterface
      *
      * @return UriInterface
      *
-     * @throws \InvalidArgumentException If the given URI cannot be parsed.
+     * @throws InvalidArgumentException If the given URI cannot be parsed.
      */
     public function createUri(string $uri = ''): UriInterface
     {
         $parts = parse_url($uri);
 
         if ($parts === false) {
-            throw new \InvalidArgumentException('URI cannot be parsed');
+            throw new InvalidArgumentException('URI cannot be parsed');
         }
 
         $scheme = $parts['scheme'] ?? '';
@@ -56,7 +57,7 @@ class UriFactory implements UriFactoryInterface
      *
      * @return Uri
      */
-    public function createFromGlobals(array $globals)
+    public function createFromGlobals(array $globals): Uri
     {
         $env = new Collection($globals);
 

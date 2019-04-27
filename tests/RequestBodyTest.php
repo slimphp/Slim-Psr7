@@ -2,31 +2,37 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
+use RuntimeException;
 use Slim\Psr7\RequestBody;
 
 class RequestBodyTest extends TestCase
 {
-    /** @var string */
     // @codingStandardsIgnoreStart
+    /**
+     * @var string
+     */
     protected $text = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
     // @codingStandardsIgnoreEnd
-    /** @var resource */
-    protected $stream;
-    /** @var RequestBody */
-    protected $body;
 
     /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
+     * @var resource
      */
+    protected $stream;
+
+    /**
+     * @var RequestBody
+     */
+    protected $body;
+
     protected function setUp()
     {
         $this->body = new RequestBody();
@@ -43,10 +49,6 @@ class RequestBodyTest extends TestCase
     }
 
     /**
-     * This method creates a new resource, and it seeds
-     * the resource with lorem ipsum text. The returned
-     * resource is readable, writable, and seekable.
-     *
      * @param string $mode
      *
      * @return resource
@@ -65,7 +67,7 @@ class RequestBodyTest extends TestCase
         $bodyStream = new ReflectionProperty($this->body, 'stream');
         $bodyStream->setAccessible(true);
 
-        $this->assertInternalType('resource', $bodyStream->getValue($this->body));
+        $this->assertEquals('resource', gettype($bodyStream->getValue($this->body)));
     }
 
     public function testConstructorSetsMetadata()
@@ -110,7 +112,7 @@ class RequestBodyTest extends TestCase
 
         $result = $this->body->detach();
 
-        $this->assertInternalType('resource', $result);
+        $this->assertEquals('resource', gettype($result));
         $this->assertNull($bodyStream->getValue($this->body));
         $this->assertNull($bodyMetadata->getValue($this->body));
         $this->assertNull($bodyReadable->getValue($this->body));
@@ -140,13 +142,12 @@ class RequestBodyTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testClose()
     {
         $this->body->close();
 
-        $this->assertAttributeEquals(null, 'stream', $this->body);
         $this->assertFalse($this->body->isReadable());
         $this->assertFalse($this->body->isWritable());
         $this->assertEquals('', (string)$this->body);
@@ -176,7 +177,7 @@ class RequestBodyTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testTellDetachedThrowsRuntimeException()
     {
@@ -258,7 +259,7 @@ class RequestBodyTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testSeekDetachedThrowsRuntimeException()
     {
@@ -275,7 +276,7 @@ class RequestBodyTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testRewindDetachedThrowsRuntimeException()
     {
@@ -289,7 +290,7 @@ class RequestBodyTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testReadDetachedThrowsRuntimeException()
     {
@@ -308,7 +309,7 @@ class RequestBodyTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testWriteDetachedThrowsRuntimeException()
     {
@@ -324,7 +325,7 @@ class RequestBodyTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      */
     public function testGetContentsDetachedThrowsRuntimeException()
     {

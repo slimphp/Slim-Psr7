@@ -2,17 +2,17 @@
 /**
  * Slim Framework (https://slimframework.com)
  *
- * @link      https://github.com/slimphp/Slim-Psr7
- * @copyright Copyright (c) 2011-2017 Josh Lockhart
- * @license   https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE (MIT License)
+ * @license https://github.com/slimphp/Slim-Psr7/blob/master/LICENSE.md (MIT License)
  */
+
+declare(strict_types=1);
+
 namespace Slim\Tests\Psr7\Mocks;
 
+use Psr\Http\Message\StreamInterface;
+use Slim\Psr7\Interfaces\HeadersInterface;
 use Slim\Psr7\Message;
 
-/**
- * Mock object for Slim\Psr7\MessageTest
- */
 class MessageStub extends Message
 {
     /**
@@ -25,14 +25,14 @@ class MessageStub extends Message
     /**
      * Headers
      *
-     * @var \Slim\Psr7\HeadersInterface
+     * @var HeadersInterface
      */
     public $headers;
 
     /**
      * Body object
      *
-     * @var \Psr\Http\Message\StreamInterface
+     * @var StreamInterface
      */
     public $body;
 }
