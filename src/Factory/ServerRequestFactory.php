@@ -93,10 +93,16 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         $uploadedFiles = UploadedFile::createFromGlobals($server);
 
         $request = new Request($method, $uri, $headers, $cookies, $server, $body, $uploadedFiles);
-        $type = $request->getHeader('Content-Type')[0] ?? null;
+        $contentTypes = $request->getHeader('Content-Type') ?? [];
 
-        if ($method === 'POST' && in_array($type, ['application/x-www-form-urlencoded', 'multipart/form-data'])) {
-            // parsed body must be $_POST
+        $parsedContentType = '';
+        foreach ($contentTypes as $contentType) {
+            $fragments = explode(';', $contentType);
+            $parsedContentType = current($fragments);
+        }
+
+        $contentTypesWithParsedBodies = ['application/x-www-form-urlencoded', 'multipart/form-data'];
+        if ($method === 'POST' && in_array($parsedContentType, $contentTypesWithParsedBodies)) {
             $request = $request->withParsedBody($_POST);
         }
 
