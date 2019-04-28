@@ -12,8 +12,8 @@ namespace Slim\Tests\Psr7;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Slim\Psr7\Body;
 use Slim\Psr7\Headers;
+use Slim\Psr7\Stream;
 use Slim\Tests\Psr7\Mocks\MessageStub;
 
 class MessageTest extends TestCase
@@ -163,12 +163,12 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @return MockObject|Body
+     * @return MockObject|Stream
      */
     protected function getBody()
     {
         return $this
-            ->getMockBuilder(Body::class)
+            ->getMockBuilder(Stream::class)
             ->disableOriginalConstructor()
             ->getMock();
     }

@@ -9,18 +9,15 @@ declare(strict_types=1);
 
 namespace Slim\Tests\Psr7;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
-use Slim\Psr7\Body;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Response;
+use Slim\Psr7\Stream;
 
 class ResponseTest extends TestCase
 {
-    /*******************************************************************************
-     * Create
-     ******************************************************************************/
-
     public function testConstructoWithDefaultArgs()
     {
         $response = new Response();
@@ -33,7 +30,7 @@ class ResponseTest extends TestCase
     public function testConstructorWithCustomArgs()
     {
         $headers = new Headers();
-        $body = new Body(fopen('php://temp', 'r+'));
+        $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(404, $headers, $body);
 
         $this->assertAttributeEquals(404, 'status', $response);
@@ -44,7 +41,7 @@ class ResponseTest extends TestCase
     public function testDeepCopyClone()
     {
         $headers = new Headers();
-        $body = new Body(fopen('php://temp', 'r+'));
+        $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(404, $headers, $body);
         $clone = clone $response;
 
@@ -61,10 +58,6 @@ class ResponseTest extends TestCase
 
         $this->assertFalse(property_exists($response, 'foo'));
     }
-
-    /*******************************************************************************
-     * Status
-     ******************************************************************************/
 
     public function testGetStatusCode()
     {
