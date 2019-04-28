@@ -122,14 +122,14 @@ class RequestBodyTest extends TestCase
 
     public function testToStringAttached()
     {
-        $this->assertEquals($this->text, (string)$this->body);
+        $this->assertEquals($this->text, (string) $this->body);
     }
 
     public function testToStringAttachedRewindsFirst()
     {
-        $this->assertEquals($this->text, (string)$this->body);
-        $this->assertEquals($this->text, (string)$this->body);
-        $this->assertEquals($this->text, (string)$this->body);
+        $this->assertEquals($this->text, (string) $this->body);
+        $this->assertEquals($this->text, (string) $this->body);
+        $this->assertEquals($this->text, (string) $this->body);
     }
 
     public function testToStringDetached()
@@ -138,7 +138,7 @@ class RequestBodyTest extends TestCase
         $bodyStream->setAccessible(true);
         $bodyStream->setValue($this->body, null);
 
-        $this->assertEquals('', (string)$this->body);
+        $this->assertEquals('', (string) $this->body);
     }
 
     /**
@@ -150,7 +150,7 @@ class RequestBodyTest extends TestCase
 
         $this->assertFalse($this->body->isReadable());
         $this->assertFalse($this->body->isWritable());
-        $this->assertEquals('', (string)$this->body);
+        $this->assertEquals('', (string) $this->body);
 
         $this->body->tell();
     }
@@ -305,7 +305,7 @@ class RequestBodyTest extends TestCase
         }
         $this->body->write('foo');
 
-        $this->assertEquals($this->text . 'foo', (string)$this->body);
+        $this->assertEquals($this->text . 'foo', (string) $this->body);
     }
 
     /**

@@ -13,7 +13,7 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use RuntimeException;
-use Slim\Psr7\Body;
+use Slim\Psr7\Stream;
 
 class BodyTest extends TestCase
 {
@@ -53,7 +53,7 @@ class BodyTest extends TestCase
     public function testConstructorAttachesStream()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $bodyStream = new ReflectionProperty($body, 'stream');
         $bodyStream->setAccessible(true);
 
@@ -66,13 +66,13 @@ class BodyTest extends TestCase
     public function testConstructorInvalidStream()
     {
         $this->stream = 'foo';
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
     }
 
     public function testGetMetadata()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
 
         $this->assertTrue(is_array($body->getMetadata()));
     }
@@ -80,7 +80,7 @@ class BodyTest extends TestCase
     public function testGetMetadataKey()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
 
         $this->assertEquals('php://temp', $body->getMetadata('uri'));
     }
@@ -88,7 +88,7 @@ class BodyTest extends TestCase
     public function testGetMetadataKeyNotFound()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
 
         $this->assertNull($body->getMetadata('foo'));
     }
@@ -96,7 +96,7 @@ class BodyTest extends TestCase
     public function testDetach()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
 
         $bodyStream = new ReflectionProperty($body, 'stream');
         $bodyStream->setAccessible(true);
@@ -126,36 +126,36 @@ class BodyTest extends TestCase
     public function testToStringAttached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
 
-        $this->assertEquals($this->text, (string)$body);
+        $this->assertEquals($this->text, (string) $body);
     }
 
     public function testToStringAttachedRewindsFirst()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
 
-        $this->assertEquals($this->text, (string)$body);
-        $this->assertEquals($this->text, (string)$body);
-        $this->assertEquals($this->text, (string)$body);
+        $this->assertEquals($this->text, (string) $body);
+        $this->assertEquals($this->text, (string) $body);
+        $this->assertEquals($this->text, (string) $body);
     }
 
     public function testToStringDetached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $bodyStream = new ReflectionProperty($body, 'stream');
         $bodyStream->setAccessible(true);
         $bodyStream->setValue($body, null);
 
-        $this->assertEquals('', (string)$body);
+        $this->assertEquals('', (string) $body);
     }
 
     public function testClose()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $body->close();
 
         $this->assertAttributeEquals(null, 'stream', $body);
@@ -165,7 +165,7 @@ class BodyTest extends TestCase
     public function testGetSizeAttached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
 
         $this->assertEquals(mb_strlen($this->text), $body->getSize());
     }
@@ -173,7 +173,7 @@ class BodyTest extends TestCase
     public function testGetSizeDetached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $bodyStream = new ReflectionProperty($body, 'stream');
         $bodyStream->setAccessible(true);
         $bodyStream->setValue($body, null);
@@ -184,7 +184,7 @@ class BodyTest extends TestCase
     public function testTellAttached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         fseek($this->stream, 10);
 
         $this->assertEquals(10, $body->tell());
@@ -196,7 +196,7 @@ class BodyTest extends TestCase
     public function testTellDetachedThrowsRuntimeException()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $bodyStream = new ReflectionProperty($body, 'stream');
         $bodyStream->setAccessible(true);
         $bodyStream->setValue($body, null);
@@ -207,7 +207,7 @@ class BodyTest extends TestCase
     public function testEofAttachedFalse()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         fseek($this->stream, 10);
 
         $this->assertFalse($body->eof());
@@ -216,7 +216,7 @@ class BodyTest extends TestCase
     public function testEofAttachedTrue()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         while (feof($this->stream) === false) {
             fread($this->stream, 1024);
         }
@@ -227,7 +227,7 @@ class BodyTest extends TestCase
     public function testEofDetached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $bodyStream = new ReflectionProperty($body, 'stream');
         $bodyStream->setAccessible(true);
         $bodyStream->setValue($body, null);
@@ -238,7 +238,7 @@ class BodyTest extends TestCase
     public function isReadableAttachedTrue()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
 
         $this->assertTrue($body->isReadable());
     }
@@ -246,7 +246,7 @@ class BodyTest extends TestCase
     public function isReadableAttachedFalse()
     {
         $stream = fopen('php://temp', 'w');
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
 
         $this->assertFalse($body->isReadable());
         fclose($stream);
@@ -255,7 +255,7 @@ class BodyTest extends TestCase
     public function testIsReadableDetached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $body->detach();
 
         $this->assertFalse($body->isReadable());
@@ -264,7 +264,7 @@ class BodyTest extends TestCase
     public function isWritableAttachedTrue()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
 
         $this->assertTrue($body->isWritable());
     }
@@ -272,7 +272,7 @@ class BodyTest extends TestCase
     public function isWritableAttachedFalse()
     {
         $stream = fopen('php://temp', 'r');
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
 
         $this->assertFalse($body->isWritable());
         fclose($stream);
@@ -281,7 +281,7 @@ class BodyTest extends TestCase
     public function testIsWritableDetached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $body->detach();
 
         $this->assertFalse($body->isWritable());
@@ -290,7 +290,7 @@ class BodyTest extends TestCase
     public function isSeekableAttachedTrue()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
 
         $this->assertTrue($body->isSeekable());
     }
@@ -300,7 +300,7 @@ class BodyTest extends TestCase
     public function testIsSeekableDetached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $body->detach();
 
         $this->assertFalse($body->isSeekable());
@@ -309,7 +309,7 @@ class BodyTest extends TestCase
     public function testSeekAttached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $body->seek(10);
 
         $this->assertEquals(10, ftell($this->stream));
@@ -321,7 +321,7 @@ class BodyTest extends TestCase
     public function testSeekDetachedThrowsRuntimeException()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $body->detach();
 
         $body->seek(10);
@@ -330,7 +330,7 @@ class BodyTest extends TestCase
     public function testRewindAttached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         fseek($this->stream, 10);
         $body->rewind();
 
@@ -343,7 +343,7 @@ class BodyTest extends TestCase
     public function testRewindDetachedThrowsRuntimeException()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $body->detach();
 
         $body->rewind();
@@ -352,7 +352,7 @@ class BodyTest extends TestCase
     public function testReadAttached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
 
         $this->assertEquals(substr($this->text, 0, 10), $body->read(10));
     }
@@ -363,7 +363,7 @@ class BodyTest extends TestCase
     public function testReadDetachedThrowsRuntimeException()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $body->detach();
 
         $body->read(10);
@@ -372,13 +372,13 @@ class BodyTest extends TestCase
     public function testWriteAttached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         while (feof($this->stream) === false) {
             fread($this->stream, 1024);
         }
         $body->write('foo');
 
-        $this->assertEquals($this->text . 'foo', (string)$body);
+        $this->assertEquals($this->text . 'foo', (string) $body);
     }
 
     /**
@@ -387,7 +387,7 @@ class BodyTest extends TestCase
     public function testWriteDetachedThrowsRuntimeException()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $body->detach();
 
         $body->write('foo');
@@ -396,7 +396,7 @@ class BodyTest extends TestCase
     public function testGetContentsAttached()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         fseek($this->stream, 10);
 
         $this->assertEquals(substr($this->text, 10), $body->getContents());
@@ -408,7 +408,7 @@ class BodyTest extends TestCase
     public function testGetContentsDetachedThrowsRuntimeException()
     {
         $this->stream = $this->resourceFactory();
-        $body = new Body($this->stream);
+        $body = new Stream($this->stream);
         $body->detach();
 
         $body->getContents();
