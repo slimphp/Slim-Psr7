@@ -9,15 +9,9 @@ declare(strict_types=1);
 
 namespace Slim\Psr7;
 
-/**
- * This class allows for mocking the global PHP environment.
- * This is particularly useful for unit testing.
- */
 class Environment
 {
     /**
-     * Create mock environment
-     *
      * @param  array $data Array of custom environment keys and values
      *
      * @return array

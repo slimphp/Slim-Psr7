@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace Slim\Tests\Psr7\Integration;
 
-use InvalidArgumentException;
 use Http\Psr7Test\StreamIntegrationTest;
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Slim\Psr7\Stream;
 

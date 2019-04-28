@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Slim\Tests\Psr7;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Slim\Psr7\Collection;
@@ -53,10 +54,6 @@ class RequestTest extends TestCase
         $request = $this->requestFactory();
         $this->assertEquals('example.com', $request->getHeaderLine('Host'));
     }
-
-    /*******************************************************************************
-     * Method
-     ******************************************************************************/
 
     public function testGetMethod()
     {
@@ -119,10 +116,6 @@ class RequestTest extends TestCase
 
         new Request(10, $uri, $headers, $cookies, $serverParams, $body);
     }
-
-    /*******************************************************************************
-     * URI
-     ******************************************************************************/
 
     public function testGetRequestTarget()
     {
@@ -229,10 +222,6 @@ class RequestTest extends TestCase
         $this->assertSame('example.com', $clone->getHeaderLine('Host'));
     }
 
-    /*******************************************************************************
-     * Cookies
-     ******************************************************************************/
-
     public function testGetCookieParams()
     {
         $shouldBe = [
@@ -250,10 +239,6 @@ class RequestTest extends TestCase
 
         $this->assertEquals(['type' => 'framework'], $clone->getCookieParams());
     }
-
-    /*******************************************************************************
-     * Query Params
-     ******************************************************************************/
 
     public function testGetQueryParams()
     {
@@ -300,14 +285,6 @@ class RequestTest extends TestCase
         $this->assertEquals([], $request->getQueryParams());
     }
 
-    /*******************************************************************************
-     * Uploaded files
-     ******************************************************************************/
-
-    /**
-     * @covers \Slim\Psr7\Request::withUploadedFiles
-     * @covers \Slim\Psr7\Request::getUploadedFiles
-     */
     public function testWithUploadedFiles()
     {
         $files = [new UploadedFile('foo.txt'), new UploadedFile('bar.txt')];
@@ -319,10 +296,6 @@ class RequestTest extends TestCase
         $this->assertEquals($prevUploaded, $request->getUploadedFiles());
         $this->assertEquals($files, $clone->getUploadedFiles());
     }
-
-    /*******************************************************************************
-     * Server Params
-     ******************************************************************************/
 
     public function testGetServerParams()
     {
@@ -346,14 +319,6 @@ class RequestTest extends TestCase
             }
         }
     }
-
-    /*******************************************************************************
-     * File Params
-     ******************************************************************************/
-
-    /*******************************************************************************
-     * Attributes
-     ******************************************************************************/
 
     public function testGetAttributes()
     {
@@ -399,14 +364,10 @@ class RequestTest extends TestCase
         $this->assertNull($clone->getAttribute('foo'));
     }
 
-    /*******************************************************************************
-     * Body
-     ******************************************************************************/
-
     public function testGetParsedBodyWhenAlreadyParsed()
     {
         $request = $this->requestFactory();
-        $prop = new ReflectionProperty($request, 'bodyParsed');
+        $prop = new ReflectionProperty($request, 'parsedBody');
         $prop->setAccessible(true);
         $prop->setValue($request, ['foo' => 'bar']);
 

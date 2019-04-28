@@ -11,12 +11,6 @@ namespace Slim\Psr7;
 
 use Psr\Http\Message\StreamInterface;
 
-/**
- * Represents a non-readable stream that whenever it is written pushes
- * the data back to the browser immediately.
- *
- * @link https://github.com/php-fig/http-message/blob/master/src/StreamInterface.php
- */
 class NonBufferedBody implements StreamInterface
 {
     /**

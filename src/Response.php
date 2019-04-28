@@ -15,35 +15,19 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Slim\Psr7\Interfaces\HeadersInterface;
 
-/**
- * Response
- *
- * This class represents an HTTP response. It manages
- * the response status, headers, and body
- * according to the PSR-7 standard.
- *
- * @link https://github.com/php-fig/http-message/blob/master/src/MessageInterface.php
- * @link https://github.com/php-fig/http-message/blob/master/src/ResponseInterface.php
- */
 class Response extends Message implements ResponseInterface
 {
     /**
-     * Status code
-     *
      * @var int
      */
     protected $status = StatusCodeInterface::STATUS_OK;
 
     /**
-     * Reason phrase
-     *
      * @var string
      */
     protected $reasonPhrase = '';
 
     /**
-     * Status codes and reason phrases
-     *
      * @var array
      */
     protected static $messages = [
@@ -179,6 +163,20 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getReasonPhrase()
+    {
+        if ($this->reasonPhrase) {
+            return $this->reasonPhrase;
+        }
+        if (isset(static::$messages[$this->status])) {
+            return static::$messages[$this->status];
+        }
+        return '';
+    }
+
+    /**
      * Filter HTTP status code.
      *
      * @param  int $status HTTP status code.
@@ -192,19 +190,5 @@ class Response extends Message implements ResponseInterface
         }
 
         return $status;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getReasonPhrase()
-    {
-        if ($this->reasonPhrase) {
-            return $this->reasonPhrase;
-        }
-        if (isset(static::$messages[$this->status])) {
-            return static::$messages[$this->status];
-        }
-        return '';
     }
 }

@@ -209,6 +209,6 @@ class UriFactoryTest extends UriFactoryTestCase
     public function testUriDistinguishZeroFromEmptyString()
     {
         $expected = 'https://0:0@0:1/0?0#0';
-        $this->assertSame($expected, (string)$this->createUriFactory()->createUri($expected));
+        $this->assertSame($expected, (string) $this->createUriFactory()->createUri($expected));
     }
 }

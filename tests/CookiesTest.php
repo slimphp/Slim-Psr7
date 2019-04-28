@@ -11,8 +11,8 @@ namespace Slim\Tests\Psr7;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use ReflectionProperty;
 use ReflectionClass;
+use ReflectionProperty;
 use Slim\Psr7\Cookies;
 use stdClass;
 

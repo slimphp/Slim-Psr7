@@ -12,39 +12,23 @@ namespace Slim\Psr7;
 use ArrayIterator;
 use Slim\Psr7\Interfaces\CollectionInterface;
 
-/**
- * Collection
- *
- * This class provides a common interface used by many other
- * classes in a Slim application that manage "collections"
- * of data that must be inspected and/or manipulated
- */
 class Collection implements CollectionInterface
 {
     /**
-     * The source data
-     *
      * @var array
      */
     protected $data = [];
 
     /**
-     * Create new collection
-     *
      * @param array $items Pre-populate collection with this key-value array
      */
     public function __construct(array $items = [])
     {
-        foreach ($items as $key => $value) {
-            $this->set($key, $value);
-        }
+        $this->replace($items);
     }
 
     /**
-     * Set collection item
-     *
-     * @param string $key   The data key
-     * @param mixed  $value The data value
+     * {@inheritdoc}
      */
     public function set($key, $value)
     {
@@ -52,12 +36,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Get collection item for key
-     *
-     * @param string $key     The data key
-     * @param mixed  $default The default value to return if data key does not exist
-     *
-     * @return mixed The key's value, or the default value
+     * {@inheritdoc}
      */
     public function get($key, $default = null)
     {
@@ -65,9 +44,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Add item to collection
-     *
-     * @param array $items Key-value array of data to append to this collection
+     * {@inheritdoc}
      */
     public function replace(array $items)
     {
@@ -77,9 +54,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Get all items in collection
-     *
-     * @return array The collection's source data
+     * {@inheritdoc}
      */
     public function all()
     {
@@ -87,9 +62,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Get collection keys
-     *
-     * @return array The collection's source data keys
+     * {@inheritdoc}
      */
     public function keys()
     {
@@ -97,11 +70,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Does this collection have a given key?
-     *
-     * @param string $key The data key
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function has($key)
     {
@@ -109,9 +78,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Remove item from collection
-     *
-     * @param string $key The data key
+     * {@inheritdoc}
      */
     public function remove($key)
     {
@@ -119,7 +86,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Remove all items from collection
+     * {@inheritdoc}
      */
     public function clear()
     {
@@ -127,11 +94,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Does this collection have a given key?
-     *
-     * @param  string $key The data key
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function offsetExists($key)
     {
@@ -139,11 +102,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Get collection item for key
-     *
-     * @param string $key The data key
-     *
-     * @return mixed The key's value, or the default value
+     * {@inheritdoc}
      */
     public function offsetGet($key)
     {
@@ -151,10 +110,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Set collection item
-     *
-     * @param string $key   The data key
-     * @param mixed  $value The data value
+     * {@inheritdoc}
      */
     public function offsetSet($key, $value)
     {
@@ -162,9 +118,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Remove item from collection
-     *
-     * @param string $key The data key
+     * {@inheritdoc}
      */
     public function offsetUnset($key)
     {
@@ -172,9 +126,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Get number of items in collection
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function count()
     {
@@ -182,9 +134,7 @@ class Collection implements CollectionInterface
     }
 
     /**
-     * Get collection iterator
-     *
-     * @return \ArrayIterator
+     * {@inheritdoc}
      */
     public function getIterator()
     {
