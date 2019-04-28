@@ -1,8 +1,9 @@
 .DS_Store
 .idea
 .tmp
-clover.xml
+tests
 composer.lock
-coverage
 phpunit.xml
+clover.xml
 vendor
+coverage
