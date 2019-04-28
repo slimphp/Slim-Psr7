@@ -101,8 +101,8 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
             $parsedContentType = current($fragments);
         }
 
-        if ($method === 'POST' && in_array($parsedContentType, ['application/x-www-form-urlencoded', 'multipart/form-data'])) {
-            // parsed body must be $_POST
+        $contentTypesWithParsedBodies = ['application/x-www-form-urlencoded', 'multipart/form-data'];
+        if ($method === 'POST' && in_array($parsedContentType, $contentTypesWithParsedBodies)) {
             $request = $request->withParsedBody($_POST);
         }
 
