@@ -12,21 +12,14 @@ declare(strict_types=1);
 namespace Slim\Psr7\Factory;
 
 use Fig\Http\Message\StatusCodeInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Psr\Http\Message\ResponseInterface;
 use Slim\Psr7\Response;
 
 class ResponseFactory implements ResponseFactoryInterface
 {
     /**
-     * Create a new response.
-     *
-     * @param int $code HTTP status code; defaults to 200
-     * @param string $reasonPhrase Reason phrase to associate with status code
-     *     in generated response; if none is provided implementations MAY use
-     *     the defaults as suggested in the HTTP specification.
-     *
-     * @return ResponseInterface
+     * {@inheritdoc}
      */
     public function createResponse(
         int $code = StatusCodeInterface::STATUS_OK,

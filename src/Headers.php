@@ -11,19 +11,6 @@ namespace Slim\Psr7;
 
 use Slim\Psr7\Interfaces\HeadersInterface;
 
-/**
- * Headers
- *
- * This class represents a collection of HTTP headers
- * that is used in both the HTTP request and response objects.
- * It also enables header name case-insensitivity when
- * getting or setting a header value.
- *
- * Each HTTP header can have multiple values. This class
- * stores values into an array for each header name. When
- * you request a header value, you receive an array of values
- * for that header.
- */
 class Headers extends Collection implements HeadersInterface
 {
     /**
@@ -56,7 +43,7 @@ class Headers extends Collection implements HeadersInterface
             $key = strtoupper($key);
             if (isset(static::$special[$key]) || strpos($key, 'HTTP_') === 0) {
                 if ($key !== 'HTTP_CONTENT_LENGTH') {
-                    $data[self::reconstructOriginalKey($key)] =  $value;
+                    $data[self::reconstructOriginalKey($key)] = $value;
                 }
             }
         }
@@ -131,8 +118,8 @@ class Headers extends Collection implements HeadersInterface
     /**
      * Get HTTP header value
      *
-     * @param  string  $key     The case-insensitive header name
-     * @param  mixed   $default The default value if key does not exist
+     * @param  string $key     The case-insensitive header name
+     * @param  mixed  $default The default value if key does not exist
      *
      * @return string[]
      */
@@ -148,8 +135,8 @@ class Headers extends Collection implements HeadersInterface
     /**
      * Get HTTP header key as originally specified
      *
-     * @param  string   $key     The case-insensitive header name
-     * @param  mixed    $default The default value if key does not exist
+     * @param  string $key     The case-insensitive header name
+     * @param  mixed  $default The default value if key does not exist
      *
      * @return string
      */

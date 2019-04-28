@@ -44,7 +44,7 @@ class UploadedFilesTest extends TestCase
      */
     protected function generateNewTmpFile()
     {
-        $filename = './php'.microtime();
+        $filename = './php' . microtime();
 
         $fh = fopen($filename, "w");
         fwrite($fh, "12345678");
@@ -98,10 +98,10 @@ class UploadedFilesTest extends TestCase
     {
         $attr = [
             'tmp_name' => self::$filename,
-            'name'     => 'my-avatar.txt',
-            'size'     => 8,
-            'type'     => 'text/plain',
-            'error'    => 0,
+            'name' => 'my-avatar.txt',
+            'size' => 8,
+            'type' => 'text/plain',
+            'error' => 0,
         ];
 
         $uploadedFile = new UploadedFile(
@@ -247,10 +247,10 @@ class UploadedFilesTest extends TestCase
                 [
                     'avatar' => [
                         'tmp_name' => 'phpUxcOty',
-                        'name'     => 'my-avatar.png',
-                        'size'     => 90996,
-                        'type'     => 'image/png',
-                        'error'    => 0,
+                        'name' => 'my-avatar.png',
+                        'size' => 90996,
+                        'type' => 'image/png',
+                        'error' => 0,
                     ],
                 ],
                 // expected format of array
@@ -264,10 +264,10 @@ class UploadedFilesTest extends TestCase
                 [
                     'avatar' => [
                         'tmp_name' => 'phpUxcOty',
-                        'name'     => 'my-avatar.png',
-                        'size'     => 90996,
-                        'type'     => 'image/png',
-                        'error'    => 7,
+                        'name' => 'my-avatar.png',
+                        'size' => 90996,
+                        'type' => 'image/png',
+                        'error' => 7,
                     ],
                 ],
                 // expected format of array
@@ -342,15 +342,15 @@ class UploadedFilesTest extends TestCase
                                 0 => __DIR__ . DIRECTORY_SEPARATOR . 'file0.txt',
                                 1 => __DIR__ . DIRECTORY_SEPARATOR . 'file1.html',
                             ],
-                            'name'     => [
+                            'name' => [
                                 0 => 'file0.txt',
                                 1 => 'file1.html',
                             ],
-                            'type'     => [
+                            'type' => [
                                 0 => 'text/plain',
                                 1 => 'text/html',
                             ],
-                            'size'     => [
+                            'size' => [
                                 0 => 0,
                                 1 => 0,
                             ],
@@ -364,9 +364,9 @@ class UploadedFilesTest extends TestCase
                             'avatars' =>
                                 [
                                     'tmp_name' => [],
-                                    'name'     => [],
-                                    'type'     => [],
-                                    'size'     => [],
+                                    'name' => [],
+                                    'type' => [],
+                                    'size' => [],
                                 ],
                         ],
                 ],

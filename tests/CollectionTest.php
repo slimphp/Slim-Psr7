@@ -45,7 +45,7 @@ class CollectionTest extends TestCase
     {
         $this->bag->set('foo', 'bar');
         $this->assertArrayHasKey('foo', $this->property->getValue($this->bag));
-        $bag =  $this->property->getValue($this->bag);
+        $bag = $this->property->getValue($this->bag);
         $this->assertEquals('bar', $bag['foo']);
     }
 

@@ -9,9 +9,6 @@ declare(strict_types=1);
 
 namespace Slim\Psr7;
 
-/**
- * Provides a PSR-7 implementation of a reusable raw request body
- */
 class RequestBody extends Stream
 {
     public function __construct()

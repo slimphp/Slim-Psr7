@@ -76,7 +76,7 @@ class Cookies implements CookiesInterface
     public function set($name, $value)
     {
         if (!is_array($value)) {
-            $value = ['value' => (string)$value];
+            $value = ['value' => (string) $value];
         }
         $this->responseCookies[$name] = array_replace($this->defaults, $value);
     }
@@ -118,7 +118,7 @@ class Cookies implements CookiesInterface
             if (is_string($properties['expires'])) {
                 $timestamp = strtotime($properties['expires']);
             } else {
-                $timestamp = (int)$properties['expires'];
+                $timestamp = (int) $properties['expires'];
             }
             if ($timestamp !== 0) {
                 $result .= '; expires=' . gmdate('D, d-M-Y H:i:s e', $timestamp);

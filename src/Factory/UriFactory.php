@@ -12,21 +12,15 @@ declare(strict_types=1);
 namespace Slim\Psr7\Factory;
 
 use InvalidArgumentException;
-use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\UriFactoryInterface;
+use Psr\Http\Message\UriInterface;
 use Slim\Psr7\Collection;
 use Slim\Psr7\Uri;
 
 class UriFactory implements UriFactoryInterface
 {
     /**
-     * Create a new URI.
-     *
-     * @param string $uri
-     *
-     * @return UriInterface
-     *
-     * @throws InvalidArgumentException If the given URI cannot be parsed.
+     * {@inheritdoc}
      */
     public function createUri(string $uri = ''): UriInterface
     {
@@ -82,12 +76,12 @@ class UriFactory implements UriFactoryInterface
             $host = $matches[1];
 
             if (isset($matches[2])) {
-                $port = (int)substr($matches[2], 1);
+                $port = (int) substr($matches[2], 1);
             }
         } else {
             $pos = strpos($host, ':');
             if ($pos !== false) {
-                $port = (int)substr($host, $pos + 1);
+                $port = (int) substr($host, $pos + 1);
                 $host = strstr($host, ':', true);
             }
         }

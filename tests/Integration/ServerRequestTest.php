@@ -9,9 +9,9 @@ declare(strict_types=1);
 
 namespace Slim\Tests\Psr7\Integration;
 
+use Http\Psr7Test\ServerRequestIntegrationTest;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Request;
-use Http\Psr7Test\ServerRequestIntegrationTest;
 
 class ServerRequestTest extends ServerRequestIntegrationTest
 {
