@@ -65,7 +65,7 @@ class Cookies implements CookiesInterface
     /**
      * {@inheritdoc}
      */
-    public function get($name, $default = null)
+    public function get(string $name, $default = null)
     {
         return isset($this->requestCookies[$name]) ? $this->requestCookies[$name] : $default;
     }
@@ -73,10 +73,10 @@ class Cookies implements CookiesInterface
     /**
      * {@inheritdoc}
      */
-    public function set($name, $value)
+    public function set(string $name, $value)
     {
         if (!is_array($value)) {
-            $value = ['value' => (string) $value];
+            $value = ['value' => $value];
         }
         $this->responseCookies[$name] = array_replace($this->defaults, $value);
     }
@@ -120,7 +120,7 @@ class Cookies implements CookiesInterface
             } else {
                 $timestamp = (int) $properties['expires'];
             }
-            if ($timestamp !== 0) {
+            if ($timestamp && $timestamp !== 0) {
                 $result .= '; expires=' . gmdate('D, d-M-Y H:i:s e', $timestamp);
             }
         }
@@ -150,11 +150,11 @@ class Cookies implements CookiesInterface
      */
     public static function parseHeader($header)
     {
-        if (is_array($header) === true) {
+        if (is_array($header)) {
             $header = isset($header[0]) ? $header[0] : '';
         }
 
-        if (is_string($header) === false) {
+        if (!is_string($header)) {
             throw new InvalidArgumentException('Cannot parse Cookie data. Header value must be a string.');
         }
 
@@ -162,15 +162,17 @@ class Cookies implements CookiesInterface
         $pieces = preg_split('@[;]\s*@', $header);
         $cookies = [];
 
-        foreach ($pieces as $cookie) {
-            $cookie = explode('=', $cookie, 2);
+        if (is_array($pieces)) {
+            foreach ($pieces as $cookie) {
+                $cookie = explode('=', $cookie, 2);
 
-            if (count($cookie) === 2) {
-                $key = urldecode($cookie[0]);
-                $value = urldecode($cookie[1]);
+                if (count($cookie) === 2) {
+                    $key = urldecode($cookie[0]);
+                    $value = urldecode($cookie[1]);
 
-                if (!isset($cookies[$key])) {
-                    $cookies[$key] = $value;
+                    if (!isset($cookies[$key])) {
+                        $cookies[$key] = $value;
+                    }
                 }
             }
         }

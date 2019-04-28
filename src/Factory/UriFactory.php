@@ -84,12 +84,12 @@ class UriFactory implements UriFactoryInterface
             }
         }
 
-        $requestUri = \current(\explode('?', $env->get('REQUEST_URI', '')));
+        $requestUri = current(explode('?', $env->get('REQUEST_URI', '')));
 
         // Query string
         $queryString = $env->get('QUERY_STRING', '');
         if ($queryString === '') {
-            $queryString = parse_url('http://example.com' . $env->get('REQUEST_URI', ''), PHP_URL_QUERY);
+            $queryString = parse_url('http://example.com' . $env->get('REQUEST_URI', ''), PHP_URL_QUERY) ?? '';
         }
 
         // Fragment

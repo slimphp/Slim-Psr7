@@ -14,10 +14,10 @@ use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use Slim\Psr7\Collection;
 use Slim\Psr7\Environment;
+use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Factory\UriFactory;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Request;
-use Slim\Psr7\RequestBody;
 use Slim\Psr7\UploadedFile;
 use Slim\Psr7\Uri;
 
@@ -34,7 +34,7 @@ class RequestTest extends TestCase
             'id' => '123',
         ];
         $serverParams = $env;
-        $body = new RequestBody();
+        $body = (new StreamFactory())->createStream();
         $uploadedFiles = UploadedFile::createFromGlobals($env);
         $request = new Request('GET', $uri, $headers, $cookies, $serverParams, $body, $uploadedFiles);
 
@@ -98,7 +98,7 @@ class RequestTest extends TestCase
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
-        $body = new RequestBody();
+        $body = (new StreamFactory())->createStream();
 
         new Request('B@R', $uri, $headers, $cookies, $serverParams, $body);
     }
@@ -112,7 +112,7 @@ class RequestTest extends TestCase
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
-        $body = new RequestBody();
+        $body = (new StreamFactory())->createStream();
 
         new Request(10, $uri, $headers, $cookies, $serverParams, $body);
     }
@@ -163,7 +163,7 @@ class RequestTest extends TestCase
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
-        $body = new RequestBody();
+        $body = (new StreamFactory())->createStream();
         $request = new Request('GET', $uri, $headers, $cookies, $serverParams, $body);
 
         $this->assertSame($uri, $request->getUri());
@@ -179,7 +179,7 @@ class RequestTest extends TestCase
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
-        $body = new RequestBody();
+        $body = (new StreamFactory())->createStream();
         $request = new Request('GET', $uri1, $headers, $cookies, $serverParams, $body);
         $clone = $request->withUri($uri2);
 
@@ -201,7 +201,7 @@ class RequestTest extends TestCase
         $headers = new Headers();
         $cookies = [];
         $serverParams = [];
-        $body = new RequestBody();
+        $body = (new StreamFactory())->createStream();
         $request = new Request('GET', $uri1, $headers, $cookies, $serverParams, $body);
 
         $clone = $request->withUri($uri2, true);
@@ -399,7 +399,7 @@ class RequestTest extends TestCase
         $headers->set('Content-Type', 'application/x-www-form-urlencoded;charset=utf8');
         $cookies = [];
         $serverParams = [];
-        $body = new RequestBody();
+        $body = (new StreamFactory())->createStream();
         $body->write('foo=bar');
         $request = new Request($method, $uri, $headers, $cookies, $serverParams, $body);
 
@@ -416,7 +416,7 @@ class RequestTest extends TestCase
         $headers->set('Content-Type', 'application/x-www-form-urlencoded;charset=utf8');
         $cookies = [];
         $serverParams = [];
-        $body = new RequestBody();
+        $body = (new StreamFactory())->createStream();
         $body->write('foo=bar');
         $request = new Request($method, $uri, $headers, $cookies, $serverParams, $body);
 

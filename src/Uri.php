@@ -71,21 +71,21 @@ class Uri implements UriInterface
      * @param string $password Uri password.
      */
     public function __construct(
-        $scheme,
-        $host,
-        $port = null,
-        $path = '/',
-        $query = '',
-        $fragment = '',
-        $user = '',
-        $password = ''
+        string $scheme,
+        string $host,
+        int $port = null,
+        string $path = '/',
+        string $query = '',
+        string $fragment = '',
+        string $user = '',
+        string $password = ''
     ) {
         $this->scheme = $this->filterScheme($scheme);
         $this->host = $this->filterHost($host);
         $this->port = $this->filterPort($port);
         $this->path = $this->filterPath($path);
         $this->query = $this->filterQuery($query);
-        $this->fragment = $this->filterQuery($fragment);
+        $this->fragment = $this->filterFragment($fragment);
         $this->user = $user;
         $this->password = $password;
     }
@@ -113,7 +113,7 @@ class Uri implements UriInterface
     /**
      * Filter Uri scheme.
      *
-     * @param  string $scheme Raw Uri scheme.
+     * @param  mixed $scheme Raw Uri scheme.
      * @return string
      *
      * @throws InvalidArgumentException If the Uri scheme is not a string.
@@ -121,15 +121,15 @@ class Uri implements UriInterface
      */
     protected function filterScheme($scheme)
     {
+        if (!is_string($scheme)) {
+            throw new InvalidArgumentException('Uri scheme must be a string.');
+        }
+
         static $valid = [
             '' => true,
             'https' => true,
             'http' => true,
         ];
-
-        if (!is_string($scheme) && !method_exists($scheme, '__toString')) {
-            throw new InvalidArgumentException('Uri scheme must be a string');
-        }
 
         $scheme = str_replace('://', '', strtolower($scheme));
         if (!isset($valid[$scheme])) {
@@ -172,8 +172,9 @@ class Uri implements UriInterface
     {
         $clone = clone $this;
         $clone->user = $this->filterUserInfo($user);
+
         if ($clone->user !== '') {
-            $clone->password = isset($password) ? $this->filterUserInfo($password) : '';
+            $clone->password = $this->filterUserInfo($password);
         } else {
             $clone->password = '';
         }
@@ -184,18 +185,27 @@ class Uri implements UriInterface
     /**
      * Filters the user info string.
      *
-     * @param string $query The raw uri query string.
-     * @return string The percent-encoded query string.
+     * Returns the percent-encoded query string.
+     *
+     * @param string|null $info The raw uri query string.
+     *
+     * @return string
      */
-    protected function filterUserInfo($query)
+    protected function filterUserInfo(?string $info = null)
     {
-        return preg_replace_callback(
+        if (!is_string($info)) {
+            return '';
+        }
+
+        $match =  preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=]+|%(?![A-Fa-f0-9]{2}))/u',
             function ($match) {
                 return rawurlencode($match[0]);
             },
-            $query
+            $info
         );
+
+        return is_string($match) ? $match : '';
     }
 
     /**
@@ -223,13 +233,17 @@ class Uri implements UriInterface
      * If the supplied host is an IPv6 address, then it is converted to a reference
      * as per RFC 2373.
      *
-     * @param  string $host The host to filter.
+     * @param  mixed $host The host to filter.
      * @return string
      * @throws InvalidArgumentException for invalid host names.
      */
     protected function filterHost($host)
     {
-        if (!is_string($host) && !method_exists($host, '__toString')) {
+        if (is_object($host) && method_exists($host, '__toString')) {
+            $host = (string) $host;
+        }
+
+        if (!is_string($host)) {
             throw new InvalidArgumentException('Uri host must be a string');
         }
 
@@ -278,7 +292,7 @@ class Uri implements UriInterface
      *
      * @throws InvalidArgumentException If the port is invalid.
      */
-    protected function filterPort($port)
+    protected function filterPort($port): ?int
     {
         if (is_null($port) || (is_integer($port) && ($port >= 1 && $port <= 65535))) {
             return $port;
@@ -322,15 +336,17 @@ class Uri implements UriInterface
      * @return string       The RFC 3986 percent-encoded uri path.
      * @link   http://www.faqs.org/rfcs/rfc3986.html
      */
-    protected function filterPath($path)
+    protected function filterPath($path): string
     {
-        return preg_replace_callback(
+        $match = preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
             function ($match) {
                 return rawurlencode($match[0]);
             },
             $path
         );
+
+        return is_string($match) ? $match : '';
     }
 
     /**
@@ -346,31 +362,41 @@ class Uri implements UriInterface
      */
     public function withQuery($query)
     {
-        if (!is_string($query) && !method_exists($query, '__toString')) {
-            throw new InvalidArgumentException('Uri query must be a string');
-        }
-        $query = ltrim($query, '?');
+        $query = ltrim($this->filterQuery($query), '?');
         $clone = clone $this;
-        $clone->query = $this->filterQuery($query);
+        $clone->query = $query;
 
         return $clone;
     }
 
     /**
-     * Filters the query string or fragment of a URI.
+     * Filters the query string of a URI.
      *
-     * @param string $query The raw uri query string.
-     * @return string The percent-encoded query string.
+     * Returns the percent-encoded query string.
+     *
+     * @param mixed $query The raw uri query string.
+     *
+     * @return string
      */
-    protected function filterQuery($query)
+    protected function filterQuery($query): string
     {
-        return preg_replace_callback(
+        if (is_object($query) && method_exists($query, '__toString')) {
+            $query = (string) $query;
+        }
+
+        if (!is_string($query)) {
+            throw new InvalidArgumentException('Uri query must be a string.');
+        }
+
+        $match = preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
             function ($match) {
                 return rawurlencode($match[0]);
             },
             $query
         );
+
+        return is_string($match) ? $match : '';
     }
 
     /**
@@ -386,14 +412,43 @@ class Uri implements UriInterface
      */
     public function withFragment($fragment)
     {
-        if (!is_string($fragment) && !method_exists($fragment, '__toString')) {
-            throw new InvalidArgumentException('Uri fragment must be a string');
-        }
-        $fragment = ltrim($fragment, '#');
+        $fragment = $this->filterFragment($fragment);
         $clone = clone $this;
-        $clone->fragment = $this->filterQuery($fragment);
+        $clone->fragment = $fragment;
 
         return $clone;
+    }
+
+    /**
+     * Filters fragment of a URI.
+     *
+     * Returns the percent-encoded fragment.
+     *
+     * @param mixed $fragment The raw uri query string.
+     *
+     * @return string
+     */
+    protected function filterFragment($fragment): string
+    {
+        if (is_object($fragment) && method_exists($fragment, '__toString')) {
+            $fragment = (string) $fragment;
+        }
+
+        if (!is_string($fragment)) {
+            throw new InvalidArgumentException('Uri fragment must be a string.');
+        }
+
+        $fragment = ltrim($fragment, '#');
+
+        $match = preg_replace_callback(
+            '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
+            function ($match) {
+                return rawurlencode($match[0]);
+            },
+            $fragment
+        );
+
+        return is_string($match) ? $match : '';
     }
 
     /**

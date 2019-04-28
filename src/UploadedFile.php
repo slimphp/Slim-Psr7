@@ -13,6 +13,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
+use Slim\Psr7\Factory\StreamFactory;
 
 class UploadedFile implements UploadedFileInterface
 {
@@ -26,19 +27,19 @@ class UploadedFile implements UploadedFileInterface
     /**
      * The client-provided file name.
      *
-     * @var string
+     * @var string|null
      */
     protected $name;
 
     /**
      * The client-provided media type of the file.
      *
-     * @var string
+     * @var string|null
      */
     protected $type;
 
     /**
-     * @var int
+     * @var int|null
      */
     protected $size;
 
@@ -76,8 +77,14 @@ class UploadedFile implements UploadedFileInterface
      * @param int         $error The UPLOAD_ERR_XXX code representing the status of the upload.
      * @param bool        $sapi  Indicates if the upload is in a SAPI environment.
      */
-    public function __construct($file, $name = null, $type = null, $size = null, $error = UPLOAD_ERR_OK, $sapi = false)
-    {
+    public function __construct(
+        string $file,
+        ?string $name = null,
+        ?string $type = null,
+        ?int $size = null,
+        int $error = UPLOAD_ERR_OK,
+        bool $sapi = false
+    ) {
         $this->file = $file;
         $this->name = $name;
         $this->type = $type;
@@ -94,8 +101,9 @@ class UploadedFile implements UploadedFileInterface
         if ($this->moved) {
             throw new RuntimeException(sprintf('Uploaded file %s has already been moved', $this->name));
         }
-        if ($this->stream === null) {
-            $this->stream = new Stream(fopen($this->file, 'r'));
+
+        if (!$this->stream) {
+            $this->stream = (new StreamFactory())->createStreamFromFile($this->file);
         }
 
         return $this->stream;
@@ -178,11 +186,12 @@ class UploadedFile implements UploadedFileInterface
      *
      * @param array $globals The global server variables.
      *
-     * @return array|null A normalized tree of UploadedFile instances or null if none are provided.
+     * @return array A normalized tree of UploadedFile instances or null if none are provided.
      */
     public static function createFromGlobals(array $globals)
     {
         $env = new Collection($globals);
+
         if (is_array($env['slim.files']) && $env->has('slim.files')) {
             return $env['slim.files'];
         } elseif (!empty($_FILES)) {

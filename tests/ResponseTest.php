@@ -102,7 +102,7 @@ class ResponseTest extends TestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage ReasonPhrase must be a string
+     * @expectedExceptionMessage Response reason phrase must be a string
      */
     public function testWithStatusInvalidReasonPhraseThrowsException()
     {
@@ -126,12 +126,12 @@ class ResponseTest extends TestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage ReasonPhrase must be supplied for this code
+     * @expectedExceptionMessage Reason phrase must be supplied for this status code
      */
     public function testMustSetReasonPhraseForUnrecognisedCode()
     {
         $response = new Response();
-        $response = $response->withStatus(199);
+        $response->withStatus(199);
     }
 
     public function testSetReasonPhraseForUnrecognisedCode()
