@@ -10,11 +10,13 @@ declare(strict_types=1);
 namespace Slim\Tests\Psr7\Factory;
 
 use Interop\Http\Factory\ServerRequestFactoryTestCase;
+use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Slim\Psr7\Environment;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\UriFactory;
 use Slim\Psr7\UploadedFile;
+use stdClass;
 
 class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
 {
@@ -139,5 +141,23 @@ class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
         $request = ServerRequestFactory::createFromGlobals();
 
         $this->assertEquals($_POST, $request->getParsedBody());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testCreateServerRequestWithNullAsUri()
+    {
+        $env = Environment::mock();
+        $this->createServerRequestFactory()->createServerRequest('GET', null, $env);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testCreateServerRequestWithInvalidUriObject()
+    {
+        $env = Environment::mock();
+        $this->createServerRequestFactory()->createServerRequest('GET', new stdClass(), $env);
     }
 }
