@@ -421,7 +421,6 @@ class RequestTest extends TestCase
         $body->write('foo=bar');
         $request = new Request($method, $uri, $headers, $cookies, $serverParams, $body);
 
-
         $clone = $request->withParsedBody(null);
 
         $this->assertNull($clone->getParsedBody());

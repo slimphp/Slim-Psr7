@@ -35,10 +35,6 @@ class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
         return (new UriFactory())->createUri($uri);
     }
 
-    /*******************************************************************************
-     * Protocol
-     ******************************************************************************/
-
     public function testGetProtocolVersion()
     {
         $env = Environment::mock(['SERVER_PROTOCOL' => 'HTTP/1.0']);
@@ -127,5 +123,21 @@ class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
         $this->assertArrayHasKey('uploaded_file', $uploadedFiles);
         $this->assertInstanceOf(UploadedFile::class, $uploadedFiles['uploaded_file'][0]);
         $this->assertInstanceOf(UploadedFile::class, $uploadedFiles['uploaded_file'][1]);
+    }
+
+    public function testCreateFromGlobalsParsesBodyWithFragmentedContentType()
+    {
+        $_SERVER = Environment::mock([
+            'HTTP_CONTENT_TYPE' => 'application/x-www-form-urlencoded;charset=utf-8',
+            'REQUEST_METHOD' => 'POST',
+        ]);
+
+        $_POST = [
+            'def' => '456',
+        ];
+
+        $request = ServerRequestFactory::createFromGlobals();
+
+        $this->assertEquals($_POST, $request->getParsedBody());
     }
 }
