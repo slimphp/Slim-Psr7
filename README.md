@@ -22,10 +22,10 @@ PHP 7.0, or newer, is required.
 
 ## Tests
 
-To execute the test suite, you'll need phpunit.
+To execute the test suite, you'll need to clone the repository and install the dependencies.
 
 ```bash
-$ git clone https://github.com/slimphp/Slim
+$ git clone https://github.com/slimphp/Slim-Psr7
 $ composer install
 $ composer test
 ```
