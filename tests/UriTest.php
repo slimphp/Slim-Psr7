@@ -38,21 +38,21 @@ class UriTest extends TestCase
     {
         $uri = $this->uriFactory()->withScheme('http');
 
-        $this->assertAttributeEquals('http', 'scheme', $uri);
+        $this->assertEquals('http', $uri->getScheme());
     }
 
     public function testWithSchemeRemovesSuffix()
     {
         $uri = $this->uriFactory()->withScheme('http://');
 
-        $this->assertAttributeEquals('http', 'scheme', $uri);
+        $this->assertEquals('http', $uri->getScheme());
     }
 
     public function testWithSchemeEmpty()
     {
         $uri = $this->uriFactory()->withScheme('');
 
-        $this->assertAttributeEquals('', 'scheme', $uri);
+        $this->assertEquals('', $uri->getScheme());
     }
 
     /**
@@ -82,33 +82,29 @@ class UriTest extends TestCase
     {
         $uri = $this->uriFactory()->withUserInfo('bob', 'pass');
 
-        $this->assertAttributeEquals('bob', 'user', $uri);
-        $this->assertAttributeEquals('pass', 'password', $uri);
+        $this->assertEquals('bob:pass', $uri->getUserInfo());
     }
 
     public function testWithUserInfoEncodesCorrectly()
     {
         $uri = $this->uriFactory()->withUserInfo('bob@example.com', 'pass:word');
 
-        $this->assertAttributeEquals('bob%40example.com', 'user', $uri);
-        $this->assertAttributeEquals('pass%3Aword', 'password', $uri);
+        $this->assertEquals('bob%40example.com:pass%3Aword', $uri->getUserInfo());
     }
 
     public function testWithUserInfoRemovesPassword()
     {
         $uri = $this->uriFactory()->withUserInfo('bob');
 
-        $this->assertAttributeEquals('bob', 'user', $uri);
-        $this->assertAttributeEquals('', 'password', $uri);
+        $this->assertEquals('bob', $uri->getUserInfo());
     }
 
     public function testWithUserInfoRemovesInfo()
     {
         $uri = $this->uriFactory()->withUserInfo('bob', 'password');
-
         $uri = $uri->withUserInfo('');
-        $this->assertAttributeEquals('', 'user', $uri);
-        $this->assertAttributeEquals('', 'password', $uri);
+
+        $this->assertEquals('', $uri->getUserInfo());
     }
 
     public function testGetHost()
@@ -120,7 +116,7 @@ class UriTest extends TestCase
     {
         $uri = $this->uriFactory()->withHost('slimframework.com');
 
-        $this->assertAttributeEquals('slimframework.com', 'host', $uri);
+        $this->assertEquals('slimframework.com', $uri->getHost());
     }
 
     public function testFilterHost()
@@ -164,14 +160,14 @@ class UriTest extends TestCase
     {
         $uri = $this->uriFactory()->withPort(8000);
 
-        $this->assertAttributeEquals(8000, 'port', $uri);
+        $this->assertEquals(8000, $uri->getPort());
     }
 
     public function testWithPortNull()
     {
         $uri = $this->uriFactory()->withPort(null);
 
-        $this->assertAttributeEquals(null, 'port', $uri);
+        $this->assertEquals(null, $uri->getPort());
     }
 
     /**
@@ -199,35 +195,35 @@ class UriTest extends TestCase
     {
         $uri = $this->uriFactory()->withPath('/new');
 
-        $this->assertAttributeEquals('/new', 'path', $uri);
+        $this->assertEquals('/new', $uri->getPath());
     }
 
     public function testWithPathWithoutPrefix()
     {
         $uri = $this->uriFactory()->withPath('new');
 
-        $this->assertAttributeEquals('new', 'path', $uri);
+        $this->assertEquals('new', $uri->getPath());
     }
 
     public function testWithPathEmptyValue()
     {
         $uri = $this->uriFactory()->withPath('');
 
-        $this->assertAttributeEquals('', 'path', $uri);
+        $this->assertEquals('', $uri->getPath());
     }
 
     public function testWithPathUrlEncodesInput()
     {
         $uri = $this->uriFactory()->withPath('/includes?/new');
 
-        $this->assertAttributeEquals('/includes%3F/new', 'path', $uri);
+        $this->assertEquals('/includes%3F/new', $uri->getPath());
     }
 
     public function testWithPathDoesNotDoubleEncodeInput()
     {
         $uri = $this->uriFactory()->withPath('/include%25s/new');
 
-        $this->assertAttributeEquals('/include%25s/new', 'path', $uri);
+        $this->assertEquals('/include%25s/new', $uri->getPath());
     }
 
     /**
@@ -248,28 +244,28 @@ class UriTest extends TestCase
     {
         $uri = $this->uriFactory()->withQuery('xyz=123');
 
-        $this->assertAttributeEquals('xyz=123', 'query', $uri);
+        $this->assertEquals('xyz=123', $uri->getQuery());
     }
 
     public function testWithQueryRemovesPrefix()
     {
         $uri = $this->uriFactory()->withQuery('?xyz=123');
 
-        $this->assertAttributeEquals('xyz=123', 'query', $uri);
+        $this->assertEquals('xyz=123', $uri->getQuery());
     }
 
     public function testWithQueryEmpty()
     {
         $uri = $this->uriFactory()->withQuery('');
 
-        $this->assertAttributeEquals('', 'query', $uri);
+        $this->assertEquals('', $uri->getQuery());
     }
 
     public function testFilterQuery()
     {
         $uri = $this->uriFactory()->withQuery('?foobar=%match');
 
-        $this->assertAttributeEquals('foobar=%25match', 'query', $uri);
+        $this->assertEquals('foobar=%25match', $uri->getQuery());
     }
 
     /**
@@ -290,21 +286,21 @@ class UriTest extends TestCase
     {
         $uri = $this->uriFactory()->withFragment('other-fragment');
 
-        $this->assertAttributeEquals('other-fragment', 'fragment', $uri);
+        $this->assertEquals('other-fragment', $uri->getFragment());
     }
 
     public function testWithFragmentRemovesPrefix()
     {
         $uri = $this->uriFactory()->withFragment('#other-fragment');
 
-        $this->assertAttributeEquals('other-fragment', 'fragment', $uri);
+        $this->assertEquals('other-fragment', $uri->getFragment());
     }
 
     public function testWithFragmentEmpty()
     {
         $uri = $this->uriFactory()->withFragment('');
 
-        $this->assertAttributeEquals('', 'fragment', $uri);
+        $this->assertEquals('', $uri->getFragment());
     }
 
     /**

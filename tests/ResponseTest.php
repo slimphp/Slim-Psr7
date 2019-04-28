@@ -18,13 +18,19 @@ use Slim\Psr7\Stream;
 
 class ResponseTest extends TestCase
 {
-    public function testConstructoWithDefaultArgs()
+    public function testConstructorWithDefaultArgs()
     {
         $response = new Response();
 
-        $this->assertAttributeEquals(200, 'status', $response);
-        $this->assertAttributeInstanceOf('\Slim\Psr7\Headers', 'headers', $response);
-        $this->assertAttributeInstanceOf('\Psr\Http\Message\StreamInterface', 'body', $response);
+        $headersReflection = new ReflectionProperty($response, 'headers');
+        $headersReflection->setAccessible(true);
+
+        $bodyReflection = new ReflectionProperty($response, 'body');
+        $bodyReflection->setAccessible(true);
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertInstanceOf(Headers::class, $headersReflection->getValue($response));
+        $this->assertInstanceOf(Stream::class, $bodyReflection->getValue($response));
     }
 
     public function testConstructorWithCustomArgs()
@@ -33,9 +39,15 @@ class ResponseTest extends TestCase
         $body = new Stream(fopen('php://temp', 'r+'));
         $response = new Response(404, $headers, $body);
 
-        $this->assertAttributeEquals(404, 'status', $response);
-        $this->assertAttributeSame($headers, 'headers', $response);
-        $this->assertAttributeSame($body, 'body', $response);
+        $headersReflection = new ReflectionProperty($response, 'headers');
+        $headersReflection->setAccessible(true);
+
+        $bodyReflection = new ReflectionProperty($response, 'body');
+        $bodyReflection->setAccessible(true);
+
+        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertSame($headers, $headersReflection->getValue($response));
+        $this->assertSame($body, $bodyReflection->getValue($response));
     }
 
     public function testDeepCopyClone()
@@ -45,10 +57,12 @@ class ResponseTest extends TestCase
         $response = new Response(404, $headers, $body);
         $clone = clone $response;
 
-        $this->assertAttributeEquals('1.1', 'protocolVersion', $clone);
-        $this->assertAttributeEquals(404, 'status', $clone);
-        $this->assertAttributeNotSame($headers, 'headers', $clone);
-        $this->assertAttributeSame($body, 'body', $clone);
+        $headersReflection = new ReflectionProperty($response, 'headers');
+        $headersReflection->setAccessible(true);
+
+        $this->assertEquals(404, $clone->getStatusCode());
+        $this->assertEquals('1.1', $clone->getProtocolVersion());
+        $this->assertNotSame($headers, $headersReflection->getValue($clone));
     }
 
     public function testDisableSetter()
@@ -74,7 +88,7 @@ class ResponseTest extends TestCase
         $response = new Response();
         $clone = $response->withStatus(302);
 
-        $this->assertAttributeEquals(302, 'status', $clone);
+        $this->assertEquals(302, $clone->getStatusCode());
     }
 
     /**

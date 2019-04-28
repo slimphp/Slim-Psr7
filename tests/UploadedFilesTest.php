@@ -113,7 +113,6 @@ class UploadedFilesTest extends TestCase
             false
         );
 
-
         $this->assertEquals($attr['name'], $uploadedFile->getClientFilename());
         $this->assertEquals($attr['type'], $uploadedFile->getClientMediaType());
         $this->assertEquals($attr['size'], $uploadedFile->getSize());
