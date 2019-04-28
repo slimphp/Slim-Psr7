@@ -158,8 +158,10 @@ class BodyTest extends TestCase
         $body = new Stream($this->stream);
         $body->close();
 
-        $this->assertAttributeEquals(null, 'stream', $body);
-        //$this->assertFalse($body->isAttached()); #1269
+        $bodyStream = new ReflectionProperty($body, 'stream');
+        $bodyStream->setAccessible(true);
+
+        $this->assertNull($bodyStream->getValue($body));
     }
 
     public function testGetSizeAttached()

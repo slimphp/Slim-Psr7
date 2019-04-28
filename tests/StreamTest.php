@@ -28,7 +28,8 @@ class StreamTest extends TestCase
     public function tearDown()
     {
         if ($this->pipeFh != null) {
-            stream_get_contents($this->pipeFh); // prevent broken pipe error message
+            // prevent broken pipe error message
+            stream_get_contents($this->pipeFh);
         }
     }
 
@@ -101,7 +102,9 @@ class StreamTest extends TestCase
     {
         $this->openPipeStream();
 
-        stream_get_contents($this->pipeFh); // prevent broken pipe error message
+        // prevent broken pipe error message
+        stream_get_contents($this->pipeFh);
+
         $this->pipeStream->close();
         $this->pipeFh = null;
 
@@ -123,11 +126,6 @@ class StreamTest extends TestCase
         $this->assertSame('12', $contents);
     }
 
-    /**
-     * Opens the pipe stream
-     *
-     * @see StreamTest::pipeStream
-     */
     private function openPipeStream()
     {
         $this->pipeFh = popen('echo 12', 'r');

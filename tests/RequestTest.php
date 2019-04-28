@@ -64,21 +64,21 @@ class RequestTest extends TestCase
     {
         $request = $this->requestFactory()->withMethod('PUT');
 
-        $this->assertAttributeEquals('PUT', 'method', $request);
+        $this->assertEquals('PUT', $request->getMethod());
     }
 
     public function testWithMethodCaseSensitive()
     {
         $request = $this->requestFactory()->withMethod('pOsT');
 
-        $this->assertAttributeEquals('pOsT', 'method', $request);
+        $this->assertEquals('pOsT', $request->getMethod());
     }
 
     public function testWithAllAllowedCharactersMethod()
     {
         $request = $this->requestFactory()->withMethod("!#$%&'*+.^_`|~09AZ-");
 
-        $this->assertAttributeEquals("!#$%&'*+.^_`|~09AZ-", 'method', $request);
+        $this->assertEquals("!#$%&'*+.^_`|~09AZ-", $request->getMethod());
     }
 
     /**
@@ -146,7 +146,7 @@ class RequestTest extends TestCase
     {
         $clone = $this->requestFactory()->withRequestTarget('/test?user=1');
 
-        $this->assertAttributeEquals('/test?user=1', 'requestTarget', $clone);
+        $this->assertEquals('/test?user=1', $clone->getRequestTarget());
     }
 
     /**
@@ -183,7 +183,7 @@ class RequestTest extends TestCase
         $request = new Request('GET', $uri1, $headers, $cookies, $serverParams, $body);
         $clone = $request->withUri($uri2);
 
-        $this->assertAttributeSame($uri2, 'uri', $clone);
+        $this->assertSame($uri2, $clone->getUri());
     }
 
     public function testWithUriPreservesHost()
@@ -402,7 +402,6 @@ class RequestTest extends TestCase
         $body = new RequestBody();
         $body->write('foo=bar');
         $request = new Request($method, $uri, $headers, $cookies, $serverParams, $body);
-
 
         $clone = $request->withParsedBody([]);
 
