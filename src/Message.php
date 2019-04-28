@@ -204,11 +204,10 @@ abstract class Message implements MessageInterface
         }
 
         foreach ($value as $v) {
-            if (!is_string($v) && !is_numeric($v)) {
+            if (!is_string($v)) {
                 throw new InvalidArgumentException('Header values must be strings or numeric');
             }
 
-            $v = (string) $v;
             if (preg_match("#(?:(?:(?<!\r)\n)|(?:\r(?!\n))|(?:\r\n(?![ \t])))#", $v)) {
                 throw new InvalidArgumentException("'$v' is not valid header value");
             }

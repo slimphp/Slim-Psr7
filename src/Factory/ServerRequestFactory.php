@@ -18,7 +18,6 @@ use Psr\Http\Message\UriInterface;
 use Slim\Psr7\Cookies;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Request;
-use Slim\Psr7\RequestBody;
 use Slim\Psr7\UploadedFile;
 
 class ServerRequestFactory implements ServerRequestFactoryInterface
@@ -87,7 +86,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         $uri = (new UriFactory())->createFromGlobals($server);
         $headers = Headers::createFromGlobals($server);
         $cookies = Cookies::parseHeader($headers->get('Cookie', []));
-        $body = new RequestBody();
+        $body = (new StreamFactory())->createStream();
         $uploadedFiles = UploadedFile::createFromGlobals($server);
 
         $request = new Request($method, $uri, $headers, $cookies, $server, $body, $uploadedFiles);

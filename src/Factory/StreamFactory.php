@@ -9,18 +9,27 @@ declare(strict_types=1);
 
 namespace Slim\Psr7\Factory;
 
+use InvalidArgumentException;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 use Slim\Psr7\Stream;
 
 class StreamFactory implements StreamFactoryInterface
 {
     /**
      * {@inheritdoc}
+     *
+     * @throws RuntimeException
      */
     public function createStream(string $content = ''): StreamInterface
     {
-        $resource = fopen('php://temp', 'r+');
+        $resource = fopen('php://temp', 'rw+');
+
+        if (!is_resource($resource)) {
+            throw new RuntimeException('StreamFactory::createStream() could not open temporary file stream.');
+        }
+
         fwrite($resource, $content);
         rewind($resource);
 
@@ -32,7 +41,15 @@ class StreamFactory implements StreamFactoryInterface
      */
     public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
     {
-        return $this->createStreamFromResource(fopen($filename, $mode));
+        $resource = fopen($filename, $mode);
+
+        if (!is_resource($resource)) {
+            throw new RuntimeException(
+                sprintf('StreamFactory::createStreamFromFile() could not create resource from file `%s`.', $filename)
+            );
+        }
+
+        return $this->createStreamFromResource($resource);
     }
 
     /**
@@ -40,6 +57,12 @@ class StreamFactory implements StreamFactoryInterface
      */
     public function createStreamFromResource($resource): StreamInterface
     {
+        if (!is_resource($resource)) {
+            throw new InvalidArgumentException(
+                'First argument of StreamFactory::createStreamFromResource() must be a resource.'
+            );
+        }
+
         return new Stream($resource);
     }
 }

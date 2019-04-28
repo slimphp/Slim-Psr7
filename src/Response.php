@@ -13,6 +13,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Interfaces\HeadersInterface;
 
 class Response extends Message implements ResponseInterface
@@ -114,7 +115,7 @@ class Response extends Message implements ResponseInterface
     ) {
         $this->status = $this->filterStatus($status);
         $this->headers = $headers ? $headers : new Headers();
-        $this->body = $body ? $body : new Stream(fopen('php://temp', 'r+'));
+        $this->body = $body ? $body : (new StreamFactory())->createStream();
     }
 
     /**
@@ -142,10 +143,7 @@ class Response extends Message implements ResponseInterface
     public function withStatus($code, $reasonPhrase = '')
     {
         $code = $this->filterStatus($code);
-
-        if (!is_string($reasonPhrase) && !method_exists($reasonPhrase, '__toString')) {
-            throw new InvalidArgumentException('ReasonPhrase must be a string');
-        }
+        $reasonPhrase = $this->filterReasonPhrase($reasonPhrase);
 
         $clone = clone $this;
         $clone->status = $code;
@@ -154,7 +152,7 @@ class Response extends Message implements ResponseInterface
         }
 
         if ($reasonPhrase === '') {
-            throw new InvalidArgumentException('ReasonPhrase must be supplied for this code');
+            throw new InvalidArgumentException('Reason phrase must be supplied for this status code.');
         }
 
         $clone->reasonPhrase = $reasonPhrase;
@@ -180,15 +178,39 @@ class Response extends Message implements ResponseInterface
      * Filter HTTP status code.
      *
      * @param  int $status HTTP status code.
+     *
      * @return int
+     *
      * @throws InvalidArgumentException If an invalid HTTP status code is provided.
      */
-    protected function filterStatus($status)
+    protected function filterStatus($status): int
     {
         if (!is_integer($status) || $status < StatusCodeInterface::STATUS_CONTINUE || $status > 599) {
-            throw new InvalidArgumentException('Invalid HTTP status code');
+            throw new InvalidArgumentException('Invalid HTTP status code.');
         }
 
         return $status;
+    }
+
+    /**
+     * Filter Reason Phrase
+     *
+     * @param mixed $reasonPhrase
+     *
+     * @return string
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function filterReasonPhrase($reasonPhrase = ''): string
+    {
+        if (is_object($reasonPhrase) && method_exists($reasonPhrase, '__toString')) {
+            $reasonPhrase = (string) $reasonPhrase;
+        }
+
+        if (!is_string($reasonPhrase)) {
+            throw new InvalidArgumentException('Response reason phrase must be a string.');
+        }
+
+        return $reasonPhrase;
     }
 }
