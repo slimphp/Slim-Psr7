@@ -78,7 +78,7 @@ class ResponseTest extends TestCase
         $response = new Response();
         $responseStatus = new ReflectionProperty($response, 'status');
         $responseStatus->setAccessible(true);
-        $responseStatus->setValue($response, '404');
+        $responseStatus->setValue($response, 404);
 
         $this->assertEquals(404, $response->getStatusCode());
     }
