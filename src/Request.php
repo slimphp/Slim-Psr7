@@ -101,10 +101,8 @@ class Request extends Message implements ServerRequestInterface
     }
 
     /**
-     * This method is applied to the cloned object
-     * after PHP performs an initial shallow-copy. This
-     * method completes a deep-copy by creating new objects
-     * for the cloned object's internal reference pointers.
+     * This method is applied to the cloned object after PHP performs an initial shallow-copy.
+     * This method completes a deep-copy by creating new objects for the cloned object's internal reference pointers.
      */
     public function __clone()
     {
@@ -116,7 +114,7 @@ class Request extends Message implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
@@ -137,10 +135,12 @@ class Request extends Message implements ServerRequestInterface
      * Validate the HTTP method
      *
      * @param  string $method
+     *
      * @return string
+     *
      * @throws InvalidArgumentException on invalid HTTP method.
      */
-    protected function filterMethod($method)
+    protected function filterMethod($method): string
     {
         if (!is_string($method)) {
             throw new InvalidArgumentException(sprintf(
@@ -162,7 +162,7 @@ class Request extends Message implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getRequestTarget()
+    public function getRequestTarget(): string
     {
         if ($this->requestTarget) {
             return $this->requestTarget;
@@ -193,6 +193,7 @@ class Request extends Message implements ServerRequestInterface
                 'Invalid request target provided; must be a string and cannot contain whitespace'
             );
         }
+
         $clone = clone $this;
         $clone->requestTarget = $requestTarget;
 
@@ -202,7 +203,7 @@ class Request extends Message implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getUri()
+    public function getUri(): UriInterface
     {
         return $this->uri;
     }
@@ -219,10 +220,10 @@ class Request extends Message implements ServerRequestInterface
             if ($uri->getHost() !== '') {
                 $clone->headers->set('Host', $uri->getHost());
             }
-        } else {
-            if ($uri->getHost() !== '' && (!$this->hasHeader('Host') || $this->getHeaderLine('Host') === '')) {
-                $clone->headers->set('Host', $uri->getHost());
-            }
+        } else if (($uri->getHost() !== '' && (!$this->hasHeader('Host'))
+            || $this->getHeaderLine('Host') === '')
+        ) {
+            $clone->headers->set('Host', $uri->getHost());
         }
 
         return $clone;
@@ -231,7 +232,7 @@ class Request extends Message implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getCookieParams()
+    public function getCookieParams(): array
     {
         return $this->cookies;
     }
@@ -250,7 +251,7 @@ class Request extends Message implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getQueryParams()
+    public function getQueryParams(): array
     {
         if (is_array($this->queryParams)) {
             return $this->queryParams;
@@ -279,7 +280,7 @@ class Request extends Message implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getUploadedFiles()
+    public function getUploadedFiles(): array
     {
         return $this->uploadedFiles;
     }
@@ -298,7 +299,7 @@ class Request extends Message implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getServerParams()
+    public function getServerParams(): array
     {
         return $this->serverParams;
     }
@@ -306,7 +307,7 @@ class Request extends Message implements ServerRequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes->all();
     }

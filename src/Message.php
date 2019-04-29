@@ -46,8 +46,10 @@ abstract class Message implements MessageInterface
      *
      * @param string $name  The property name
      * @param mixed  $value The property value
+     *
+     * @return void
      */
-    public function __set($name, $value)
+    public function __set($name, $value): void
     {
         // Do nothing
     }
@@ -55,7 +57,7 @@ abstract class Message implements MessageInterface
     /**
      * {@inheritdoc}
      */
-    public function getProtocolVersion()
+    public function getProtocolVersion(): string
     {
         return $this->protocolVersion;
     }
@@ -71,6 +73,7 @@ abstract class Message implements MessageInterface
                 . implode(', ', array_keys(self::$validProtocolVersions))
             );
         }
+
         $clone = clone $this;
         $clone->protocolVersion = $version;
 
@@ -80,7 +83,7 @@ abstract class Message implements MessageInterface
     /**
      * {@inheritdoc}
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers->all();
     }
@@ -88,7 +91,7 @@ abstract class Message implements MessageInterface
     /**
      * {@inheritdoc}
      */
-    public function hasHeader($name)
+    public function hasHeader($name): bool
     {
         return $this->headers->has($name);
     }
@@ -96,7 +99,7 @@ abstract class Message implements MessageInterface
     /**
      * {@inheritdoc}
      */
-    public function getHeader($name)
+    public function getHeader($name): array
     {
         return $this->headers->get($name, []);
     }
@@ -104,7 +107,7 @@ abstract class Message implements MessageInterface
     /**
      * {@inheritdoc}
      */
-    public function getHeaderLine($name)
+    public function getHeaderLine($name): string
     {
         return implode(',', $this->headers->get($name, []));
     }
@@ -163,7 +166,7 @@ abstract class Message implements MessageInterface
     /**
      * {@inheritdoc}
      */
-    public function getBody()
+    public function getBody(): StreamInterface
     {
         return $this->body;
     }
@@ -181,9 +184,12 @@ abstract class Message implements MessageInterface
 
     /**
      * @param string $name
+     *
      * @throws InvalidArgumentException
+     *
+     * @returns void
      */
-    protected function validateHeaderName($name)
+    protected function validateHeaderName($name): void
     {
         if (!is_string($name) || empty($name)) {
             throw new InvalidArgumentException('Header names must be a non empty strings');
@@ -196,13 +202,18 @@ abstract class Message implements MessageInterface
 
     /**
      * @param string|string[] $value
+     *
      * @throws InvalidArgumentException
+     *
+     * @return void
      */
-    protected function validateHeaderValue($value)
+    protected function validateHeaderValue($value): void
     {
         if (!is_array($value)) {
             $value = [$value];
-        } elseif (empty($value)) {
+        }
+
+        if (empty($value)) {
             throw new InvalidArgumentException('Header values must be non empty strings');
         }
 
@@ -214,6 +225,7 @@ abstract class Message implements MessageInterface
             if (preg_match("#(?:(?:(?<!\r)\n)|(?:\r(?!\n))|(?:\r\n(?![ \t])))#", $v)) {
                 throw new InvalidArgumentException("'$v' is not valid header value");
             }
+
             if (preg_match('/[^\x09\x0a\x0d\x20-\x7E\x80-\xFE]/', $v)) {
                 throw new InvalidArgumentException("'$v' is not valid header value");
             }

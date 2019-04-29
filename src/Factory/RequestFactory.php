@@ -55,7 +55,9 @@ class RequestFactory implements RequestFactoryInterface
     {
         if (is_string($uri)) {
             $uri = $this->uriFactory->createUri($uri);
-        } elseif (!$uri instanceof UriInterface) {
+        }
+
+        if (!$uri instanceof UriInterface) {
             throw new InvalidArgumentException('URI must either be string or instance of ' . UriInterface::class);
         }
 

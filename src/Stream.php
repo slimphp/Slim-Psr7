@@ -96,27 +96,17 @@ class Stream implements StreamInterface
     }
 
     /**
-     * Is a resource attached to this stream?
-     *
-     * Note: This method is not part of the PSR-7 standard.
-     *
-     * @return bool
-     */
-    protected function isAttached()
-    {
-        return is_resource($this->stream);
-    }
-
-    /**
      * Attach new resource to this object.
      *
-     * Note: This method is not part of the PSR-7 standard.
+     * @internal This method is not part of the PSR-7 standard.
      *
      * @param resource $stream A PHP resource handle.
      *
      * @throws InvalidArgumentException If argument is not a valid PHP resource.
+     *
+     * @return void
      */
-    protected function attach($stream)
+    protected function attach($stream): void
     {
         if (!is_resource($stream)) {
             throw new InvalidArgumentException(__METHOD__ . ' argument must be a valid PHP resource');
@@ -149,7 +139,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (!$this->stream) {
             return '';
@@ -166,7 +156,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function close()
+    public function close(): void
     {
         if ($this->stream) {
             if ($this->isPipe()) {
@@ -182,7 +172,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function getSize()
+    public function getSize(): ?int
     {
         if ($this->stream && !$this->size) {
             $stats = fstat($this->stream);
@@ -195,7 +185,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function tell()
+    public function tell(): int
     {
         $position = false;
 
@@ -213,7 +203,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function eof()
+    public function eof(): bool
     {
         return $this->stream ? feof($this->stream) : true;
     }
@@ -221,7 +211,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function isReadable()
+    public function isReadable(): bool
     {
         if ($this->readable === null) {
             if ($this->isPipe()) {
@@ -246,7 +236,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function isWritable()
+    public function isWritable(): bool
     {
         if ($this->writable === null) {
             $this->writable = false;
@@ -267,7 +257,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function isSeekable()
+    public function isSeekable(): bool
     {
         if ($this->seekable === null) {
             $this->seekable = false;
@@ -283,7 +273,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): void
     {
         if (!$this->isSeekable() || $this->stream && fseek($this->stream, $offset, $whence) === -1) {
             throw new RuntimeException('Could not seek in stream.');
@@ -293,7 +283,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function rewind()
+    public function rewind(): void
     {
         if (!$this->isSeekable() || $this->stream && rewind($this->stream) === false) {
             throw new RuntimeException('Could not rewind stream.');
@@ -303,7 +293,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function read($length)
+    public function read($length): string
     {
         $data = false;
 
@@ -340,7 +330,7 @@ class Stream implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function getContents()
+    public function getContents(): string
     {
         $contents = false;
 
@@ -358,11 +348,11 @@ class Stream implements StreamInterface
     /**
      * Returns whether or not the stream is a pipe.
      *
-     * Note: This method is not part of the PSR-7 standard.
+     * @internal This method is not part of the PSR-7 standard.
      *
      * @return bool
      */
-    public function isPipe()
+    public function isPipe(): bool
     {
         if ($this->isPipe === null) {
             $this->isPipe = false;

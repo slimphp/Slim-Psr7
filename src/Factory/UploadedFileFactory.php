@@ -23,16 +23,17 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
     public function createUploadedFile(
         StreamInterface $stream,
         int $size = null,
-        int $error = \UPLOAD_ERR_OK,
+        int $error = UPLOAD_ERR_OK,
         string $clientFilename = null,
         string $clientMediaType = null
     ): UploadedFileInterface {
         $file = $stream->getMetadata('uri');
 
-        if (!is_readable($file)) {
-            throw new InvalidArgumentException('File is not readable');
+        if (!is_string($file) || !is_readable($file)) {
+            throw new InvalidArgumentException('File is not readable.');
         }
-        if (!isset($size)) {
+
+        if ($size === null) {
             $size = $stream->getSize();
         }
 

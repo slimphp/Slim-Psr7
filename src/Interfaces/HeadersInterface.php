@@ -20,6 +20,8 @@ interface HeadersInterface extends CollectionInterface
      *
      * @param string          $key   The case-insensitive header name
      * @param string|string[] $value The new header value(s)
+     *
+     * @return static
      */
     public function add($key, $value);
 
@@ -34,5 +36,5 @@ interface HeadersInterface extends CollectionInterface
      *
      * @return string Normalized header name
      */
-    public function normalizeKey($key);
+    public function normalizeKey($key): string;
 }

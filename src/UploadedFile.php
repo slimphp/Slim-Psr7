@@ -111,6 +111,8 @@ class UploadedFile implements UploadedFileInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @return static
      */
     public function moveTo($targetPath)
     {
@@ -127,6 +129,7 @@ class UploadedFile implements UploadedFileInterface
             if (!copy($this->file, $targetPath)) {
                 throw new RuntimeException(sprintf('Error moving uploaded file %s to %s', $this->name, $targetPath));
             }
+
             if (!unlink($this->file)) {
                 throw new RuntimeException(sprintf('Error removing uploaded file %s', $this->name));
             }
@@ -145,12 +148,14 @@ class UploadedFile implements UploadedFileInterface
         }
 
         $this->moved = true;
+
+        return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getError()
+    public function getError(): int
     {
         return $this->error;
     }
@@ -158,7 +163,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * {@inheritdoc}
      */
-    public function getClientFilename()
+    public function getClientFilename(): ?string
     {
         return $this->name;
     }
@@ -166,7 +171,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * {@inheritdoc}
      */
-    public function getClientMediaType()
+    public function getClientMediaType(): ?string
     {
         return $this->type;
     }
@@ -174,7 +179,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * {@inheritdoc}
      */
-    public function getSize()
+    public function getSize(): ?int
     {
         return $this->size;
     }
@@ -182,13 +187,13 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Create a normalized tree of UploadedFile instances from the Environment.
      *
-     * Note: This method is not part of the PSR-7 standard.
+     * @internal This method is not part of the PSR-7 standard.
      *
      * @param array $globals The global server variables.
      *
      * @return array A normalized tree of UploadedFile instances or null if none are provided.
      */
-    public static function createFromGlobals(array $globals)
+    public static function createFromGlobals(array $globals): array
     {
         $env = new Collection($globals);
 
@@ -204,13 +209,13 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Parse a non-normalized, i.e. $_FILES superglobal, tree of uploaded file data.
      *
-     * Note: This method is not part of the PSR-7 standard.
+     * @internal This method is not part of the PSR-7 standard.
      *
      * @param array $uploadedFiles The non-normalized tree of uploaded file data.
      *
      * @return array A normalized tree of UploadedFile instances.
      */
-    private static function parseUploadedFiles(array $uploadedFiles)
+    private static function parseUploadedFiles(array $uploadedFiles): array
     {
         $parsed = [];
         foreach ($uploadedFiles as $field => $uploadedFile) {
