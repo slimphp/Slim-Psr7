@@ -107,7 +107,7 @@ class Headers extends Collection implements HeadersInterface
      *
      * @return static
      */
-    public function set($key, $value)
+    public function set(string $key, $value)
     {
         if (!is_array($value)) {
             $value = [$value];
@@ -129,7 +129,7 @@ class Headers extends Collection implements HeadersInterface
      *
      * @return string[]
      */
-    public function get($key, $default = null)
+    public function get(string $key, $default = null)
     {
         if ($this->has($key)) {
             return parent::get($this->normalizeKey($key))['value'];
@@ -146,7 +146,7 @@ class Headers extends Collection implements HeadersInterface
      *
      * @return string|null
      */
-    public function getOriginalKey($key, string $default = null): ?string
+    public function getOriginalKey(string $key, string $default = null): ?string
     {
         if ($this->has($key)) {
             return parent::get($this->normalizeKey($key))['originalKey'];
@@ -167,7 +167,7 @@ class Headers extends Collection implements HeadersInterface
      *
      * @return static
      */
-    public function add($key, $value)
+    public function add(string $key, $value)
     {
         $oldValues = $this->get($key, []);
         $newValues = is_array($value) ? $value : [$value];
@@ -183,7 +183,7 @@ class Headers extends Collection implements HeadersInterface
      *
      * @return bool
      */
-    public function has($key): bool
+    public function has(string $key): bool
     {
         return parent::has($this->normalizeKey($key));
     }
@@ -195,7 +195,7 @@ class Headers extends Collection implements HeadersInterface
      *
      * @return static
      */
-    public function remove($key)
+    public function remove(string $key)
     {
         parent::remove($this->normalizeKey($key));
 
@@ -213,7 +213,7 @@ class Headers extends Collection implements HeadersInterface
      *
      * @return string Normalized header name
      */
-    public function normalizeKey($key): string
+    public function normalizeKey(string $key): string
     {
         $key = strtr(strtolower($key), '_', '-');
 
@@ -237,7 +237,7 @@ class Headers extends Collection implements HeadersInterface
      * @example CONTENT_TYPE => Content-Type
      * @example HTTP_USER_AGENT => User-Agent
      */
-    private static function reconstructOriginalKey($key): string
+    private static function reconstructOriginalKey(string $key): string
     {
         if (strpos($key, 'HTTP_') === 0) {
             $key = substr($key, 5);

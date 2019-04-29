@@ -30,7 +30,7 @@ class Collection implements CollectionInterface
     /**
      * {@inheritdoc}
      */
-    public function set($key, $value)
+    public function set(string $key, $value)
     {
         $this->data[$key] = $value;
 
@@ -40,7 +40,7 @@ class Collection implements CollectionInterface
     /**
      * {@inheritdoc}
      */
-    public function get($key, $default = null)
+    public function get(string $key, $default = null)
     {
         return $this->has($key) ? $this->data[$key] : $default;
     }
@@ -76,7 +76,7 @@ class Collection implements CollectionInterface
     /**
      * {@inheritdoc}
      */
-    public function has($key): bool
+    public function has(string $key): bool
     {
         return array_key_exists($key, $this->data);
     }
@@ -84,7 +84,7 @@ class Collection implements CollectionInterface
     /**
      * {@inheritdoc}
      */
-    public function remove($key)
+    public function remove(string $key)
     {
         unset($this->data[$key]);
 

@@ -23,7 +23,7 @@ interface HeadersInterface extends CollectionInterface
      *
      * @return static
      */
-    public function add($key, $value);
+    public function add(string $key, $value);
 
     /**
      * Normalize header name
@@ -36,5 +36,5 @@ interface HeadersInterface extends CollectionInterface
      *
      * @return string Normalized header name
      */
-    public function normalizeKey($key): string;
+    public function normalizeKey(string $key): string;
 }

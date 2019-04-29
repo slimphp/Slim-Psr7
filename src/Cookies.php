@@ -59,7 +59,7 @@ class Cookies implements CookiesInterface
      *
      * @return static
      */
-    public function setDefaults(array $settings): self
+    public function setDefaults(array $settings)
     {
         $this->defaults = array_replace($this->defaults, $settings);
 
@@ -110,7 +110,7 @@ class Cookies implements CookiesInterface
      *
      * @return string
      */
-    protected function toHeader($name, array $properties): string
+    protected function toHeader(string $name, array $properties): string
     {
         $result = urlencode($name) . '=' . urlencode($properties['value']);
 

@@ -23,7 +23,7 @@ interface CollectionInterface extends ArrayAccess, Countable, IteratorAggregate
      *
      * @return static
      */
-    public function set($key, $value);
+    public function set(string $key, $value);
 
     /**
      * Get collection item for key
@@ -33,7 +33,7 @@ interface CollectionInterface extends ArrayAccess, Countable, IteratorAggregate
      *
      * @return mixed The key's value, or the default value
      */
-    public function get($key, $default = null);
+    public function get(string $key, $default = null);
 
     /**
      * Add item to collection, replacing existing items with the same data key
@@ -58,7 +58,7 @@ interface CollectionInterface extends ArrayAccess, Countable, IteratorAggregate
      *
      * @return bool
      */
-    public function has($key): bool;
+    public function has(string $key): bool;
 
     /**
      * Remove item from collection
@@ -67,7 +67,7 @@ interface CollectionInterface extends ArrayAccess, Countable, IteratorAggregate
      *
      * @return static
      */
-    public function remove($key);
+    public function remove(string $key);
 
     /**
      * Remove all items from collection

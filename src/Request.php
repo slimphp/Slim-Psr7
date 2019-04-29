@@ -220,7 +220,7 @@ class Request extends Message implements ServerRequestInterface
             if ($uri->getHost() !== '') {
                 $clone->headers->set('Host', $uri->getHost());
             }
-        } else if (($uri->getHost() !== '' && (!$this->hasHeader('Host'))
+        } elseif (($uri->getHost() !== '' && (!$this->hasHeader('Host'))
             || $this->getHeaderLine('Host') === '')
         ) {
             $clone->headers->set('Host', $uri->getHost());
