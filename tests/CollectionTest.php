@@ -154,4 +154,12 @@ class CollectionTest extends TestCase
         $this->property->setValue($this->bag, ['foo' => 'bar', 'abc' => '123']);
         $this->assertEquals(2, $this->bag->count());
     }
+
+    public function testGetIterator()
+    {
+        $this->property->setValue($this->bag, ['foo' => 'bar', 'abc' => '123']);
+        $iterator = $this->bag->getIterator();
+        $this->assertIsIterable($iterator);
+        $this->assertEquals(['foo' => 'bar', 'abc' => '123'], $iterator->getArrayCopy());
+    }
 }
