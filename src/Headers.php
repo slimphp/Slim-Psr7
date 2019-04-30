@@ -28,17 +28,17 @@ class Headers extends Collection implements HeadersInterface
     ];
 
     /**
-     * Create new headers collection with data extracted from
-     * the PHP global environment
+     * Create new headers collection with data extracted from the PHP global environment
      *
      * @param array $globals Global server variables
      *
-     * @return self
+     * @return static
      */
     public static function createFromGlobals(array $globals)
     {
         $data = [];
         $globals = self::determineAuthorization($globals);
+
         foreach ($globals as $key => $value) {
             $key = strtoupper($key);
             if (isset(static::$special[$key]) || strpos($key, 'HTTP_') === 0) {
@@ -58,7 +58,7 @@ class Headers extends Collection implements HeadersInterface
      *
      * @return array
      */
-    public static function determineAuthorization(array $globals)
+    public static function determineAuthorization(array $globals): array
     {
         $authorization = isset($globals['HTTP_AUTHORIZATION']) ? $globals['HTTP_AUTHORIZATION'] : null;
         if (!empty($authorization)) {
@@ -84,10 +84,11 @@ class Headers extends Collection implements HeadersInterface
      *
      * @return array
      */
-    public function all()
+    public function all(): array
     {
         $all = parent::all();
         $out = [];
+
         foreach ($all as $key => $props) {
             $out[$props['originalKey']] = $props['value'];
         }
@@ -103,16 +104,21 @@ class Headers extends Collection implements HeadersInterface
      *
      * @param string       $key   The case-insensitive header name
      * @param array|string $value The header value
+     *
+     * @return static
      */
-    public function set($key, $value)
+    public function set(string $key, $value)
     {
         if (!is_array($value)) {
             $value = [$value];
         }
+
         parent::set($this->normalizeKey($key), [
             'value' => $value,
             'originalKey' => $key
         ]);
+
+        return $this;
     }
 
     /**
@@ -123,7 +129,7 @@ class Headers extends Collection implements HeadersInterface
      *
      * @return string[]
      */
-    public function get($key, $default = null)
+    public function get(string $key, $default = null)
     {
         if ($this->has($key)) {
             return parent::get($this->normalizeKey($key))['value'];
@@ -136,11 +142,11 @@ class Headers extends Collection implements HeadersInterface
      * Get HTTP header key as originally specified
      *
      * @param  string $key     The case-insensitive header name
-     * @param  mixed  $default The default value if key does not exist
+     * @param  string $default The default value if key does not exist
      *
-     * @return string
+     * @return string|null
      */
-    public function getOriginalKey($key, $default = null)
+    public function getOriginalKey(string $key, string $default = null): ?string
     {
         if ($this->has($key)) {
             return parent::get($this->normalizeKey($key))['originalKey'];
@@ -158,12 +164,16 @@ class Headers extends Collection implements HeadersInterface
      *
      * @param string       $key   The case-insensitive header name
      * @param array|string $value The new header value(s)
+     *
+     * @return static
      */
-    public function add($key, $value)
+    public function add(string $key, $value)
     {
         $oldValues = $this->get($key, []);
         $newValues = is_array($value) ? $value : [$value];
         $this->set($key, array_merge($oldValues, array_values($newValues)));
+
+        return $this;
     }
 
     /**
@@ -173,7 +183,7 @@ class Headers extends Collection implements HeadersInterface
      *
      * @return bool
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         return parent::has($this->normalizeKey($key));
     }
@@ -182,10 +192,14 @@ class Headers extends Collection implements HeadersInterface
      * Remove header from collection
      *
      * @param  string $key The case-insensitive header name
+     *
+     * @return static
      */
-    public function remove($key)
+    public function remove(string $key)
     {
         parent::remove($this->normalizeKey($key));
+
+        return $this;
     }
 
     /**
@@ -199,9 +213,10 @@ class Headers extends Collection implements HeadersInterface
      *
      * @return string Normalized header name
      */
-    public function normalizeKey($key)
+    public function normalizeKey(string $key): string
     {
         $key = strtr(strtolower($key), '_', '-');
+
         if (strpos($key, 'http-') === 0) {
             $key = substr($key, 5);
         }
@@ -222,11 +237,12 @@ class Headers extends Collection implements HeadersInterface
      * @example CONTENT_TYPE => Content-Type
      * @example HTTP_USER_AGENT => User-Agent
      */
-    private static function reconstructOriginalKey($key)
+    private static function reconstructOriginalKey(string $key): string
     {
         if (strpos($key, 'HTTP_') === 0) {
             $key = substr($key, 5);
         }
+
         return strtr(ucwords(strtr(strtolower($key), '_', ' ')), ' ', '-');
     }
 }

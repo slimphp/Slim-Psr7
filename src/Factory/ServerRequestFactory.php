@@ -76,7 +76,9 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
     /**
      * Create new ServerRequest from environment.
      *
-     * Note: This method is not part of PSR-17
+     * @internal This method is not part of PSR-17
+     *
+     * @return Request
      */
     public static function createFromGlobals(): Request
     {
@@ -100,7 +102,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 
         $contentTypesWithParsedBodies = ['application/x-www-form-urlencoded', 'multipart/form-data'];
         if ($method === 'POST' && in_array($parsedContentType, $contentTypesWithParsedBodies)) {
-            $request = $request->withParsedBody($_POST);
+            return $request->withParsedBody($_POST);
         }
 
         return $request;

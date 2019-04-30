@@ -16,7 +16,7 @@ class Environment
      *
      * @return array
      */
-    public static function mock(array $data = [])
+    public static function mock(array $data = []): array
     {
         if ((isset($data['HTTPS']) && $data['HTTPS'] !== 'off')
             || ((isset($data['REQUEST_SCHEME']) && $data['REQUEST_SCHEME'] === 'https'))
