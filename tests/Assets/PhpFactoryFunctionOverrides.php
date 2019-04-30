@@ -10,7 +10,8 @@ declare(strict_types=1);
 namespace Slim\Psr7\Factory;
 
 /**
- * Return `false` if the parameter is "non-readable", otherwise the function would return the value from the php built-in function.
+ * Return `false` if the parameter is "non-readable", otherwise the function would return the value from
+ * the php built-in function.
  *
  * @param string $filename
  *

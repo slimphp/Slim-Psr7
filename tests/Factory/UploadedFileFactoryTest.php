@@ -65,7 +65,9 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
      */
     public function testCreateUploadedFileWithInvalidUri()
     {
-        $this->factory->createUploadedFile($this->prophesizeStreamInterfaceWithGetMetadataMethod('uri', null));
+        $this->factory->createUploadedFile(
+          $this->prophesizeStreamInterfaceWithGetMetadataMethod('uri', null)
+        );
     }
 
     /**
@@ -74,6 +76,8 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
      */
     public function testCreateUploadedFileWithNonReadableFile()
     {
-        $this->factory->createUploadedFile($this->prophesizeStreamInterfaceWithGetMetadataMethod('uri', 'non-readable'));
+        $this->factory->createUploadedFile(
+          $this->prophesizeStreamInterfaceWithGetMetadataMethod('uri', 'non-readable')
+        );
     }
 }
