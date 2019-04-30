@@ -11,9 +11,21 @@ namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
 use Slim\Psr7\NonBufferedBody;
+use Slim\Psr7\Response;
+use Slim\Tests\Psr7\Assets\HeaderStack;
 
 class NonBufferedBodyTest extends TestCase
 {
+    protected function setUp()
+    {
+        HeaderStack::reset();
+    }
+
+    protected function tearDown()
+    {
+        HeaderStack::reset();
+    }
+
     public function testTheStreamContract()
     {
         $body = new NonBufferedBody();
@@ -28,5 +40,52 @@ class NonBufferedBodyTest extends TestCase
         self::assertSame('', $body->read(10), 'Data cannot be retrieved once written');
         self::assertSame('', $body->getContents(), 'Data cannot be retrieved once written');
         self::assertNull($body->getMetadata(), 'Metadata mechanism is not implemented');
+    }
+
+    public function testWithHeader()
+    {
+        (new Response())
+            ->withBody(new NonBufferedBody())
+            ->withHeader('Foo', 'Bar');
+
+        self::assertSame([
+            [
+                'header' => 'Foo: Bar',
+                'replace' => true,
+                'status_code' => null
+            ]
+        ], HeaderStack::stack());
+    }
+
+    public function testWithAddedHeader()
+    {
+        (new Response())
+            ->withBody(new NonBufferedBody())
+            ->withHeader('Foo', 'Bar')
+            ->withAddedHeader('Foo', 'Baz');
+
+        self::assertSame([
+            [
+                'header' => 'Foo: Bar',
+                'replace' => true,
+                'status_code' => null
+            ],
+            [
+                'header' => 'Foo: Bar,Baz',
+                'replace' => true,
+                'status_code' => null
+            ]
+        ], HeaderStack::stack());
+    }
+
+
+    public function testWithoutHeader()
+    {
+        (new Response())
+            ->withBody(new NonBufferedBody())
+            ->withHeader('Foo', 'Bar')
+            ->withoutHeader('Foo');
+
+        self::assertSame([], HeaderStack::stack());
     }
 }
