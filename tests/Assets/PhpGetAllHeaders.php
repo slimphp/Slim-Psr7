@@ -7,8 +7,9 @@
 
 declare(strict_types=1);
 
-if(!function_exists('\getallheaders')) {
-    function getallheaders() {
+if (!function_exists('\getallheaders')) {
+    function getallheaders()
+    {
         return [];
     }
 }
