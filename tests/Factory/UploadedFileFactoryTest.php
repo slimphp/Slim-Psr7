@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Slim\Tests\Psr7\Factory;
 
 use Interop\Http\Factory\UploadedFileFactoryTestCase;
+use InvalidArgumentException;
 use Prophecy\Argument\Token\ExactValueToken;
 use Prophecy\Prophecy\MethodProphecy;
 use Psr\Http\Message\StreamInterface;
@@ -42,15 +43,15 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
     /**
      * Prophesize a `\Psr\Http\Message\StreamInterface` with a `getMetadata` method prophecy.
      *
-     * @param string $argKey      Argument for the method prophecy.
-     * @param mixed  $returnValue Return value of the `getMetadata` method.
+     * @param string $argKey Argument for the method prophecy.
+     * @param mixed $returnValue Return value of the `getMetadata` method.
      *
-     * @return \Psr\Http\Message\StreamInterface
+     * @return StreamInterface
      */
     protected function prophesizeStreamInterfaceWithGetMetadataMethod(string $argKey, $returnValue): StreamInterface
     {
         $prophecy = $this->prophesize(StreamInterface::class);
-        $mp       = new MethodProphecy($prophecy, 'getMetadata', [new ExactValueToken($argKey)]);
+        $mp = new MethodProphecy($prophecy, 'getMetadata', [new ExactValueToken($argKey)]);
         $mp->shouldBeCalled();
         $mp->willReturn($returnValue);
 
@@ -60,24 +61,24 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage File is not readable.
      */
     public function testCreateUploadedFileWithInvalidUri()
     {
         $this->factory->createUploadedFile(
-          $this->prophesizeStreamInterfaceWithGetMetadataMethod('uri', null)
+            $this->prophesizeStreamInterfaceWithGetMetadataMethod('uri', null)
         );
     }
 
     /**
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage File is not readable.
      */
     public function testCreateUploadedFileWithNonReadableFile()
     {
         $this->factory->createUploadedFile(
-          $this->prophesizeStreamInterfaceWithGetMetadataMethod('uri', 'non-readable')
+            $this->prophesizeStreamInterfaceWithGetMetadataMethod('uri', 'non-readable')
         );
     }
 }
