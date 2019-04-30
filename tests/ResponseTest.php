@@ -117,6 +117,18 @@ class ResponseTest extends TestCase
         $this->assertEquals('', $responseWithNoMessage->getReasonPhrase());
     }
 
+    public function testWithStatusValidReasonPhraseObject()
+    {
+        $mock = $this->getMockBuilder('ResponseTestReasonPhrase')->setMethods(['__toString'])->getMock();
+        $mock->expects($this->once())
+            ->method('__toString')
+            ->will($this->returnValue('Slim OK'));
+
+        $response = new Response();
+        $response = $response->withStatus(200, $mock);
+        $this->assertEquals('Slim OK', $response->getReasonPhrase());
+    }
+
     public function testGetReasonPhrase()
     {
         $response = new Response(404);
