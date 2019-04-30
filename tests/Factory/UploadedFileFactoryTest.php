@@ -11,8 +11,6 @@ namespace Slim\Tests\Psr7\Factory;
 
 use Interop\Http\Factory\UploadedFileFactoryTestCase;
 use InvalidArgumentException;
-use Prophecy\Argument\Token\ExactValueToken;
-use Prophecy\Prophecy\MethodProphecy;
 use Psr\Http\Message\StreamInterface;
 use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Factory\UploadedFileFactory;
@@ -50,14 +48,18 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
      */
     protected function prophesizeStreamInterfaceWithGetMetadataMethod(string $argKey, $returnValue): StreamInterface
     {
-        $prophecy = $this->prophesize(StreamInterface::class);
-        $mp = new MethodProphecy($prophecy, 'getMetadata', [new ExactValueToken($argKey)]);
-        $mp->shouldBeCalled();
-        $mp->willReturn($returnValue);
+        $streamProphecy = $this->prophesize(StreamInterface::class);
 
-        /** @var StreamInterface $upload */
-        $upload = $prophecy->reveal();
-        return $upload;
+        /** @noinspection PhpUndefinedMethodInspection */
+        $streamProphecy
+            ->getMetadata($argKey)
+            ->willReturn($returnValue)
+            ->shouldBeCalled();
+
+        /** @var StreamInterface $stream */
+        $stream = $streamProphecy->reveal();
+
+        return $stream;
     }
 
     /**
