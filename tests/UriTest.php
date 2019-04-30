@@ -12,6 +12,7 @@ namespace Slim\Tests\Psr7;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Uri;
+use stdClass;
 
 class UriTest extends TestCase
 {
@@ -117,6 +118,26 @@ class UriTest extends TestCase
         $uri = $this->uriFactory()->withHost('slimframework.com');
 
         $this->assertEquals('slimframework.com', $uri->getHost());
+    }
+
+    public function testWithHostValidObject()
+    {
+        $mock = $this->getMockBuilder('UriTestHost')->setMethods(['__toString'])->getMock();
+        $mock->expects($this->once())
+            ->method('__toString')
+            ->will($this->returnValue('host.test'));
+
+        $uri = $this->uriFactory()->withHost($mock);
+        $this->assertEquals('host.test', $uri->getHost());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Uri host must be a string
+     */
+    public function testWithHostInvalidObject()
+    {
+        $this->uriFactory()->withHost(new stdClass());
     }
 
     public function testFilterHost()
@@ -261,6 +282,17 @@ class UriTest extends TestCase
         $this->assertEquals('', $uri->getQuery());
     }
 
+    public function testWithQueryValidObject()
+    {
+        $mock = $this->getMockBuilder('UriTestQuery')->setMethods(['__toString'])->getMock();
+        $mock->expects($this->once())
+            ->method('__toString')
+            ->will($this->returnValue('xyz=123'));
+
+        $uri = $this->uriFactory()->withQuery($mock);
+        $this->assertEquals('xyz=123', $uri->getQuery());
+    }
+
     public function testFilterQuery()
     {
         $uri = $this->uriFactory()->withQuery('?foobar=%match');
@@ -301,6 +333,24 @@ class UriTest extends TestCase
         $uri = $this->uriFactory()->withFragment('');
 
         $this->assertEquals('', $uri->getFragment());
+    }
+
+    public function testWithFragmentValidObject()
+    {
+        $mock = $this->getMockBuilder('UriTestFragment')->setMethods(['__toString'])->getMock();
+        $mock->expects($this->once())
+            ->method('__toString')
+            ->will($this->returnValue('other-fragment'));
+
+        $uri = $this->uriFactory()->withFragment($mock);
+        $this->assertEquals('other-fragment', $uri->getFragment());
+    }
+
+    public function testWithFragmentUrlEncode()
+    {
+        $uri = $this->uriFactory()->withFragment('^a');
+
+        $this->assertEquals('%5Ea', $uri->getFragment());
     }
 
     /**
