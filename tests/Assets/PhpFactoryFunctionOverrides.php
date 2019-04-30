@@ -19,7 +19,7 @@ namespace Slim\Psr7\Factory;
  */
 function is_readable(string $filename): bool
 {
-    if ('non-readable' === $filename) {
+    if ($filename === 'non-readable') {
         return false;
     }
 
