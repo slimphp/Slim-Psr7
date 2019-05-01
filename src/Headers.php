@@ -9,240 +9,269 @@ declare(strict_types=1);
 
 namespace Slim\Psr7;
 
+use InvalidArgumentException;
 use Slim\Psr7\Interfaces\HeadersInterface;
 
-class Headers extends Collection implements HeadersInterface
+class Headers implements HeadersInterface
 {
     /**
-     * Special HTTP headers that do not have the "HTTP_" prefix
-     *
      * @var array
      */
-    protected static $special = [
-        'CONTENT_TYPE' => 1,
-        'CONTENT_LENGTH' => 1,
-        'PHP_AUTH_USER' => 1,
-        'PHP_AUTH_PW' => 1,
-        'PHP_AUTH_DIGEST' => 1,
-        'AUTH_TYPE' => 1,
-    ];
+    protected $globals;
+
+    /**
+     * @var Header[]
+     */
+    protected $headers;
+
+    /**
+     * @param array $headers
+     * @param array $globals
+     */
+    public function __construct(array $headers = [], array $globals = null)
+    {
+        $this->globals = $globals ?? $_SERVER;
+        $this->setHeaders($headers);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addHeader(string $name, $values): HeadersInterface
+    {
+        $values = $this->validateAndTrimHeader($name, $values);
+        $originalName = $this->normalizeHeaderName($name, true);
+        $normalizedName = $this->normalizeHeaderName($name);
+
+        if (isset($this->headers[$normalizedName])) {
+            $header = $this->headers[$normalizedName];
+            $header->addValues($values);
+        } else {
+            $this->headers[$normalizedName] = new Header($originalName, $normalizedName, $values);
+        }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function removeHeader(string $name): HeadersInterface
+    {
+        $name = $this->normalizeHeaderName($name);
+
+        unset($this->headers[$name]);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHeader(string $name, $default = []): array
+    {
+        $name = $this->normalizeHeaderName($name);
+
+        if (isset($this->headers[$name])) {
+            $header = $this->headers[$name];
+            return $header->getValues();
+        }
+
+        if (is_array($default)) {
+            return count(array_keys($default)) ? $this->validateAndTrimHeader($name, $default) : $default;
+        }
+
+        if (is_string($default)) {
+            return [$default];
+        }
+
+        throw new InvalidArgumentException('Default parameter of Headers::getHeader() must be a string or an array.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setHeader(string $name, $values): HeadersInterface
+    {
+        $values = $this->validateAndTrimHeader($name, $values);
+        $originalName = $this->normalizeHeaderName($name, true);
+        $normalizedName = $this->normalizeHeaderName($name);
+
+        $this->headers[$normalizedName] = new Header($originalName, $normalizedName, $values);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setHeaders(array $headers): HeadersInterface
+    {
+        $this->headers = [];
+
+        foreach ($this->parseAuthorizationHeader($headers) as $name => $value) {
+            $this->addHeader($name, $value);
+        }
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasHeader(string $name): bool
+    {
+        $name = $this->normalizeHeaderName($name);
+
+        return isset($this->headers[$name]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHeaders(bool $originalCase = false): array
+    {
+        $headers = [];
+
+        foreach ($this->headers as $header) {
+            $name = $originalCase ? $header->getOriginalName() : $header->getNormalizedName();
+            $headers[$name] = $header->getValues();
+        }
+
+        return $headers;
+    }
+
+    /**
+     * @param string $name
+     * @param bool   $preserveCase
+     * @return string
+     */
+    protected function normalizeHeaderName(string $name, bool $preserveCase = false): string
+    {
+        $name = strtr($name, '_', '-');
+
+        if (!$preserveCase) {
+            $name = strtolower($name);
+        }
+
+        if (strpos(strtolower($name), 'http-') === 0) {
+            $name = substr($name, 5);
+        }
+
+        return $name;
+    }
+
+    /**
+     * Parse incoming headers and determine Authorization header from original headers
+     *
+     * @param array $headers
+     * @return array
+     */
+    protected function parseAuthorizationHeader(array $headers): array
+    {
+        if (!isset($headers['Authorization'])) {
+            if (isset($this->globals['REDIRECT_HTTP_AUTHORIZATION'])) {
+                $headers['Authorization'] = $this->globals['REDIRECT_HTTP_AUTHORIZATION'];
+            } elseif (isset($this->globals['PHP_AUTH_USER'])) {
+                $basic_pass = isset($this->globals['PHP_AUTH_PW']) ? $this->globals['PHP_AUTH_PW'] : '';
+                $headers['Authorization'] = 'Basic ' . base64_encode($this->globals['PHP_AUTH_USER'] . ':' . $basic_pass);
+            } elseif (isset($this->globals['PHP_AUTH_DIGEST'])) {
+                $headers['Authorization'] = $this->globals['PHP_AUTH_DIGEST'];
+            }
+        }
+
+        return $headers;
+    }
+
+    /**
+     * Make sure the header complies with RFC 7230.
+     *
+     * Header names must be a non-empty string consisting of token characters.
+     *
+     * Header values must be strings consisting of visible characters with all optional
+     * leading and trailing whitespace stripped. This method will always strip such
+     * optional whitespace. Note that the method does not allow folding whitespace within
+     * the values as this was deprecated for almost all instances by the RFC.
+     *
+     * header-field = field-name ":" OWS field-value OWS
+     * field-name   = 1*( "!" / "#" / "$" / "%" / "&" / "'" / "*" / "+" / "-" / "." / "^"
+     *              / "_" / "`" / "|" / "~" / %x30-39 / ( %x41-5A / %x61-7A ) )
+     * OWS          = *( SP / HTAB )
+     * field-value  = *( ( %x21-7E / %x80-FF ) [ 1*( SP / HTAB ) ( %x21-7E / %x80-FF ) ] )
+     *
+     * @see https://tools.ietf.org/html/rfc7230#section-3.2.4
+     *
+     * @param string        $name
+     * @param array|string  $values
+     *
+     * @return array
+     *
+     * @throws InvalidArgumentException;
+     */
+    protected function validateAndTrimHeader(string $name, $values): array
+    {
+        self::validateHeaderName($name);
+
+        if (!is_array($values)) {
+            $values = [$values];
+        }
+
+        $returnValues = [];
+        foreach ($values as $value) {
+            self::validateHeaderValue($value);
+            $returnValues[] = trim((string) $value, " \t");
+        }
+
+        return $returnValues;
+    }
+
+    /**
+     * @param mixed $name
+     */
+    public static function validateHeaderName($name)
+    {
+        if (!is_string($name) || preg_match("@^[!#$%&'*+.^_`|~0-9A-Za-z-]+$@", $name) !== 1) {
+            throw new InvalidArgumentException('Header name must be an RFC 7230 compatible string.');
+        }
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public static function validateHeaderValue($value)
+    {
+        if (is_array($value) && empty($value)) {
+            throw new InvalidArgumentException('Header values must be a string or an array of strings, empty array given.');
+        }
+
+        if (
+            !is_array($value)
+            && (
+                (!is_numeric($value) && !is_string($value))
+                || preg_match("@^[ \t\x21-\x7E\x80-\xFF]*$@", (string) $value) !== 1
+            )
+        ) {
+            throw new InvalidArgumentException('Header values must be RFC 7230 compatible strings.');
+        }
+    }
 
     /**
      * Create new headers collection with data extracted from the PHP global environment
      *
-     * @param array $globals Global server variables
-     *
      * @return static
      */
-    public static function createFromGlobals(array $globals)
+    public static function createFromGlobals()
     {
-        $data = [];
-        $globals = self::determineAuthorization($globals);
+        $headers = null;
 
-        foreach ($globals as $key => $value) {
-            $key = strtoupper($key);
-            if (isset(static::$special[$key]) || strpos($key, 'HTTP_') === 0) {
-                if ($key !== 'HTTP_CONTENT_LENGTH') {
-                    $data[self::reconstructOriginalKey($key)] = $value;
-                }
-            }
+        if (function_exists('getallheaders')) {
+            $headers = getallheaders();
         }
 
-        return new static($data);
-    }
-
-    /**
-     * If HTTP_AUTHORIZATION does not exist tries to get it from getallheaders() when available.
-     *
-     * @param array $globals
-     *
-     * @return array
-     */
-    public static function determineAuthorization(array $globals): array
-    {
-        $authorization = isset($globals['HTTP_AUTHORIZATION']) ? $globals['HTTP_AUTHORIZATION'] : null;
-        if (!empty($authorization)) {
-            return $globals;
-        }
-
-        $headers = getallheaders();
         if (!is_array($headers)) {
-            return $globals;
+            $headers = [];
         }
 
-        $headers = array_change_key_case($headers, CASE_LOWER);
-        if (isset($headers['authorization'])) {
-            $globals['HTTP_AUTHORIZATION'] = $headers['authorization'];
-        }
-
-        return $globals;
-    }
-
-    /**
-     * Return array of HTTP header names and values.
-     * This method returns the _original_ header name as specified by the end user.
-     *
-     * @return array
-     */
-    public function all(): array
-    {
-        $all = parent::all();
-        $out = [];
-
-        foreach ($all as $key => $props) {
-            $out[$props['originalKey']] = $props['value'];
-        }
-
-        return $out;
-    }
-
-    /**
-     * Set HTTP header value
-     *
-     * This method sets a header value. It replaces
-     * any values that may already exist for the header name.
-     *
-     * @param string       $key   The case-insensitive header name
-     * @param array|string $value The header value
-     *
-     * @return static
-     */
-    public function set(string $key, $value)
-    {
-        if (!is_array($value)) {
-            $value = [$value];
-        }
-
-        parent::set($this->normalizeKey($key), [
-            'value' => $value,
-            'originalKey' => $key
-        ]);
-
-        return $this;
-    }
-
-    /**
-     * Get HTTP header value
-     *
-     * @param  string $key     The case-insensitive header name
-     * @param  mixed  $default The default value if key does not exist
-     *
-     * @return string[]
-     */
-    public function get(string $key, $default = null)
-    {
-        if ($this->has($key)) {
-            return parent::get($this->normalizeKey($key))['value'];
-        }
-
-        return $default;
-    }
-
-    /**
-     * Get HTTP header key as originally specified
-     *
-     * @param  string $key     The case-insensitive header name
-     * @param  string $default The default value if key does not exist
-     *
-     * @return string|null
-     */
-    public function getOriginalKey(string $key, string $default = null): ?string
-    {
-        if ($this->has($key)) {
-            return parent::get($this->normalizeKey($key))['originalKey'];
-        }
-
-        return $default;
-    }
-
-    /**
-     * Add HTTP header value
-     *
-     * This method appends a header value. Unlike the set() method,
-     * this method _appends_ this new value to any values
-     * that already exist for this header name.
-     *
-     * @param string       $key   The case-insensitive header name
-     * @param array|string $value The new header value(s)
-     *
-     * @return static
-     */
-    public function add(string $key, $value)
-    {
-        $oldValues = $this->get($key, []);
-        $newValues = is_array($value) ? $value : [$value];
-        $this->set($key, array_merge($oldValues, array_values($newValues)));
-
-        return $this;
-    }
-
-    /**
-     * Does this collection have a given header?
-     *
-     * @param  string $key The case-insensitive header name
-     *
-     * @return bool
-     */
-    public function has(string $key): bool
-    {
-        return parent::has($this->normalizeKey($key));
-    }
-
-    /**
-     * Remove header from collection
-     *
-     * @param  string $key The case-insensitive header name
-     *
-     * @return static
-     */
-    public function remove(string $key)
-    {
-        parent::remove($this->normalizeKey($key));
-
-        return $this;
-    }
-
-    /**
-     * Normalize header name
-     *
-     * This method transforms header names into a
-     * normalized form. This is how we enable case-insensitive
-     * header names in the other methods in this class.
-     *
-     * @param  string $key The case-insensitive header name
-     *
-     * @return string Normalized header name
-     */
-    public function normalizeKey(string $key): string
-    {
-        $key = strtr(strtolower($key), '_', '-');
-
-        if (strpos($key, 'http-') === 0) {
-            $key = substr($key, 5);
-        }
-
-        return $key;
-    }
-
-    /**
-     * Reconstruct original header name
-     *
-     * This method takes an HTTP header name from the Environment
-     * and returns it as it was probably formatted by the actual client.
-     *
-     * @param string $key An HTTP header key from the $_SERVER global variable
-     *
-     * @return string The reconstructed key
-     *
-     * @example CONTENT_TYPE => Content-Type
-     * @example HTTP_USER_AGENT => User-Agent
-     */
-    private static function reconstructOriginalKey(string $key): string
-    {
-        if (strpos($key, 'HTTP_') === 0) {
-            $key = substr($key, 5);
-        }
-
-        return strtr(ucwords(strtr(strtolower($key), '_', ' ')), ' ', '-');
+        return new static($headers);
     }
 }
