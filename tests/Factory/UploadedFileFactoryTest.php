@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Slim\Tests\Psr7\Factory;
 
 use Interop\Http\Factory\UploadedFileFactoryTestCase;
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Factory\UploadedFileFactory;
@@ -35,5 +36,51 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
         rewind($resource);
 
         return (new StreamFactory())->createStreamFromResource($resource);
+    }
+
+    /**
+     * Prophesize a `\Psr\Http\Message\StreamInterface` with a `getMetadata` method prophecy.
+     *
+     * @param string $argKey Argument for the method prophecy.
+     * @param mixed $returnValue Return value of the `getMetadata` method.
+     *
+     * @return StreamInterface
+     */
+    protected function prophesizeStreamInterfaceWithGetMetadataMethod(string $argKey, $returnValue): StreamInterface
+    {
+        $streamProphecy = $this->prophesize(StreamInterface::class);
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $streamProphecy
+            ->getMetadata($argKey)
+            ->willReturn($returnValue)
+            ->shouldBeCalled();
+
+        /** @var StreamInterface $stream */
+        $stream = $streamProphecy->reveal();
+
+        return $stream;
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage File is not readable.
+     */
+    public function testCreateUploadedFileWithInvalidUri()
+    {
+        $this->factory->createUploadedFile(
+            $this->prophesizeStreamInterfaceWithGetMetadataMethod('uri', null)
+        );
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage File is not readable.
+     */
+    public function testCreateUploadedFileWithNonReadableFile()
+    {
+        $this->factory->createUploadedFile(
+            $this->prophesizeStreamInterfaceWithGetMetadataMethod('uri', 'non-readable')
+        );
     }
 }
