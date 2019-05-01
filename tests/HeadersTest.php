@@ -22,10 +22,21 @@ class HeadersTest extends TestCase
 
         $headers = Headers::createFromGlobals();
 
+        unset($GLOBALS['getallheaders_return']);
+
         $this->assertEquals(['accept' => ['application/json']], $headers->getHeaders());
         $this->assertEquals(['ACCEPT' => ['application/json']], $headers->getHeaders(true));
+    }
+
+    public function testCreateFromGlobalsUsesEmptyArrayIfGetAllHeadersReturnsFalse()
+    {
+        $GLOBALS['getallheaders_return'] = false;
+
+        $headers = Headers::createFromGlobals();
 
         unset($GLOBALS['getallheaders_return']);
+
+        $this->assertEquals([], $headers->getHeaders());
     }
 
     public function testAddHeader()

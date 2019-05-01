@@ -72,7 +72,7 @@ class Header
     public function addValues($values): self
     {
         if (is_string($values)) {
-            $values = [$values];
+            return $this->addValue($values);
         }
 
         if (!is_array($values)) {

@@ -107,6 +107,16 @@ class UriFactoryTest extends UriFactoryTestCase
         $this->assertEquals('', $uri->getFragment());
     }
 
+    public function testCreateFromGlobalsUsesServerNameAsHostIfHostHeaderIsNotPresent()
+    {
+        $globals = Environment::mock([
+            'SERVER_NAME' => 'example.com',
+        ]);
+
+        $uri = $this->createUriFactory()->createFromGlobals($globals);
+
+        $this->assertEquals('example.com', $uri->getHost());
+    }
 
     public function testCreateFromGlobalWithIPv6HostNoPort()
     {
