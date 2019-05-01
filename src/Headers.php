@@ -173,8 +173,8 @@ class Headers implements HeadersInterface
             if (isset($this->globals['REDIRECT_HTTP_AUTHORIZATION'])) {
                 $headers['Authorization'] = $this->globals['REDIRECT_HTTP_AUTHORIZATION'];
             } elseif (isset($this->globals['PHP_AUTH_USER'])) {
-                $basic_pass = isset($this->globals['PHP_AUTH_PW']) ? $this->globals['PHP_AUTH_PW'] : '';
-                $headers['Authorization'] = 'Basic ' . base64_encode($this->globals['PHP_AUTH_USER'] . ':' . $basic_pass);
+                $pw = isset($this->globals['PHP_AUTH_PW']) ? $this->globals['PHP_AUTH_PW'] : '';
+                $headers['Authorization'] = 'Basic ' . base64_encode($this->globals['PHP_AUTH_USER'] . ':' . $pw);
             } elseif (isset($this->globals['PHP_AUTH_DIGEST'])) {
                 $headers['Authorization'] = $this->globals['PHP_AUTH_DIGEST'];
             }
@@ -241,11 +241,12 @@ class Headers implements HeadersInterface
     public static function validateHeaderValue($value)
     {
         if (is_array($value) && empty($value)) {
-            throw new InvalidArgumentException('Header values must be a string or an array of strings, empty array given.');
+            throw new InvalidArgumentException(
+                'Header values must be a string or an array of strings, empty array given.'
+            );
         }
 
-        if (
-            !is_array($value)
+        if (!is_array($value)
             && (
                 (!is_numeric($value) && !is_string($value))
                 || preg_match("@^[ \t\x21-\x7E\x80-\xFF]*$@", (string) $value) !== 1
@@ -256,8 +257,6 @@ class Headers implements HeadersInterface
     }
 
     /**
-     * Create new headers collection with data extracted from the PHP global environment
-     *
      * @return static
      */
     public static function createFromGlobals()
