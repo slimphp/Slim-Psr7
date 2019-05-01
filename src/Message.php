@@ -85,7 +85,7 @@ abstract class Message implements MessageInterface
      */
     public function getHeaders(): array
     {
-        return $this->headers->all();
+        return $this->headers->getHeaders(true);
     }
 
     /**
@@ -93,7 +93,7 @@ abstract class Message implements MessageInterface
      */
     public function hasHeader($name): bool
     {
-        return $this->headers->has($name);
+        return $this->headers->hasHeader($name);
     }
 
     /**
@@ -101,7 +101,7 @@ abstract class Message implements MessageInterface
      */
     public function getHeader($name): array
     {
-        return $this->headers->get($name, []);
+        return $this->headers->getHeader($name);
     }
 
     /**
@@ -109,7 +109,8 @@ abstract class Message implements MessageInterface
      */
     public function getHeaderLine($name): string
     {
-        return implode(',', $this->headers->get($name, []));
+        $values = $this->headers->getHeader($name);
+        return implode(',', $values);
     }
 
     /**
@@ -117,11 +118,11 @@ abstract class Message implements MessageInterface
      */
     public function withHeader($name, $value)
     {
-        $this->validateHeaderName($name);
-        $this->validateHeaderValue($value);
+        Headers::validateHeaderName($name);
+        Headers::validateHeaderValue($value);
 
         $clone = clone $this;
-        $clone->headers->set($name, $value);
+        $clone->headers->setHeader($name, $value);
 
         if ($this instanceof Response && $this->body instanceof NonBufferedBody) {
             header(sprintf('%s: %s', $name, $this->getHeaderLine($name)));
@@ -135,11 +136,11 @@ abstract class Message implements MessageInterface
      */
     public function withAddedHeader($name, $value)
     {
-        $this->validateHeaderName($name);
-        $this->validateHeaderValue($value);
+        Headers::validateHeaderName($name);
+        Headers::validateHeaderValue($value);
 
         $clone = clone $this;
-        $clone->headers->add($name, $value);
+        $clone->headers->addHeader($name, $value);
 
         if ($this instanceof Response && $this->body instanceof NonBufferedBody) {
             header(sprintf('%s: %s', $name, $this->getHeaderLine($name)));
@@ -153,8 +154,10 @@ abstract class Message implements MessageInterface
      */
     public function withoutHeader($name)
     {
+        Headers::validateHeaderName($name);
+
         $clone = clone $this;
-        $clone->headers->remove($name);
+        $clone->headers->removeHeader($name);
 
         if ($this instanceof Response && $this->body instanceof NonBufferedBody) {
             header_remove($name);
@@ -180,55 +183,5 @@ abstract class Message implements MessageInterface
         $clone->body = $body;
 
         return $clone;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @throws InvalidArgumentException
-     *
-     * @returns void
-     */
-    protected function validateHeaderName($name): void
-    {
-        if (!is_string($name) || empty($name)) {
-            throw new InvalidArgumentException('Header names must be a non empty strings');
-        }
-
-        if (!preg_match('/^[a-zA-Z0-9\'`#$%&*+.^_|~!-]+$/', $name)) {
-            throw new InvalidArgumentException("'$name' is not valid header name");
-        }
-    }
-
-    /**
-     * @param string|string[] $value
-     *
-     * @throws InvalidArgumentException
-     *
-     * @return void
-     */
-    protected function validateHeaderValue($value): void
-    {
-        if (!is_array($value)) {
-            $value = [$value];
-        }
-
-        if (empty($value)) {
-            throw new InvalidArgumentException('Header values must be non empty strings');
-        }
-
-        foreach ($value as $v) {
-            if (!is_string($v)) {
-                throw new InvalidArgumentException('Header values must be strings or numeric');
-            }
-
-            if (preg_match("#(?:(?:(?<!\r)\n)|(?:\r(?!\n))|(?:\r\n(?![ \t])))#", $v)) {
-                throw new InvalidArgumentException("'$v' is not valid header value");
-            }
-
-            if (preg_match('/[^\x09\x0a\x0d\x20-\x7E\x80-\xFE]/', $v)) {
-                throw new InvalidArgumentException("'$v' is not valid header value");
-            }
-        }
     }
 }

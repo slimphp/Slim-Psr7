@@ -12,7 +12,6 @@ namespace Slim\Psr7\Factory;
 use InvalidArgumentException;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
-use Slim\Psr7\Collection;
 use Slim\Psr7\Uri;
 
 class UriFactory implements UriFactoryInterface
@@ -51,25 +50,23 @@ class UriFactory implements UriFactoryInterface
      */
     public function createFromGlobals(array $globals): Uri
     {
-        $env = new Collection($globals);
-
         // Scheme
-        $isSecure = $env->get('HTTPS');
-        $scheme = (empty($isSecure) || $isSecure === 'off') ? 'http' : 'https';
+        $https = isset($globals['HTTPS']) ? $globals['HTTPS'] : false;
+        $scheme = !$https || $https === 'off' ? 'http' : 'https';
 
         // Authority: Username and password
-        $username = $env->get('PHP_AUTH_USER', '');
-        $password = $env->get('PHP_AUTH_PW', '');
+        $username = isset($globals['PHP_AUTH_USER']) ? $globals['PHP_AUTH_USER'] : '';
+        $password = isset($globals['PHP_AUTH_PW']) ? $globals['PHP_AUTH_PW'] : '';
 
         // Authority: Host
-        if ($env->has('HTTP_HOST')) {
-            $host = $env->get('HTTP_HOST', '');
+        if (isset($globals['HTTP_HOST'])) {
+            $host = $globals['HTTP_HOST'] ?: '';
         } else {
-            $host = $env->get('SERVER_NAME', '');
+            $host = $globals['SERVER_NAME'] ?: '';
         }
 
         // Authority: Port
-        $port = (int) $env->get('SERVER_PORT', 80);
+        $port = isset($globals['SERVER_PORT']) && !empty($globals['SERVER_PORT']) ? (int) $globals['SERVER_PORT'] : 80;
         if (preg_match('/^(\[[a-fA-F0-9:.]+\])(:\d+)?\z/', $host, $matches)) {
             $host = $matches[1];
 
@@ -84,19 +81,25 @@ class UriFactory implements UriFactoryInterface
             }
         }
 
-        $requestUri = current(explode('?', $env->get('REQUEST_URI', '')));
-
         // Query string
-        $queryString = $env->get('QUERY_STRING', '');
-        if ($queryString === '') {
-            $queryString = parse_url('http://example.com' . $env->get('REQUEST_URI', ''), PHP_URL_QUERY) ?? '';
+        $queryString = '';
+        if (isset($globals['QUERY_STRING'])) {
+            $queryString = $globals['QUERY_STRING'];
         }
 
-        // Fragment
-        $fragment = '';
+        // Request URI
+        $requestUri = '';
+        if (isset($globals['REQUEST_URI'])) {
+            $uriFragments = explode('?', $globals['REQUEST_URI']);
+            $requestUri = $uriFragments[0];
+
+            if ($queryString === '' && count($uriFragments) > 1) {
+                $queryString = parse_url('http://www.example.com' . $globals['REQUEST_URI'], PHP_URL_QUERY);
+            }
+        }
 
         // Build Uri
-        $uri = new Uri($scheme, $host, $port, $requestUri, $queryString, $fragment, $username, $password);
+        $uri = new Uri($scheme, $host, $port, $requestUri, $queryString, '', $username, $password);
 
         return $uri;
     }

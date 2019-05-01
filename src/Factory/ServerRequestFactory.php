@@ -57,7 +57,9 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
     {
         if (is_string($uri)) {
             $uri = $this->uriFactory->createUri($uri);
-        } elseif (!$uri instanceof UriInterface) {
+        }
+
+        if (!$uri instanceof UriInterface) {
             throw new InvalidArgumentException('URI must either be string or instance of ' . UriInterface::class);
         }
 
@@ -66,8 +68,8 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         $cookies = [];
 
         if (!empty($serverParams)) {
-            $headers = Headers::createFromGlobals($serverParams);
-            $cookies = Cookies::parseHeader($headers->get('Cookie', []));
+            $headers = Headers::createFromGlobals();
+            $cookies = Cookies::parseHeader($headers->getHeader('Cookie', []));
         }
 
         return new Request($method, $uri, $headers, $cookies, $serverParams, $body);
@@ -82,16 +84,16 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      */
     public static function createFromGlobals(): Request
     {
-        $server = $_SERVER;
+        $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+        $uri = (new UriFactory())->createFromGlobals($_SERVER);
 
-        $method = isset($server['REQUEST_METHOD']) ? $server['REQUEST_METHOD'] : 'GET';
-        $uri = (new UriFactory())->createFromGlobals($server);
-        $headers = Headers::createFromGlobals($server);
-        $cookies = Cookies::parseHeader($headers->get('Cookie', []));
+        $headers = Headers::createFromGlobals();
+        $cookies = Cookies::parseHeader($headers->getHeader('Cookie', []));
+
         $body = (new StreamFactory())->createStream();
-        $uploadedFiles = UploadedFile::createFromGlobals($server);
+        $uploadedFiles = UploadedFile::createFromGlobals($_SERVER);
 
-        $request = new Request($method, $uri, $headers, $cookies, $server, $body, $uploadedFiles);
+        $request = new Request($method, $uri, $headers, $cookies, $_SERVER, $body, $uploadedFiles);
         $contentTypes = $request->getHeader('Content-Type') ?? [];
 
         $parsedContentType = '';
