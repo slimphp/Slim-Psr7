@@ -115,6 +115,32 @@ class MessageTest extends TestCase
         $this->assertEquals('bar', $clone->getHeaderLine('X-Foo'));
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage '"X-Foo"' is not valid header name
+     */
+    public function testWithHeaderInvalidName()
+    {
+        $headers = new Headers();
+        $headers->add('X-Foo', 'one');
+        $message = new MessageStub();
+        $message->headers = $headers;
+        $message->withHeader('"X-Foo"', 'bar');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessageRegExp #'<!\n' is not valid header value#
+     */
+    public function testWithHeaderInvalidValue()
+    {
+        $headers = new Headers();
+        $headers->add('X-Foo', 'one');
+        $message = new MessageStub();
+        $message->headers = $headers;
+        $message->withHeader('X-Foo', "<!\n");
+    }
+
     public function testWithAddedHeader()
     {
         $headers = new Headers();
