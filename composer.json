@@ -45,6 +45,9 @@
     "psr/http-message-implementation": "1.0"
   },
   "autoload": {
+    "files": [
+      "src/functions.php"
+    ],
     "psr-4": {
       "Slim\\Psr7\\": "src"
     }
