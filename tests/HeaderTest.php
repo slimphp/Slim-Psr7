@@ -15,7 +15,11 @@ use Slim\Psr7\Header;
 
 class HeaderTest extends TestCase
 {
-
+    /**
+     * Instantiate a default header.
+     *
+     * @return Header
+     */
     protected function headerFactory(): Header
     {
         $originalName = 'ACCEPT';
