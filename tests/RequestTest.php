@@ -12,7 +12,6 @@ namespace Slim\Tests\Psr7;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
-use Slim\Psr7\Collection;
 use Slim\Psr7\Environment;
 use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Factory\UriFactory;
@@ -325,7 +324,7 @@ class RequestTest extends TestCase
         $request = $this->requestFactory();
         $attrProp = new ReflectionProperty($request, 'attributes');
         $attrProp->setAccessible(true);
-        $attrProp->setValue($request, new Collection(['foo' => 'bar']));
+        $attrProp->setValue($request, ['foo' => 'bar']);
 
         $this->assertEquals(['foo' => 'bar'], $request->getAttributes());
     }
@@ -335,7 +334,7 @@ class RequestTest extends TestCase
         $request = $this->requestFactory();
         $attrProp = new ReflectionProperty($request, 'attributes');
         $attrProp->setAccessible(true);
-        $attrProp->setValue($request, new Collection(['foo' => 'bar']));
+        $attrProp->setValue($request, ['foo' => 'bar']);
 
         $this->assertEquals('bar', $request->getAttribute('foo'));
         $this->assertNull($request->getAttribute('bar'));
@@ -347,7 +346,7 @@ class RequestTest extends TestCase
         $request = $this->requestFactory();
         $attrProp = new ReflectionProperty($request, 'attributes');
         $attrProp->setAccessible(true);
-        $attrProp->setValue($request, new Collection(['foo' => 'bar']));
+        $attrProp->setValue($request, ['foo' => 'bar']);
         $clone = $request->withAttribute('test', '123');
 
         $this->assertEquals('123', $clone->getAttribute('test'));
@@ -358,7 +357,7 @@ class RequestTest extends TestCase
         $request = $this->requestFactory();
         $attrProp = new ReflectionProperty($request, 'attributes');
         $attrProp->setAccessible(true);
-        $attrProp->setValue($request, new Collection(['foo' => 'bar']));
+        $attrProp->setValue($request, ['foo' => 'bar']);
         $clone = $request->withoutAttribute('foo');
 
         $this->assertNull($clone->getAttribute('foo'));
@@ -396,7 +395,7 @@ class RequestTest extends TestCase
         $method = 'GET';
         $uri = new Uri('https', 'example.com', 443, '/foo/bar', 'abc=123', '', '');
         $headers = new Headers();
-        $headers->set('Content-Type', 'application/x-www-form-urlencoded;charset=utf8');
+        $headers->setHeader('Content-Type', 'application/x-www-form-urlencoded;charset=utf8');
         $cookies = [];
         $serverParams = [];
         $body = (new StreamFactory())->createStream();
@@ -413,7 +412,7 @@ class RequestTest extends TestCase
         $method = 'GET';
         $uri = new Uri('https', 'example.com', 443, '/foo/bar', 'abc=123', '', '');
         $headers = new Headers();
-        $headers->set('Content-Type', 'application/x-www-form-urlencoded;charset=utf8');
+        $headers->setHeader('Content-Type', 'application/x-www-form-urlencoded;charset=utf8');
         $cookies = [];
         $serverParams = [];
         $body = (new StreamFactory())->createStream();

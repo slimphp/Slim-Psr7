@@ -195,11 +195,11 @@ class UploadedFile implements UploadedFileInterface
      */
     public static function createFromGlobals(array $globals): array
     {
-        $env = new Collection($globals);
+        if (isset($globals['slim.files']) && is_array($globals['slim.files'])) {
+            return $globals['slim.files'];
+        }
 
-        if (is_array($env['slim.files']) && $env->has('slim.files')) {
-            return $env['slim.files'];
-        } elseif (!empty($_FILES)) {
+        if (!empty($_FILES)) {
             return static::parseUploadedFiles($_FILES);
         }
 

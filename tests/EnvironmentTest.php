@@ -23,7 +23,6 @@ class EnvironmentTest extends TestCase
 
         $this->assertEquals('/foo/bar/index.php', $env['SCRIPT_NAME']);
         $this->assertEquals('/foo/bar?abc=123', $env['REQUEST_URI']);
-        $this->assertEquals('localhost', $env['HTTP_HOST']);
     }
 
     public function testMockHttps()
