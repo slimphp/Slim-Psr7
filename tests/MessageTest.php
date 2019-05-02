@@ -46,9 +46,9 @@ class MessageTest extends TestCase
     public function testGetHeaders()
     {
         $headers = new Headers();
-        $headers->add('X-Foo', 'one');
-        $headers->add('X-Foo', 'two');
-        $headers->add('X-Foo', 'three');
+        $headers->addHeader('X-Foo', 'one');
+        $headers->addHeader('X-Foo', 'two');
+        $headers->addHeader('X-Foo', 'three');
 
         $message = new MessageStub();
         $message->headers = $headers;
@@ -67,7 +67,7 @@ class MessageTest extends TestCase
     public function testHasHeader()
     {
         $headers = new Headers();
-        $headers->add('X-Foo', 'one');
+        $headers->addHeader('X-Foo', 'one');
 
         $message = new MessageStub();
         $message->headers = $headers;
@@ -79,9 +79,9 @@ class MessageTest extends TestCase
     public function testGetHeaderLine()
     {
         $headers = new Headers();
-        $headers->add('X-Foo', 'one');
-        $headers->add('X-Foo', 'two');
-        $headers->add('X-Foo', 'three');
+        $headers->addHeader('X-Foo', 'one');
+        $headers->addHeader('X-Foo', 'two');
+        $headers->addHeader('X-Foo', 'three');
 
         $message = new MessageStub();
         $message->headers = $headers;
@@ -93,9 +93,9 @@ class MessageTest extends TestCase
     public function testGetHeader()
     {
         $headers = new Headers();
-        $headers->add('X-Foo', 'one');
-        $headers->add('X-Foo', 'two');
-        $headers->add('X-Foo', 'three');
+        $headers->addHeader('X-Foo', 'one');
+        $headers->addHeader('X-Foo', 'two');
+        $headers->addHeader('X-Foo', 'three');
 
         $message = new MessageStub();
         $message->headers = $headers;
@@ -107,7 +107,7 @@ class MessageTest extends TestCase
     public function testWithHeader()
     {
         $headers = new Headers();
-        $headers->add('X-Foo', 'one');
+        $headers->addHeader('X-Foo', 'one');
         $message = new MessageStub();
         $message->headers = $headers;
         $clone = $message->withHeader('X-Foo', 'bar');
@@ -144,7 +144,7 @@ class MessageTest extends TestCase
     public function testWithAddedHeader()
     {
         $headers = new Headers();
-        $headers->add('X-Foo', 'one');
+        $headers->addHeader('X-Foo', 'one');
         $message = new MessageStub();
         $message->headers = $headers;
         $clone = $message->withAddedHeader('X-Foo', 'two');
@@ -155,8 +155,8 @@ class MessageTest extends TestCase
     public function testWithoutHeader()
     {
         $headers = new Headers();
-        $headers->add('X-Foo', 'one');
-        $headers->add('X-Bar', 'two');
+        $headers->addHeader('X-Foo', 'one');
+        $headers->addHeader('X-Bar', 'two');
         $response = new MessageStub();
         $response->headers = $headers;
         $clone = $response->withoutHeader('X-Foo');

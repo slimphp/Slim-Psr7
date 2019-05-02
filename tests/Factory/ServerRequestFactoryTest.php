@@ -47,18 +47,22 @@ class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
 
     public function testCreateFromGlobals()
     {
+        $GLOBALS['getallheaders_return'] = [
+            'ACCEPT' => 'application/json',
+            'ACCEPT-CHARSET' => 'utf-8',
+            'ACCEPT-LANGUAGE' => 'en-US',
+            'CONTENT-TYPE' => 'multipart/form-data',
+            'HOST' => 'example.com',
+            'USER-AGENT' => 'Slim Framework',
+        ];
+
         $_SERVER = Environment::mock([
-            'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'HTTP_ACCEPT_CHARSET' => 'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
-            'HTTP_ACCEPT_LANGUAGE' => 'en-US,en;q=0.8',
-            'HTTP_CONTENT_TYPE' => 'multipart/form-data',
-            'HTTP_HOST' => 'example.com:8080',
-            'HTTP_USER_AGENT' => 'Slim Framework',
+            'HTTP_HOST' => 'example.com',
             'PHP_AUTH_PW' => 'sekrit',
             'PHP_AUTH_USER' => 'josh',
             'QUERY_STRING' => 'abc=123',
             'REMOTE_ADDR' => '127.0.0.1',
-            'REQUEST_METHOD' => 'POST',
+            'REQUEST_METHOD' => 'GET',
             'REQUEST_TIME' => time(),
             'REQUEST_TIME_FLOAT' => microtime(true),
             'REQUEST_URI' => '/foo/bar',
@@ -68,9 +72,50 @@ class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
             'SERVER_PROTOCOL' => 'HTTP/1.1',
         ]);
 
+        $request = ServerRequestFactory::createFromGlobals();
+
+        unset($GLOBALS['getallheaders_return']);
+
+        $this->assertEquals('GET', $request->getMethod());
+        $this->assertEquals('1.1', $request->getProtocolVersion());
+
+        $this->assertEquals('application/json', $request->getHeaderLine('Accept'));
+        $this->assertEquals('utf-8', $request->getHeaderLine('Accept-Charset'));
+        $this->assertEquals('en-US', $request->getHeaderLine('Accept-Language'));
+        $this->assertEquals('multipart/form-data', $request->getHeaderLine('Content-Type'));
+
+        $uri = $request->getUri();
+        $this->assertEquals('josh:sekrit', $uri->getUserInfo());
+        $this->assertEquals('example.com', $uri->getHost());
+        $this->assertEquals('8080', $uri->getPort());
+        $this->assertEquals('/foo/bar', $uri->getPath());
+        $this->assertEquals('abc=123', $uri->getQuery());
+        $this->assertEquals('', $uri->getFragment());
+    }
+
+    public function testCreateFromGlobalsWithParsedBody()
+    {
+        $_SERVER = Environment::mock([
+            'HTTP_CONTENT_TYPE' => 'multipart/form-data',
+            'REQUEST_METHOD' => 'POST',
+        ]);
+
         $_POST = [
             'def' => '456',
         ];
+
+        $request = ServerRequestFactory::createFromGlobals();
+
+        // $_POST should be placed into the parsed body
+        $this->assertEquals($_POST, $request->getParsedBody());
+    }
+
+    public function testCreateFromGlobalsWithUploadedFiles()
+    {
+        $_SERVER = Environment::mock([
+            'HTTP_CONTENT_TYPE' => 'multipart/form-data',
+            'REQUEST_METHOD' => 'POST',
+        ]);
 
         $_FILES = [
             'uploaded_file' => [
@@ -102,22 +147,6 @@ class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
         ];
 
         $request = ServerRequestFactory::createFromGlobals();
-
-        // Ensure method and protocol version are correct
-        $this->assertEquals('POST', $request->getMethod());
-        $this->assertEquals('1.1', $request->getProtocolVersion());
-
-        // Uri should be set up correctly
-        $uri = $request->getUri();
-        $this->assertEquals('josh:sekrit', $uri->getUserInfo());
-        $this->assertEquals('example.com', $uri->getHost());
-        $this->assertEquals('8080', $uri->getPort());
-        $this->assertEquals('/foo/bar', $uri->getPath());
-        $this->assertEquals('abc=123', $uri->getQuery());
-        $this->assertEquals('', $uri->getFragment());
-
-        // $_POST should be placed into the parsed body
-        $this->assertEquals($_POST, $request->getParsedBody());
 
         // $_FILES should be mapped to an array of UploadedFile objects
         $uploadedFiles = $request->getUploadedFiles();

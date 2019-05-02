@@ -49,7 +49,7 @@ class Request extends Message implements ServerRequestInterface
     protected $serverParams;
 
     /**
-     * @var Collection
+     * @var array
      */
     protected $attributes;
 
@@ -87,7 +87,7 @@ class Request extends Message implements ServerRequestInterface
         $this->headers = $headers;
         $this->cookies = $cookies;
         $this->serverParams = $serverParams;
-        $this->attributes = new Collection();
+        $this->attributes = [];
         $this->body = $body;
         $this->uploadedFiles = $uploadedFiles;
 
@@ -95,8 +95,8 @@ class Request extends Message implements ServerRequestInterface
             $this->protocolVersion = str_replace('HTTP/', '', $serverParams['SERVER_PROTOCOL']);
         }
 
-        if (!$this->headers->has('Host') || $this->uri->getHost() !== '') {
-            $this->headers->set('Host', $this->uri->getHost());
+        if (!$this->headers->hasHeader('Host') || $this->uri->getHost() !== '') {
+            $this->headers->setHeader('Host', $this->uri->getHost());
         }
     }
 
@@ -107,7 +107,6 @@ class Request extends Message implements ServerRequestInterface
     public function __clone()
     {
         $this->headers = clone $this->headers;
-        $this->attributes = clone $this->attributes;
         $this->body = clone $this->body;
     }
 
@@ -216,14 +215,14 @@ class Request extends Message implements ServerRequestInterface
         $clone = clone $this;
         $clone->uri = $uri;
 
-        if (!$preserveHost) {
-            if ($uri->getHost() !== '') {
-                $clone->headers->set('Host', $uri->getHost());
-            }
-        } elseif (($uri->getHost() !== '' && (!$this->hasHeader('Host'))
-            || $this->getHeaderLine('Host') === '')
-        ) {
-            $clone->headers->set('Host', $uri->getHost());
+        if (!$preserveHost && $uri->getHost() !== '') {
+            $clone->headers->setHeader('Host', $uri->getHost());
+            return $clone;
+        }
+
+        if (($uri->getHost() !== '' && !$this->hasHeader('Host') || $this->getHeaderLine('Host') === '')) {
+            $clone->headers->setHeader('Host', $uri->getHost());
+            return $clone;
         }
 
         return $clone;
@@ -309,7 +308,7 @@ class Request extends Message implements ServerRequestInterface
      */
     public function getAttributes(): array
     {
-        return $this->attributes->all();
+        return $this->attributes;
     }
 
     /**
@@ -317,7 +316,7 @@ class Request extends Message implements ServerRequestInterface
      */
     public function getAttribute($name, $default = null)
     {
-        return $this->attributes->get($name, $default);
+        return isset($this->attributes[$name]) ? $this->attributes[$name] : $default;
     }
 
     /**
@@ -326,7 +325,7 @@ class Request extends Message implements ServerRequestInterface
     public function withAttribute($name, $value)
     {
         $clone = clone $this;
-        $clone->attributes->set($name, $value);
+        $clone->attributes[$name] = $value;
 
         return $clone;
     }
@@ -337,7 +336,8 @@ class Request extends Message implements ServerRequestInterface
     public function withoutAttribute($name)
     {
         $clone = clone $this;
-        $clone->attributes->remove($name);
+
+        unset($clone->attributes[$name]);
 
         return $clone;
     }
