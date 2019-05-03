@@ -58,7 +58,9 @@ class RequestFactory implements RequestFactoryInterface
         }
 
         if (!$uri instanceof UriInterface) {
-            throw new InvalidArgumentException('URI must either be string or instance of ' . UriInterface::class);
+            throw new InvalidArgumentException(
+                'Parameter 2 of RequestFactory::createRequest() must be a string or a compatible UriInterface.'
+            );
         }
 
         $body = $this->streamFactory->createStream();
