@@ -61,11 +61,8 @@ function header_remove($name = null)
  */
 function is_uploaded_file(string $filename): bool
 {
-    $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-    foreach ($backtrace as $element) {
-        if ($element['function'] === 'testMoveToSapiMoveUploadedFileFails') {
-            return true;
-        }
+    if (isset($GLOBALS['is_uploaded_file_return'])) {
+        return $GLOBALS['is_uploaded_file_return'];
     }
 
     return \is_uploaded_file($filename);

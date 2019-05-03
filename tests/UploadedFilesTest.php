@@ -39,6 +39,13 @@ class UploadedFilesTest extends TestCase
         }
     }
 
+    public function tearDown()
+    {
+        if (isset($GLOBALS['is_uploaded_file_return'])) {
+            unset($GLOBALS['is_uploaded_file_return']);
+        }
+    }
+
     /**
      * @return UploadedFile
      */
@@ -225,6 +232,8 @@ class UploadedFilesTest extends TestCase
      */
     public function testMoveToSapiMoveUploadedFileFails(UploadedFile $uploadedFile)
     {
+        $GLOBALS['is_uploaded_file_return'] = true;
+
         $tempName = uniqid('file-');
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
         $uploadedFile->moveTo($path);
