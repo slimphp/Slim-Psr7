@@ -97,6 +97,12 @@ class Headers implements HeadersInterface
         $originalName = $this->normalizeHeaderName($name, true);
         $normalizedName = $this->normalizeHeaderName($name);
 
+        // Ensure we preserve original case if the header already exists in the stack
+        if (isset($this->headers[$normalizedName])) {
+            $existingHeader = $this->headers[$normalizedName];
+            $originalName = $existingHeader->getOriginalName();
+        }
+
         $this->headers[$normalizedName] = new Header($originalName, $normalizedName, $values);
 
         return $this;
