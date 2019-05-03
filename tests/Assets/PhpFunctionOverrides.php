@@ -53,3 +53,20 @@ function header_remove($name = null)
 {
     HeaderStack::remove($name);
 }
+
+/**
+ * @param string $filename
+ *
+ * @return bool
+ */
+function is_uploaded_file(string $filename): bool
+{
+    $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+    foreach ($backtrace as $element) {
+        if ($element['function'] === 'testMoveToSapiMoveUploadedFileFails') {
+            return true;
+        }
+    }
+
+    return \is_uploaded_file($filename);
+}
