@@ -45,7 +45,7 @@ class StreamFactory implements StreamFactoryInterface
 
         if (!is_resource($resource)) {
             throw new RuntimeException(
-                sprintf('StreamFactory::createStreamFromFile() could not create resource from file `%s`.', $filename)
+                "StreamFactory::createStreamFromFile() could not create resource from file `$filename`"
             );
         }
 
@@ -59,7 +59,7 @@ class StreamFactory implements StreamFactoryInterface
     {
         if (!is_resource($resource)) {
             throw new InvalidArgumentException(
-                'First argument of StreamFactory::createStreamFromResource() must be a resource.'
+                'Parameter 1 of StreamFactory::createStreamFromResource() must be a resource.'
             );
         }
 
