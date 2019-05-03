@@ -81,8 +81,8 @@ class Headers implements HeadersInterface
             return count(array_keys($default)) ? $this->validateAndTrimHeader($name, $default) : $default;
         }
 
-        if (is_string($default)) {
-            return [$default];
+        if (is_string($default) || is_numeric($default)) {
+            return $this->validateAndTrimHeader($name, $default);
         }
 
         throw new InvalidArgumentException('Default parameter of Headers::getHeader() must be a string or an array.');
