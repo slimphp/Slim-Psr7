@@ -17,7 +17,7 @@ use Slim\Psr7\Environment;
 use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
 
-class UploadedFilesTest extends TestCase
+class UploadedFileTest extends TestCase
 {
     private static $filename = './phpUxcOty';
 
