@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Slim\Psr7;
 
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 
 class NonBufferedBody implements StreamInterface
 {
@@ -26,6 +27,7 @@ class NonBufferedBody implements StreamInterface
      */
     public function close(): void
     {
+        throw new RuntimeException('A NonBufferedBody is not closable.');
     }
 
     /**
@@ -73,6 +75,7 @@ class NonBufferedBody implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET)
     {
+        throw new RuntimeException('A NonBufferedBody is not seekable.');
     }
 
     /**
@@ -80,6 +83,7 @@ class NonBufferedBody implements StreamInterface
      */
     public function rewind(): void
     {
+        throw new RuntimeException('A NonBufferedBody is not rewindable.');
     }
 
     /**
@@ -120,7 +124,7 @@ class NonBufferedBody implements StreamInterface
      */
     public function read($length): string
     {
-        return '';
+        throw new RuntimeException('A NonBufferedBody is not readable.');
     }
 
     /**
