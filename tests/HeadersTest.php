@@ -174,4 +174,17 @@ class HeadersTest extends TestCase
 
         $this->assertEquals($expectedOriginalHeaders, $headers->getHeaders(true));
     }
+
+    public function testParseAuthorizationHeader()
+    {
+        $headers = new Headers([], ['REDIRECT_HTTP_AUTHORIZATION' => 'cookie']);
+        $this->assertEquals(['cookie'], $headers->getHeader('Authorization'));
+
+        $headers = new Headers([], ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password']);
+        $expectedValue = 'Basic ' . base64_encode('user' . ':' . 'password');
+        $this->assertEquals([$expectedValue], $headers->getHeader('Authorization'));
+
+        $headers = new Headers([], ['PHP_AUTH_DIGEST' => 'digest']);
+        $this->assertEquals(['digest'], $headers->getHeader('Authorization'));
+    }
 }
