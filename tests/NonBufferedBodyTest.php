@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Slim\Psr7\NonBufferedBody;
 use Slim\Psr7\Response;
 use Slim\Tests\Psr7\Assets\HeaderStack;
@@ -37,7 +38,6 @@ class NonBufferedBodyTest extends TestCase
         self::assertFalse($body->isSeekable(), 'Cannot seek');
         self::assertTrue($body->isWritable(), 'Body is writable');
         self::assertFalse($body->isReadable(), 'Body is not readable');
-        self::assertSame('', $body->read(10), 'Data cannot be retrieved once written');
         self::assertSame('', $body->getContents(), 'Data cannot be retrieved once written');
         self::assertNull($body->getMetadata(), 'Metadata mechanism is not implemented');
     }
@@ -78,7 +78,6 @@ class NonBufferedBodyTest extends TestCase
         ], HeaderStack::stack());
     }
 
-
     public function testWithoutHeader()
     {
         (new Response())
@@ -87,5 +86,41 @@ class NonBufferedBodyTest extends TestCase
             ->withoutHeader('Foo');
 
         self::assertSame([], HeaderStack::stack());
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage A NonBufferedBody is not closable.
+     */
+    public function testCloseThrowsRuntimeException()
+    {
+        (new NonBufferedBody())->close();
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage A NonBufferedBody is not seekable.
+     */
+    public function testSeekThrowsRuntimeException()
+    {
+        (new NonBufferedBody())->seek(10);
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage A NonBufferedBody is not rewindable.
+     */
+    public function testRewindThrowsRuntimeException()
+    {
+        (new NonBufferedBody())->rewind();
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage A NonBufferedBody is not readable.
+     */
+    public function testReadThrowsRuntimeException()
+    {
+        (new NonBufferedBody())->read(10);
     }
 }
