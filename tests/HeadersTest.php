@@ -9,8 +9,10 @@ declare(strict_types=1);
 
 namespace Slim\Tests\Psr7;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Headers;
+use stdClass;
 
 class HeadersTest extends TestCase
 {
@@ -73,6 +75,24 @@ class HeadersTest extends TestCase
         $this->assertEquals(['application/json', 'text/html'], $headers->getHeader('accept'));
         $this->assertEquals(['application/json', 'text/html'], $headers->getHeader('Accept'));
         $this->assertEquals(['application/json', 'text/html'], $headers->getHeader('HTTP_ACCEPT'));
+    }
+
+    public function testGetHeaderReturnsValidatedAndTrimedHeaderDefaultValue()
+    {
+        $headers = new Headers([]);
+
+        $this->assertEquals(['application/json'], $headers->getHeader('accept', ' application/json'));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Default parameter of Headers::getHeader() must be a string or an array.
+     */
+    public function testGetHeaderThrowsExceptionWithInvalidDefaultArgument()
+    {
+        $headers = new Headers([]);
+
+        $headers->getHeader('accept', new stdClass());
     }
 
     public function testSetHeader()
