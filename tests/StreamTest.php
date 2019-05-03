@@ -155,6 +155,15 @@ class StreamTest extends TestCase
         $attachMethod->invoke($stream, $this->pipeFh);
     }
 
+    public function testGetMetaDataReturnsNullIfStreamIsDetached()
+    {
+        $resource = fopen('php://temp', 'rw+');
+        $stream = new Stream($resource);
+        $stream->detach();
+
+        $this->assertNull($stream->getMetadata());
+    }
+
     private function openPipeStream()
     {
         $this->pipeFh = popen('echo 12', 'r');
