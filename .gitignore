@@ -1,7 +1,6 @@
 .DS_Store
 .idea
 .tmp
-tests
 composer.lock
 phpunit.xml
 clover.xml
