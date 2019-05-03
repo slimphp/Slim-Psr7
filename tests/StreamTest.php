@@ -10,6 +10,9 @@ declare(strict_types=1);
 namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use ReflectionMethod;
+use ReflectionProperty;
 use RuntimeException;
 use Slim\Psr7\Stream;
 
@@ -124,6 +127,32 @@ class StreamTest extends TestCase
 
         $contents = trim($this->pipeStream->getContents());
         $this->assertSame('12', $contents);
+    }
+
+    /**
+     * Test that a call to the protected method `attach` would invoke `detach`.
+     *
+     * @throws ReflectionException
+     */
+    public function testAttachAgain()
+    {
+        $this->openPipeStream();
+
+        $streamProphecy = $this->prophesize(Stream::class);
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $streamProphecy->detach()->shouldBeCalled();
+
+        /** @var Stream $stream */
+        $stream = $streamProphecy->reveal();
+
+        $streamProperty = new ReflectionProperty(Stream::class, 'stream');
+        $streamProperty->setAccessible(true);
+        $streamProperty->setValue($stream, $this->pipeFh);
+
+        $attachMethod = new ReflectionMethod(Stream::class, 'attach');
+        $attachMethod->setAccessible(true);
+        $attachMethod->invoke($stream, $this->pipeFh);
     }
 
     private function openPipeStream()
