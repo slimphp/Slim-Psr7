@@ -53,3 +53,17 @@ function header_remove($name = null)
 {
     HeaderStack::remove($name);
 }
+
+/**
+ * @param string $filename
+ *
+ * @return bool
+ */
+function is_uploaded_file(string $filename): bool
+{
+    if (isset($GLOBALS['is_uploaded_file_return'])) {
+        return $GLOBALS['is_uploaded_file_return'];
+    }
+
+    return \is_uploaded_file($filename);
+}
