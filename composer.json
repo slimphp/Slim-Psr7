@@ -39,8 +39,8 @@
     "php-http/psr7-integration-tests": "dev-master",
     "phpstan/phpstan": "^0.10",
     "phpunit/phpunit": "^6.0|^7.0",
-    "squizlabs/php_codesniffer": "^3.3",
-    "ralouphie/getallheaders": "^2"
+    "ralouphie/getallheaders": "^2",
+    "squizlabs/php_codesniffer": "^3.3"
   },
   "provide": {
     "psr/http-message-implementation": "1.0"
