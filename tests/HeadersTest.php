@@ -88,6 +88,18 @@ class HeadersTest extends TestCase
         $this->assertEquals(['Content-Length' => ['100']], $headers->getHeaders(true));
     }
 
+    public function testSetHeaderPreservesOriginalCaseIfHeaderAlreadyExists()
+    {
+        $headers = new Headers([
+            'CONTENT-LENGTH' => 0,
+        ]);
+
+        $headers->setHeader('Content-Length', 100);
+
+        $this->assertEquals(['content-length' => ['100']], $headers->getHeaders());
+        $this->assertEquals(['CONTENT-LENGTH' => ['100']], $headers->getHeaders(true));
+    }
+
     public function testSetHeaders()
     {
         $headers = new Headers([
