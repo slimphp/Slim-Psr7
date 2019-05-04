@@ -10,11 +10,11 @@ separately with any framework compatible with the PSR-7 standard.
 
 ## Installation
 
-It's recommended that you use [Composer](https://getcomposer.org/) to install 
+It's recommended that you use [Composer](https://getcomposer.org) to install 
 this library.
 
 ```bash
-$ composer require slim/psr7 "^0.1"
+$ composer require slim/psr7
 ```
 
 This will install the `slim/psr7` component and all required dependencies.
