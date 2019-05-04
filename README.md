@@ -1,7 +1,7 @@
 # Slim PSR-7
 
-Strict PSR-7 implementation used by the Slim Framework, but you may use it
-separately with any framework compatible with the PSR-7 standard.
+Strict PSR-7 implementation used by the [Slim Framework](http://www.slimframework.com/), but you may use it
+separately with any framework compatible with the [PSR-7 standard](https://www.php-fig.org/psr/psr-7/).
 
 [![Build Status](https://travis-ci.org/slimphp/Slim-Psr7.svg?branch=master)](https://travis-ci.org/slimphp/Slim-Psr7)
 [![Coverage Status](https://coveralls.io/repos/github/slimphp/Slim-Psr7/badge.svg?branch=master)](https://coveralls.io/github/slimphp/Slim-Psr7?branch=master)
