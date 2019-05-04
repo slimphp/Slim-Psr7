@@ -58,7 +58,7 @@ class Cookies
      *
      * @return static
      */
-    public function setDefaults(array $settings)
+    public function setDefaults(array $settings): self
     {
         $this->defaults = array_replace($this->defaults, $settings);
 
@@ -76,7 +76,7 @@ class Cookies
     /**
      * {@inheritdoc}
      */
-    public function set(string $name, $value)
+    public function set(string $name, $value): self
     {
         if (!is_array($value)) {
             $value = ['value' => $value];
