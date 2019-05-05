@@ -94,7 +94,7 @@ class UriFactory implements UriFactoryInterface
             $requestUri = $uriFragments[0];
 
             if ($queryString === '' && count($uriFragments) > 1) {
-                $queryString = parse_url('http://www.example.com' . $globals['REQUEST_URI'], PHP_URL_QUERY);
+                $queryString = parse_url('http://www.example.com' . $globals['REQUEST_URI'], PHP_URL_QUERY) ?? '';
             }
         }
 
