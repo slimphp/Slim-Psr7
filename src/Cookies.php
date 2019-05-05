@@ -66,7 +66,11 @@ class Cookies
     }
 
     /**
-     * {@inheritdoc}
+     * Get cookie
+     *
+     * @param string            $name
+     * @param string|array|null $default
+     * @return mixed|null
      */
     public function get(string $name, $default = null)
     {
@@ -74,7 +78,11 @@ class Cookies
     }
 
     /**
-     * {@inheritdoc}
+     * Set cookie
+     *
+     * @param string       $name
+     * @param string|array $value
+     * @return static
      */
     public function set(string $name, $value): self
     {
@@ -88,7 +96,9 @@ class Cookies
     }
 
     /**
-     * {@inheritdoc}
+     * Convert all response cookies into an associate array of header values
+     *
+     * @return array
      */
     public function toHeaders(): array
     {
@@ -153,7 +163,13 @@ class Cookies
     }
 
     /**
-     * {@inheritdoc}
+     * Parse cookie values from header value
+     *
+     * Returns an associative array of cookie names and values
+     *
+     * @param string|array $header
+     *
+     * @return array
      */
     public static function parseHeader($header): array
     {
