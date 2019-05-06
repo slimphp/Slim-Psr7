@@ -59,14 +59,15 @@ class UriFactory implements UriFactoryInterface
         $password = isset($globals['PHP_AUTH_PW']) ? $globals['PHP_AUTH_PW'] : '';
 
         // Authority: Host
+        $host = '';
         if (isset($globals['HTTP_HOST'])) {
-            $host = $globals['HTTP_HOST'] ?: '';
-        } else {
-            $host = $globals['SERVER_NAME'] ?: '';
+            $host = $globals['HTTP_HOST'];
+        } elseif (isset($globals['SERVER_NAME'])) {
+            $host = $globals['SERVER_NAME'];
         }
 
         // Authority: Port
-        $port = isset($globals['SERVER_PORT']) && !empty($globals['SERVER_PORT']) ? (int) $globals['SERVER_PORT'] : 80;
+        $port = !empty($globals['SERVER_PORT']) ? (int) $globals['SERVER_PORT'] : 80;
         if (preg_match('/^(\[[a-fA-F0-9:.]+\])(:\d+)?\z/', $host, $matches)) {
             $host = $matches[1];
 
