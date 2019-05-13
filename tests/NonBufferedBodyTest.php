@@ -68,8 +68,8 @@ class NonBufferedBodyTest extends TestCase
         unset($GLOBALS['ob_get_level_shift']);
         $contents = ob_get_clean();
 
-        $this->assertEquals(16 + 6, $length0);
-        $this->assertEquals(5, $length1);
+        $this->assertEquals(strlen('buffer content: ') + strlen('hello '), $length0);
+        $this->assertEquals(strlen('world'), $length1);
         $this->assertEquals('buffer content: hello world', $contents);
     }
 
