@@ -42,6 +42,16 @@ class NonBufferedBodyTest extends TestCase
         self::assertNull($body->getMetadata(), 'Metadata mechanism is not implemented');
     }
 
+    public function testWrite()
+    {
+        $body = new NonBufferedBody();
+        $length0 = $body->write('hello ');
+        $length1 = $body->write('world');
+
+        $this->assertEquals(6, $length0);
+        $this->assertEquals(5, $length1);
+    }
+
     public function testWithHeader()
     {
         (new Response())
