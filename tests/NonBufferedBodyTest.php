@@ -44,12 +44,33 @@ class NonBufferedBodyTest extends TestCase
 
     public function testWrite()
     {
+        $ob_initial_level = ob_get_level();
+
+        // Start output buffering.
+        ob_start();
+
+        // Start output buffering again to test the while-loop in the `write()`
+        // method that calls `ob_get_clean()` as long as the ob level is bigger
+        // than 0.
+        ob_start();
+        echo 'buffer content: ';
+
+        // Set the ob level shift that should be applied in the `ob_get_level()`
+        // function override. That way, the `write()` method would only flush
+        // the second ob, not the first one. We will add the initial ob level
+        // because phpunit may have started ob too.
+        $GLOBALS['ob_get_level_shift'] = -($ob_initial_level + 1);
+
         $body = new NonBufferedBody();
         $length0 = $body->write('hello ');
         $length1 = $body->write('world');
 
-        $this->assertEquals(6, $length0);
+        unset($GLOBALS['ob_get_level_shift']);
+        $contents = ob_get_clean();
+
+        $this->assertEquals(16 + 6, $length0);
         $this->assertEquals(5, $length1);
+        $this->assertEquals('buffer content: hello world', $contents);
     }
 
     public function testWithHeader()

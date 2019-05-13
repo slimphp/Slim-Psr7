@@ -67,3 +67,21 @@ function is_uploaded_file(string $filename): bool
 
     return \is_uploaded_file($filename);
 }
+
+/**
+ * Return the value of the global variable $GLOBALS['ob_get_level_return'] if it
+ * exists. Otherwise the function override calls the default php built-in
+ * function.
+ *
+ * @return int
+ */
+function ob_get_level(): int
+{
+
+    if (isset($GLOBALS['ob_get_level_shift'])) {
+        file_put_contents('C:\Users\Adrian\Desktop\test.txt', \ob_get_level() + $GLOBALS['ob_get_level_shift']);
+        return \ob_get_level() + $GLOBALS['ob_get_level_shift'];
+    }
+
+    return \ob_get_level();
+}
