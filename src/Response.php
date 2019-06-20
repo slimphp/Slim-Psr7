@@ -154,10 +154,6 @@ class Response extends Message implements ResponseInterface
             $reasonPhrase = static::$messages[$code];
         }
 
-        if ($reasonPhrase === '') {
-            throw new InvalidArgumentException('Reason phrase must be supplied for this status code.');
-        }
-
         $clone->reasonPhrase = $reasonPhrase;
 
         return $clone;
@@ -168,7 +164,7 @@ class Response extends Message implements ResponseInterface
      */
     public function getReasonPhrase(): string
     {
-        if ($this->reasonPhrase) {
+        if ($this->reasonPhrase !== '') {
             return $this->reasonPhrase;
         }
 
