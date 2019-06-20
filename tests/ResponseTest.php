@@ -136,14 +136,12 @@ class ResponseTest extends TestCase
         $this->assertEquals('Not Found', $response->getReasonPhrase());
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Reason phrase must be supplied for this status code
-     */
-    public function testMustSetReasonPhraseForUnrecognisedCode()
+    public function testEmptyReasonPhraseForUnrecognisedCode()
     {
         $response = new Response();
-        $response->withStatus(199);
+        $response = $response->withStatus(199);
+        
+        $this->assertSame('', $response->getReasonPhrase());
     }
 
     public function testSetReasonPhraseForUnrecognisedCode()
