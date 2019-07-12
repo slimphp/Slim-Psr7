@@ -68,9 +68,19 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
      */
     public function testCreateUploadedFileWithInvalidUri()
     {
-        $this->factory->createUploadedFile(
-            $this->prophesizeStreamInterfaceWithGetMetadataMethod('uri', null)
-        );
+        // Prophesize a `\Psr\Http\Message\StreamInterface` with a `getMetadata` method prophecy.
+        $streamProphecy = $this->prophesize(StreamInterface::class);
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $streamProphecy
+            ->getMetadata('uri')
+            ->willReturn(null)
+            ->shouldBeCalled();
+
+        /** @var StreamInterface $stream */
+        $stream = $streamProphecy->reveal();
+
+        $this->factory->createUploadedFile($stream);
     }
 
     /**
@@ -79,8 +89,24 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
      */
     public function testCreateUploadedFileWithNonReadableFile()
     {
-        $this->factory->createUploadedFile(
-            $this->prophesizeStreamInterfaceWithGetMetadataMethod('uri', 'non-readable')
-        );
+        // Prophesize a `\Psr\Http\Message\StreamInterface` with a `getMetadata` and `isReadable` method prophecies.
+        $streamProphecy = $this->prophesize(StreamInterface::class);
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $streamProphecy
+            ->getMetadata('uri')
+            ->willReturn('non-readable')
+            ->shouldBeCalled();
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $streamProphecy
+            ->isReadable()
+            ->willReturn(false)
+            ->shouldBeCalled();
+
+        /** @var StreamInterface $stream */
+        $stream = $streamProphecy->reveal();
+
+        $this->factory->createUploadedFile($stream);
     }
 }
