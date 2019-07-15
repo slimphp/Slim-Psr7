@@ -11,9 +11,13 @@ namespace Slim\Tests\Psr7;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\StreamInterface;
+use Psr\Http\Message\UploadedFileInterface;
 use ReflectionProperty;
 use RuntimeException;
 use Slim\Psr7\Environment;
+use Slim\Psr7\Factory\StreamFactory;
+use Slim\Psr7\Factory\UploadedFileFactory;
 use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
 
@@ -303,6 +307,75 @@ class UploadedFileTest extends TestCase
 
         $this->assertEquals($contents, $movedFileContents);
         $this->assertFileNotExists($fileName);
+    }
+
+    public function testFileUploadWithTempStream()
+    {
+        $streamFactory = function (...$args) {
+            return (new StreamFactory())->createStream(...$args);
+        };
+        $uploadedFileFactory = function (...$args) {
+            return (new UploadedFileFactory())->createUploadedFile(...$args);
+        };
+        $this->runFileUploadWithTempStreamTest($streamFactory, $uploadedFileFactory);
+    }
+
+    /**
+     * This test sequence has been inspired by UploadedFileFactoryTestCase from http-interop/http-factory-tests package.
+     *
+     * @param callable $streamFactory
+     * @param callable $uploadedFileFactory
+     */
+    private function runFileUploadWithTempStreamTest(callable $streamFactory, callable $uploadedFileFactory)
+    {
+        $content = 'this is your capitan speaking';
+        $error = UPLOAD_ERR_OK;
+        $clientFilename = 'test.txt';
+        $clientMediaType = 'text/plain';
+
+        $stream = call_user_func($streamFactory, $content);
+        $file = call_user_func(
+            $uploadedFileFactory,
+            $stream,
+            strlen($content),
+            $error,
+            $clientFilename,
+            $clientMediaType
+        );
+
+        $this->assertInstanceOf(UploadedFileInterface::class, $file);
+        $this->assertSame($content, (string)$file->getStream());
+        $this->assertSame(strlen($content), $file->getSize());
+        $this->assertSame($error, $file->getError());
+        $this->assertSame($clientFilename, $file->getClientFilename());
+        $this->assertSame($clientMediaType, $file->getClientMediaType());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testCreateUploadedFileWithInvalidArguments()
+    {
+        new UploadedFile(42); // a random value that is neither a string nor an instance of StreamInterface
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testCreateUploadedFileWithInvalidUri()
+    {
+        $streamProphecy = $this->prophesize(StreamInterface::class);
+
+        /** @noinspection PhpUndefinedMethodInspection */
+        $streamProphecy
+            ->getMetadata('uri')
+            ->willReturn(null)
+            ->shouldBeCalled();
+        $stream = $streamProphecy->reveal();
+
+        // Test with a StreamInterface that returns `null`
+        // when `$stream->getMetadata('uri')` is called (which is an invalid case).
+        new UploadedFile($stream);
     }
 
     public function providerCreateFromGlobals()

@@ -70,22 +70,36 @@ class UploadedFile implements UploadedFileInterface
     protected $moved = false;
 
     /**
-     * @param string      $file  The full path to the uploaded file provided by the client.
-     * @param string|null $name  The file name.
-     * @param string|null $type  The file media type.
-     * @param int|null    $size  The file size in bytes.
-     * @param int         $error The UPLOAD_ERR_XXX code representing the status of the upload.
-     * @param bool        $sapi  Indicates if the upload is in a SAPI environment.
+     * @param string|StreamInterface $fileNameOrStream The full path to the uploaded file provided by the client,
+     *                                                 or a StreamInterface instance.
+     * @param string|null            $name             The file name.
+     * @param string|null            $type             The file media type.
+     * @param int|null               $size             The file size in bytes.
+     * @param int                    $error            The UPLOAD_ERR_XXX code representing the status of the upload.
+     * @param bool                   $sapi             Indicates if the upload is in a SAPI environment.
      */
     public function __construct(
-        string $file,
+        $fileNameOrStream,
         ?string $name = null,
         ?string $type = null,
         ?int $size = null,
         int $error = UPLOAD_ERR_OK,
         bool $sapi = false
     ) {
-        $this->file = $file;
+        if ($fileNameOrStream instanceof StreamInterface) {
+            $file = $fileNameOrStream->getMetadata('uri');
+            if (!is_string($file)) {
+                throw new InvalidArgumentException('No URI associated with the stream.');
+            }
+            $this->file = $file;
+            $this->stream = $fileNameOrStream;
+        } elseif (is_string($fileNameOrStream)) {
+            $this->file = $fileNameOrStream;
+        } else {
+            throw new InvalidArgumentException(
+                'Please provide a string (full path to the uploaded file) or an instance of StreamInterface.'
+            );
+        }
         $this->name = $name;
         $this->type = $type;
         $this->size = $size;

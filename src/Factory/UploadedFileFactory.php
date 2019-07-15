@@ -29,7 +29,7 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
     ): UploadedFileInterface {
         $file = $stream->getMetadata('uri');
 
-        if (!is_string($file) || !is_readable($file)) {
+        if (!is_string($file) || !$stream->isReadable()) {
             throw new InvalidArgumentException('File is not readable.');
         }
 
@@ -37,6 +37,6 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
             $size = $stream->getSize();
         }
 
-        return new UploadedFile($file, $clientFilename, $clientMediaType, $size, $error);
+        return new UploadedFile($stream, $clientFilename, $clientMediaType, $size, $error);
     }
 }
