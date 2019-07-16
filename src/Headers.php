@@ -28,7 +28,7 @@ class Headers implements HeadersInterface
      * @param array $headers
      * @param array $globals
      */
-    public function __construct(array $headers = [], array $globals = null)
+    public function __construct(array $headers = [], ?array $globals = null)
     {
         $this->globals = $globals ?? $_SERVER;
         $this->setHeaders($headers);
