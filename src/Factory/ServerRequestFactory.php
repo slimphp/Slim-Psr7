@@ -36,7 +36,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      * @param StreamFactoryInterface|null $streamFactory
      * @param UriFactoryInterface|null    $uriFactory
      */
-    public function __construct(StreamFactoryInterface $streamFactory = null, UriFactoryInterface $uriFactory = null)
+    public function __construct(?StreamFactoryInterface $streamFactory = null, ?UriFactoryInterface $uriFactory = null)
     {
         if (!isset($streamFactory)) {
             $streamFactory = new StreamFactory();
