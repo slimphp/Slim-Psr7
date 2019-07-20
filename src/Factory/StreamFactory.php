@@ -49,7 +49,7 @@ class StreamFactory implements StreamFactoryInterface
             );
         }
 
-        return $this->createStreamFromResource($resource);
+        return new Stream($resource);
     }
 
     /**
