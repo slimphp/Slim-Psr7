@@ -457,4 +457,16 @@ class RequestTest extends TestCase
     {
         $this->requestFactory()->withParsedBody(false);
     }
+
+    public function testWithServerParamsOverwrites()
+    {
+        $request = $this->requestFactory();
+
+        $params = $request->getServerParams();
+        $params['HTTP_SOATOK'] = 'unit test';
+        $cloned = $request->withServerParams($params);
+
+        $this->assertSame('unit test', $cloned->getServerParams()['HTTP_SOATOK']);
+        $this->assertFalse(array_key_exists('HTTP_SOATOK', $request->getServerParams()));
+    }
 }

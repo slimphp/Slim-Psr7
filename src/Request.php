@@ -304,6 +304,18 @@ class Request extends Message implements ServerRequestInterface
     }
 
     /**
+     * @param array $serverParams
+     * @return self
+     */
+    public function withServerParams(array $serverParams): self
+    {
+        $clone = clone $this;
+        $clone->serverParams = $serverParams;
+
+        return $clone;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getAttributes(): array
