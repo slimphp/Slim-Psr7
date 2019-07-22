@@ -304,6 +304,18 @@ class Request extends Message implements ServerRequestInterface
     }
 
     /**
+     * @throws \Exception
+     */
+    public function withServerParams()
+    {
+        throw new \Exception(
+            "This is not part of the PSR-7 spec and will NEVER be implemented here. " .
+            "If you want to change the server parameters in a Request object, " .
+            "you should create a new instance with your mutated array instead."
+        );
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getAttributes(): array
