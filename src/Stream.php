@@ -23,14 +23,6 @@ class Stream implements StreamInterface
     const FSTAT_MODE_S_IFIFO = 0010000;
 
     /**
-     * @var  array
-     */
-    protected static $modes = [
-        'readable' => ['r', 'r+', 'w+', 'a+', 'x+', 'c+'],
-        'writable' => ['r+', 'w', 'w+', 'a', 'a+', 'x', 'x+', 'c', 'c+'],
-    ];
-
-    /**
      * The underlying stream resource
      *
      * @var resource|null
@@ -218,13 +210,12 @@ class Stream implements StreamInterface
                 $this->readable = true;
             } else {
                 $this->readable = false;
+
                 if ($this->stream) {
-                    $meta = $this->getMetadata();
-                    foreach (self::$modes['readable'] as $mode) {
-                        if ($meta && strpos($meta['mode'], $mode) === 0) {
-                            $this->readable = true;
-                            break;
-                        }
+                    $mode = $this->getMetadata('mode');
+
+                    if (strstr($mode, 'r') !== false || strstr($mode, '+') !== false) {
+                        $this->readable = true;
                     }
                 }
             }
@@ -240,13 +231,12 @@ class Stream implements StreamInterface
     {
         if ($this->writable === null) {
             $this->writable = false;
+
             if ($this->stream) {
-                $meta = $this->getMetadata();
-                foreach (self::$modes['writable'] as $mode) {
-                    if (strpos($meta['mode'], $mode) === 0) {
-                        $this->writable = true;
-                        break;
-                    }
+                $mode = $this->getMetadata('mode');
+
+                if (strstr($mode, 'w') !== false || strstr($mode, '+') !== false) {
+                    $this->writable = true;
                 }
             }
         }
@@ -261,9 +251,9 @@ class Stream implements StreamInterface
     {
         if ($this->seekable === null) {
             $this->seekable = false;
+
             if ($this->stream) {
-                $meta = $this->getMetadata();
-                $this->seekable = !$this->isPipe() && $meta['seekable'];
+                $this->seekable = !$this->isPipe() && $this->getMetadata('seekable');
             }
         }
 
@@ -356,9 +346,9 @@ class Stream implements StreamInterface
     {
         if ($this->isPipe === null) {
             $this->isPipe = false;
+
             if ($this->stream) {
-                $mode = fstat($this->stream)['mode'];
-                $this->isPipe = ($mode & self::FSTAT_MODE_S_IFIFO) !== 0;
+                $this->isPipe = (fstat($this->stream)['mode'] & self::FSTAT_MODE_S_IFIFO) !== 0;
             }
         }
 
