@@ -129,6 +129,38 @@ class StreamTest extends TestCase
         $this->assertSame('12', $contents);
     }
 
+    public function testIsWriteable()
+    {
+        $resource = fopen('php://temp', 'w');
+        $stream = new Stream($resource);
+
+        $this->assertEquals(13, $stream->write('Hello, world!'));
+
+        $this->assertTrue($stream->isWritable());
+    }
+
+    public function testIsReadable()
+    {
+        $resource = fopen('php://temp', 'r');
+        $stream = new Stream($resource);
+
+        $this->assertTrue($stream->isReadable());
+        $this->assertFalse($stream->isWritable());
+    }
+
+    public function testIsWritableAndReadable()
+    {
+        $resource = fopen('php://temp', 'w+');
+        $stream = new Stream($resource);
+
+        $stream->write('Hello, world!');
+
+        $this->assertEquals('Hello, world!', $stream);
+
+        $this->assertTrue($stream->isWritable());
+        $this->assertTrue($stream->isReadable());
+    }
+
     /**
      * Test that a call to the protected method `attach` would invoke `detach`.
      *
