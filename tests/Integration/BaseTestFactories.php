@@ -42,11 +42,11 @@ trait BaseTestFactories
     }
 
     /**
-     * @param string $file
+     * @param $data
      * @return UploadedFile
      */
-    protected function buildUploadedFile(string $file): UploadedFile
+    protected function buildUploadableFile($data): UploadedFile
     {
-        return new UploadedFile($file);
+        return new UploadedFile($this->buildStream($data));
     }
 }
