@@ -41,7 +41,7 @@ class StreamFactory implements StreamFactoryInterface
      */
     public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
     {
-        $resource = fopen($filename, $mode);
+        $resource = @fopen($filename, $mode);
 
         if (!is_resource($resource)) {
             throw new RuntimeException(

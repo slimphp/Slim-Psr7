@@ -285,14 +285,12 @@ class Stream implements StreamInterface
      */
     public function read($length): string
     {
-        $data = false;
-
-        if ($this->stream) {
+        if ($this->isReadable() && $this->stream) {
             $data = fread($this->stream, $length);
-        }
 
-        if (is_string($data)) {
-            return $data;
+            if (is_string($data)) {
+                return $data;
+            }
         }
 
         throw new RuntimeException('Could not read from stream.');
@@ -303,15 +301,13 @@ class Stream implements StreamInterface
      */
     public function write($string)
     {
-        $written = false;
-
-        if ($this->stream) {
+        if ($this->isWritable() && $this->stream) {
             $written = fwrite($this->stream, $string);
-        }
 
-        if ($written !== false) {
-            $this->size = null;
-            return $written;
+            if ($written !== false) {
+                $this->size = null;
+                return $written;
+            }
         }
 
         throw new RuntimeException('Could not write to stream.');
