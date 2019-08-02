@@ -90,7 +90,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         $headers = Headers::createFromGlobals();
         $cookies = Cookies::parseHeader($headers->getHeader('Cookie', []));
 
-        $body = (new StreamFactory())->createStream();
+        $body = (new StreamFactory())->createStreamFromFile('php://input');
         $uploadedFiles = UploadedFile::createFromGlobals($_SERVER);
 
         $request = new Request($method, $uri, $headers, $cookies, $_SERVER, $body, $uploadedFiles);

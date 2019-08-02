@@ -110,6 +110,13 @@ class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
         $this->assertEquals($_POST, $request->getParsedBody());
     }
 
+    public function testCreateFromGlobalsBodyPointsToPhpInput()
+    {
+        $request = ServerRequestFactory::createFromGlobals();
+
+        $this->assertEquals('php://input', $request->getBody()->getMetadata('uri'));
+    }
+
     public function testCreateFromGlobalsWithUploadedFiles()
     {
         $_SERVER = Environment::mock([
