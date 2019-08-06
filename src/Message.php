@@ -154,8 +154,6 @@ abstract class Message implements MessageInterface
      */
     public function withoutHeader($name)
     {
-        Headers::validateHeaderName($name);
-
         $clone = clone $this;
         $clone->headers->removeHeader($name);
 
