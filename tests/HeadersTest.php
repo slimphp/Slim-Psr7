@@ -95,7 +95,6 @@ class HeadersTest extends TestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Default parameter of Headers::getHeader() must be a string or an array.
      */
     public function testGetHeaderThrowsExceptionWithInvalidDefaultArgument()
     {
