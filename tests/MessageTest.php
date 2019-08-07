@@ -115,17 +115,6 @@ class MessageTest extends TestCase
         $this->assertEquals('bar', $clone->getHeaderLine('X-Foo'));
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     */
-    public function testWithHeaderValueEmptyArray()
-    {
-        $headers = new Headers();
-        $message = new MessageStub();
-        $message->headers = $headers;
-        $message->withHeader('Accept', []);
-    }
-
     public function testWithAddedHeader()
     {
         $headers = new Headers();
