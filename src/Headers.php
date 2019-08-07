@@ -37,11 +37,9 @@ class Headers implements HeadersInterface
     /**
      * {@inheritdoc}
      */
-    public function addHeader(string $name, $values): HeadersInterface
+    public function addHeader(string $name, $value): HeadersInterface
     {
-        $values = $this->validateAndTrimHeader($name, $values);
-        $originalName = $this->normalizeHeaderName($name, true);
-        $normalizedName = $this->normalizeHeaderName($name);
+        [$values, $originalName, $normalizedName] = $this->prepareHeader($name, $value);
 
         if (isset($this->headers[$normalizedName])) {
             $header = $this->headers[$normalizedName];
@@ -59,9 +57,7 @@ class Headers implements HeadersInterface
     public function removeHeader(string $name): HeadersInterface
     {
         $name = $this->normalizeHeaderName($name);
-
         unset($this->headers[$name]);
-
         return $this;
     }
 
@@ -77,25 +73,20 @@ class Headers implements HeadersInterface
             return $header->getValues();
         }
 
-        if (is_array($default)) {
-            return count(array_keys($default)) ? $this->validateAndTrimHeader($name, $default) : $default;
+        if (empty($default)) {
+            return $default;
         }
 
-        if (is_string($default) || is_numeric($default)) {
-            return $this->validateAndTrimHeader($name, $default);
-        }
-
-        throw new InvalidArgumentException('Default parameter of Headers::getHeader() must be a string or an array.');
+        $this->validateHeader($name, $default);
+        return $this->trimHeaderValue($default);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setHeader(string $name, $values): HeadersInterface
+    public function setHeader(string $name, $value): HeadersInterface
     {
-        $values = $this->validateAndTrimHeader($name, $values);
-        $originalName = $this->normalizeHeaderName($name, true);
-        $normalizedName = $this->normalizeHeaderName($name);
+        [$values, $originalName, $normalizedName] = $this->prepareHeader($name, $value);
 
         // Ensure we preserve original case if the header already exists in the stack
         if (isset($this->headers[$normalizedName])) {
@@ -128,7 +119,6 @@ class Headers implements HeadersInterface
     public function hasHeader(string $name): bool
     {
         $name = $this->normalizeHeaderName($name);
-
         return isset($this->headers[$name]);
     }
 
@@ -190,6 +180,38 @@ class Headers implements HeadersInterface
     }
 
     /**
+     * @param array|string $value
+     *
+     * @return array
+     */
+    protected function trimHeaderValue($value): array
+    {
+        $items = is_array($value) ? $value : [$value];
+        $result = [];
+        foreach ($items as $item) {
+            $result[] = trim((string) $item, " \t");
+        }
+        return $result;
+    }
+
+    /**
+     * @param string       $name
+     * @param array|string $value
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return array
+     */
+    protected function prepareHeader(string $name, $value): array
+    {
+        $this->validateHeader($name, $value);
+        $values = $this->trimHeaderValue($value);
+        $originalName = $this->normalizeHeaderName($name, true);
+        $normalizedName = $this->normalizeHeaderName($name);
+        return [$values, $originalName, $normalizedName];
+    }
+
+    /**
      * Make sure the header complies with RFC 7230.
      *
      * Header names must be a non-empty string consisting of token characters.
@@ -208,31 +230,20 @@ class Headers implements HeadersInterface
      * @see https://tools.ietf.org/html/rfc7230#section-3.2.4
      *
      * @param string        $name
-     * @param array|string  $values
-     *
-     * @return array
+     * @param array|string  $value
      *
      * @throws InvalidArgumentException;
      */
-    protected function validateAndTrimHeader(string $name, $values): array
+    protected function validateHeader(string $name, $value)
     {
         self::validateHeaderName($name);
-
-        if (!is_array($values)) {
-            $values = [$values];
-        }
-
-        $returnValues = [];
-        foreach ($values as $value) {
-            self::validateHeaderValue($value);
-            $returnValues[] = trim((string) $value, " \t");
-        }
-
-        return $returnValues;
+        self::validateHeaderValue($value);
     }
 
     /**
      * @param mixed $name
+     *
+     * @throws InvalidArgumentException
      */
     public static function validateHeaderName($name)
     {
@@ -243,22 +254,28 @@ class Headers implements HeadersInterface
 
     /**
      * @param mixed $value
+     *
+     * @throws InvalidArgumentException
      */
     public static function validateHeaderValue($value)
     {
-        if (is_array($value) && empty($value)) {
+        $items = is_array($value) ? $value : [$value];
+
+        if (empty($items)) {
             throw new InvalidArgumentException(
                 'Header values must be a string or an array of strings, empty array given.'
             );
         }
 
-        if (!is_array($value)
-            && (
-                (!is_numeric($value) && !is_string($value))
-                || preg_match("@^[ \t\x21-\x7E\x80-\xFF]*$@", (string) $value) !== 1
-            )
-        ) {
-            throw new InvalidArgumentException('Header values must be RFC 7230 compatible strings.');
+        $pattern = "@^[ \t\x21-\x7E\x80-\xFF]*$@";
+        foreach ($items as $item) {
+            $hasInvalidType = !is_numeric($item) && !is_string($item);
+            $rejected = $hasInvalidType || preg_match($pattern, (string) $item) !== 1;
+            if ($rejected) {
+                throw new InvalidArgumentException(
+                    'Header values must be RFC 7230 compatible strings.'
+                );
+            }
         }
     }
 

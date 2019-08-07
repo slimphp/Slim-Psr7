@@ -185,7 +185,7 @@ class Stream implements StreamInterface
             $position = ftell($this->stream);
         }
 
-        if (!$this->stream || $position === false || $this->isPipe()) {
+        if ($position === false || $this->isPipe()) {
             throw new RuntimeException('Could not get the position of the pointer in stream.');
         }
 
