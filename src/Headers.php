@@ -267,9 +267,9 @@ class Headers implements HeadersInterface
             );
         }
 
+        $pattern = "@^[ \t\x21-\x7E\x80-\xFF]*$@";
         foreach ($items as $item) {
             $hasInvalidType = !is_numeric($item) && !is_string($item);
-            $pattern = "@^[ \t\x21-\x7E\x80-\xFF]*$@";
             $rejected = $hasInvalidType || preg_match($pattern, (string) $item) !== 1;
             if ($rejected) {
                 throw new InvalidArgumentException(
