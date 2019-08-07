@@ -54,6 +54,15 @@ class HeadersTest extends TestCase
         $this->assertEquals(['Accept' => ['application/json', 'text/html']], $headers->getHeaders(true));
     }
 
+    /**
+     * @expectedException InvalidArgumentException
+     */
+    public function testAddHeaderValueEmptyArray()
+    {
+        $headers = new Headers();
+        $headers->addHeader('Header', []);
+    }
+
     public function testRemoveHeader()
     {
         $headers = new Headers([
@@ -95,7 +104,6 @@ class HeadersTest extends TestCase
 
     /**
      * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Default parameter of Headers::getHeader() must be a string or an array.
      */
     public function testGetHeaderThrowsExceptionWithInvalidDefaultArgument()
     {
