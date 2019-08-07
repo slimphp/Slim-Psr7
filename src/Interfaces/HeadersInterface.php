@@ -19,13 +19,13 @@ interface HeadersInterface
      * This method appends the value to the existing array of values
      *
      * @param string       $name
-     * @param array|string $values
+     * @param array|string $value
      *
      * @return HeadersInterface
      *
      * @throws InvalidArgumentException
      */
-    public function addHeader(string $name, $values): HeadersInterface;
+    public function addHeader(string $name, $value): HeadersInterface;
 
     /**
      * Remove header value
@@ -51,13 +51,13 @@ interface HeadersInterface
      * Replaces the existing header value with the new value.
      *
      * @param string       $name
-     * @param array|string $values
+     * @param array|string $value
      *
      * @return HeadersInterface
      *
      * @throws InvalidArgumentException
      */
-    public function setHeader(string $name, $values): HeadersInterface;
+    public function setHeader(string $name, $value): HeadersInterface;
 
     /**
      * Replaces all existing headers with the new values.
