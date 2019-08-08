@@ -141,6 +141,17 @@ class MessageTest extends TestCase
         $this->assertEquals($shouldBe, $clone->getHeaders());
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function testWithoutHeaderByIncompatibleStringWithRFC()
+    {
+        $headers = new Headers();
+        $response = new MessageStub();
+        $response->headers = $headers;
+        $response->withoutHeader('<incompatible with RFC');
+    }
+
     public function testGetBody()
     {
         $body = $this->getBody();

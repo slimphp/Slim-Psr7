@@ -75,6 +75,15 @@ class HeadersTest extends TestCase
         $this->assertEquals([], $headers->getHeaders());
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
+    public function testRemoveHeaderByIncompatibleStringWithRFC()
+    {
+        $headers = new Headers();
+        $headers->removeHeader('<incompatible with RFC>');
+    }
+
     public function testGetHeader()
     {
         $headers = new Headers([
