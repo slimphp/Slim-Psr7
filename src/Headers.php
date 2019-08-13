@@ -37,7 +37,7 @@ class Headers implements HeadersInterface
     /**
      * {@inheritdoc}
      */
-    public function addHeader(string $name, $value): HeadersInterface
+    public function addHeader($name, $value): HeadersInterface
     {
         [$values, $originalName, $normalizedName] = $this->prepareHeader($name, $value);
 
@@ -84,7 +84,7 @@ class Headers implements HeadersInterface
     /**
      * {@inheritdoc}
      */
-    public function setHeader(string $name, $value): HeadersInterface
+    public function setHeader($name, $value): HeadersInterface
     {
         [$values, $originalName, $normalizedName] = $this->prepareHeader($name, $value);
 
@@ -202,7 +202,7 @@ class Headers implements HeadersInterface
      *
      * @return array
      */
-    protected function prepareHeader(string $name, $value): array
+    protected function prepareHeader($name, $value): array
     {
         $this->validateHeader($name, $value);
         $values = $this->trimHeaderValue($value);
@@ -234,10 +234,10 @@ class Headers implements HeadersInterface
      *
      * @throws InvalidArgumentException;
      */
-    protected function validateHeader(string $name, $value)
+    protected function validateHeader($name, $value)
     {
-        self::validateHeaderName($name);
-        self::validateHeaderValue($value);
+        $this->validateHeaderName($name);
+        $this->validateHeaderValue($value);
     }
 
     /**
@@ -245,7 +245,7 @@ class Headers implements HeadersInterface
      *
      * @throws InvalidArgumentException
      */
-    public static function validateHeaderName($name)
+    protected function validateHeaderName($name)
     {
         if (!is_string($name) || preg_match("@^[!#$%&'*+.^_`|~0-9A-Za-z-]+$@", $name) !== 1) {
             throw new InvalidArgumentException('Header name must be an RFC 7230 compatible string.');
@@ -257,7 +257,7 @@ class Headers implements HeadersInterface
      *
      * @throws InvalidArgumentException
      */
-    public static function validateHeaderValue($value)
+    protected function validateHeaderValue($value)
     {
         $items = is_array($value) ? $value : [$value];
 

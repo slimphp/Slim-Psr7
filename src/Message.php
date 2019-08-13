@@ -118,9 +118,6 @@ abstract class Message implements MessageInterface
      */
     public function withHeader($name, $value)
     {
-        Headers::validateHeaderName($name);
-        Headers::validateHeaderValue($value);
-
         $clone = clone $this;
         $clone->headers->setHeader($name, $value);
 
@@ -136,9 +133,6 @@ abstract class Message implements MessageInterface
      */
     public function withAddedHeader($name, $value)
     {
-        Headers::validateHeaderName($name);
-        Headers::validateHeaderValue($value);
-
         $clone = clone $this;
         $clone->headers->addHeader($name, $value);
 
@@ -154,8 +148,6 @@ abstract class Message implements MessageInterface
      */
     public function withoutHeader($name)
     {
-        Headers::validateHeaderName($name);
-
         $clone = clone $this;
         $clone->headers->removeHeader($name);
 

@@ -25,7 +25,7 @@ interface HeadersInterface
      *
      * @throws InvalidArgumentException
      */
-    public function addHeader(string $name, $value): HeadersInterface;
+    public function addHeader($name, $value): HeadersInterface;
 
     /**
      * Remove header value
@@ -57,7 +57,7 @@ interface HeadersInterface
      *
      * @throws InvalidArgumentException
      */
-    public function setHeader(string $name, $value): HeadersInterface;
+    public function setHeader($name, $value): HeadersInterface;
 
     /**
      * Replaces all existing headers with the new values.
