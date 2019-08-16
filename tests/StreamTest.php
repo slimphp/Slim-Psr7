@@ -201,4 +201,23 @@ class StreamTest extends TestCase
         $this->pipeFh = popen('echo 12', 'r');
         $this->pipeStream = new Stream($this->pipeFh);
     }
+
+
+    public function testCachedStreamsGetsContentFromTheCache()
+    {
+        $resource = popen('echo HelloWorld', 'r');
+        $stream = new Stream($resource, true);
+
+        $this->assertEquals("HelloWorld\n", $stream->getContents());
+        $this->assertEquals("HelloWorld\n", $stream->getContents());
+    }
+
+    public function testCachedStreamsFillsCacheOnRead()
+    {
+        $resource = fopen('data://,0', 'r');
+        $stream = new Stream($resource, true);
+
+        $this->assertEquals("0", $stream->read(100));
+        $this->assertEquals("0", $stream->__toString());
+    }
 }

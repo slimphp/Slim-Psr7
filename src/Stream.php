@@ -60,13 +60,30 @@ class Stream implements StreamInterface
     protected $isPipe;
 
     /**
-     * @param  resource $stream A PHP resource handle.
+     * @var bool
+     */
+    protected $finished;
+
+    /**
+     * @var bool
+     */
+    protected $cacheStream;
+
+    /**
+     * @var string
+     */
+    protected $cache = '';
+
+    /**
+     * @param  resource $stream  A PHP resource handle.
+     * @param  bool $cacheStream Indicate if the stream should be cached
      *
      * @throws InvalidArgumentException If argument is not a resource.
      */
-    public function __construct($stream)
+    public function __construct($stream, bool $cacheStream = false)
     {
         $this->attach($stream);
+        $this->cacheStream = $cacheStream;
     }
 
     /**
@@ -135,6 +152,10 @@ class Stream implements StreamInterface
     {
         if (!$this->stream) {
             return '';
+        }
+
+        if ($this->cacheStream && $this->finished) {
+            return $this->cache;
         }
 
         try {
@@ -292,6 +313,12 @@ class Stream implements StreamInterface
         }
 
         if (is_string($data)) {
+            if ($this->cacheStream) {
+                $this->cache .= $data;
+            }
+            if ($this->eof()) {
+                $this->finished = true;
+            }
             return $data;
         }
 
@@ -322,6 +349,10 @@ class Stream implements StreamInterface
      */
     public function getContents(): string
     {
+        if ($this->cacheStream && $this->finished) {
+            return $this->cache;
+        }
+
         $contents = false;
 
         if ($this->stream) {
@@ -329,6 +360,12 @@ class Stream implements StreamInterface
         }
 
         if (is_string($contents)) {
+            if ($this->cacheStream) {
+                $this->cache .= $contents;
+            }
+            if ($this->eof()) {
+                $this->finished = true;
+            }
             return $contents;
         }
 
