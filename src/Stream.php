@@ -60,13 +60,29 @@ class Stream implements StreamInterface
     protected $isPipe;
 
     /**
-     * @param  resource $stream A PHP resource handle.
+     * @var bool
+     */
+    protected $finished;
+
+    /**
+     * @var StreamInterface | null
+     */
+    protected $cache;
+
+    /**
+     * @param  resource $stream  A PHP resource handle.
+     * @param  StreamInterface $cache A stream to cache $stream (useful for non-seekable streams)
      *
      * @throws InvalidArgumentException If argument is not a resource.
      */
-    public function __construct($stream)
+    public function __construct($stream, StreamInterface $cache = null)
     {
         $this->attach($stream);
+
+        if ($cache && (!$cache->isSeekable() || !$cache->isWritable())) {
+            throw new RuntimeException('Cache stream must be seekable and writable');
+        }
+        $this->cache = $cache;
     }
 
     /**
@@ -135,6 +151,11 @@ class Stream implements StreamInterface
     {
         if (!$this->stream) {
             return '';
+        }
+
+        if ($this->cache && $this->finished) {
+            $this->cache->rewind();
+            return $this->cache->getContents();
         }
 
         try {
@@ -292,6 +313,12 @@ class Stream implements StreamInterface
         }
 
         if (is_string($data)) {
+            if ($this->cache) {
+                $this->cache->write($data);
+            }
+            if ($this->eof()) {
+                $this->finished = true;
+            }
             return $data;
         }
 
@@ -322,6 +349,11 @@ class Stream implements StreamInterface
      */
     public function getContents(): string
     {
+        if ($this->cache && $this->finished) {
+            $this->cache->rewind();
+            return $this->cache->getContents();
+        }
+
         $contents = false;
 
         if ($this->stream) {
@@ -329,6 +361,12 @@ class Stream implements StreamInterface
         }
 
         if (is_string($contents)) {
+            if ($this->cache) {
+                $this->cache->write($contents);
+            }
+            if ($this->eof()) {
+                $this->finished = true;
+            }
             return $contents;
         }
 

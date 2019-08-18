@@ -18,6 +18,7 @@ use Psr\Http\Message\UriInterface;
 use Slim\Psr7\Cookies;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Request;
+use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
 
 class ServerRequestFactory implements ServerRequestFactoryInterface
@@ -90,7 +91,11 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         $headers = Headers::createFromGlobals();
         $cookies = Cookies::parseHeader($headers->getHeader('Cookie', []));
 
-        $body = (new StreamFactory())->createStreamFromFile('php://input');
+        // Cache the php://input stream as it cannot be re-read
+        $cacheResource = fopen('php://temp', 'wb+');
+        $cache = $cacheResource ? new Stream($cacheResource) : null;
+
+        $body = (new StreamFactory())->createStreamFromFile('php://input', 'r', $cache);
         $uploadedFiles = UploadedFile::createFromGlobals($_SERVER);
 
         $request = new Request($method, $uri, $headers, $cookies, $_SERVER, $body, $uploadedFiles);

@@ -12,6 +12,7 @@ namespace Slim\Tests\Psr7\Factory;
 use Interop\Http\Factory\ServerRequestFactoryTestCase;
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
+use ReflectionClass;
 use Slim\Psr7\Environment;
 use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\UriFactory;
@@ -115,6 +116,19 @@ class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
         $request = ServerRequestFactory::createFromGlobals();
 
         $this->assertEquals('php://input', $request->getBody()->getMetadata('uri'));
+    }
+
+    public function testCreateFromGlobalsSetsACache()
+    {
+        $request = ServerRequestFactory::createFromGlobals();
+
+        // ensure that the Stream's $cache property has been set for this php://input stream
+        $stream = $request->getBody();
+        $class = new ReflectionClass($stream);
+        $property = $class->getProperty('cache');
+        $property->setAccessible(true);
+        $cacheStreamValue = $property->getValue($stream);
+        $this->assertNotNull($cacheStreamValue);
     }
 
     public function testCreateFromGlobalsWithUploadedFiles()

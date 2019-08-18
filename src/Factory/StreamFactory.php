@@ -39,8 +39,11 @@ class StreamFactory implements StreamFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
-    {
+    public function createStreamFromFile(
+        string $filename,
+        string $mode = 'r',
+        StreamInterface $cache = null
+    ): StreamInterface {
         $resource = fopen($filename, $mode);
 
         if (!is_resource($resource)) {
@@ -49,13 +52,13 @@ class StreamFactory implements StreamFactoryInterface
             );
         }
 
-        return new Stream($resource);
+        return new Stream($resource, $cache);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createStreamFromResource($resource): StreamInterface
+    public function createStreamFromResource($resource, StreamInterface $cache = null): StreamInterface
     {
         if (!is_resource($resource)) {
             throw new InvalidArgumentException(
@@ -63,6 +66,6 @@ class StreamFactory implements StreamFactoryInterface
             );
         }
 
-        return new Stream($resource);
+        return new Stream($resource, $cache);
     }
 }
