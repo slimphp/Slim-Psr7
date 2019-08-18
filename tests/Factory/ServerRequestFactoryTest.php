@@ -116,14 +116,19 @@ class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
         $request = ServerRequestFactory::createFromGlobals();
 
         $this->assertEquals('php://input', $request->getBody()->getMetadata('uri'));
+    }
 
-        // ensure that the Stream's $cacheStream property has been set to true for this php://input stream
+    public function testCreateFromGlobalsSetsACache()
+    {
+        $request = ServerRequestFactory::createFromGlobals();
+
+        // ensure that the Stream's $cache property has been set for this php://input stream
         $stream = $request->getBody();
         $class = new ReflectionClass($stream);
-        $property = $class->getProperty('cacheStream');
+        $property = $class->getProperty('cache');
         $property->setAccessible(true);
         $cacheStreamValue = $property->getValue($stream);
-        $this->assertTrue($cacheStreamValue);
+        $this->assertNotNull($cacheStreamValue);
     }
 
     public function testCreateFromGlobalsWithUploadedFiles()

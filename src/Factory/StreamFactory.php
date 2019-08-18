@@ -42,7 +42,7 @@ class StreamFactory implements StreamFactoryInterface
     public function createStreamFromFile(
         string $filename,
         string $mode = 'r',
-        bool $cacheStream = false
+        StreamInterface $cache = null
     ): StreamInterface {
         $resource = fopen($filename, $mode);
 
@@ -52,13 +52,13 @@ class StreamFactory implements StreamFactoryInterface
             );
         }
 
-        return new Stream($resource, $cacheStream);
+        return new Stream($resource, $cache);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function createStreamFromResource($resource, bool $cacheStream = false): StreamInterface
+    public function createStreamFromResource($resource, StreamInterface $cache = null): StreamInterface
     {
         if (!is_resource($resource)) {
             throw new InvalidArgumentException(
@@ -66,6 +66,6 @@ class StreamFactory implements StreamFactoryInterface
             );
         }
 
-        return new Stream($resource, $cacheStream);
+        return new Stream($resource, $cache);
     }
 }

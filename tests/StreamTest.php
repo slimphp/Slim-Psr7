@@ -202,11 +202,31 @@ class StreamTest extends TestCase
         $this->pipeStream = new Stream($this->pipeFh);
     }
 
+    public function testReadOnlyCachedStreamsAreDisallowed()
+    {
+        $resource = fopen('php://temp', 'w+');
+        $cache =  new Stream(fopen('php://temp', 'r'));
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cache stream must be seekable and writable');
+        new Stream($resource, $cache);
+    }
+
+    public function testNonSeekableCachedStreamsAreDisallowed()
+    {
+        $resource = fopen('php://temp', 'w+');
+        $cache =  new Stream(fopen('php://output', 'w'));
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Cache stream must be seekable and writable');
+
+        new Stream($resource, $cache);
+    }
 
     public function testCachedStreamsGetsContentFromTheCache()
     {
         $resource = popen('echo HelloWorld', 'r');
-        $stream = new Stream($resource, true);
+        $stream = new Stream($resource, new Stream(fopen('php://temp', 'w+')));
 
         $this->assertEquals("HelloWorld\n", $stream->getContents());
         $this->assertEquals("HelloWorld\n", $stream->getContents());
@@ -215,7 +235,7 @@ class StreamTest extends TestCase
     public function testCachedStreamsFillsCacheOnRead()
     {
         $resource = fopen('data://,0', 'r');
-        $stream = new Stream($resource, true);
+        $stream = new Stream($resource, new Stream(fopen('php://temp', 'w+')));
 
         $this->assertEquals("0", $stream->read(100));
         $this->assertEquals("0", $stream->__toString());
