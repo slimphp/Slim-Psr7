@@ -44,7 +44,26 @@ class StreamFactory implements StreamFactoryInterface
         string $mode = 'r',
         StreamInterface $cache = null
     ): StreamInterface {
+        // When fopen fails, PHP normally raises a warning. Add an error
+        // handler to check for errors and throw an exception instead.
+        $exc = null;
+
+        set_error_handler(function (int $errno, string $errstr) use ($filename, $mode, &$exc) {
+            $exc = new RuntimeException(sprintf(
+                'Unable to open %s using mode %s: %s',
+                $filename,
+                $mode,
+                $errstr
+            ));
+        });
+
         $resource = fopen($filename, $mode);
+        restore_error_handler();
+
+        if ($exc) {
+            /** @var $exc RuntimeException */
+            throw $exc;
+        }
 
         if (!is_resource($resource)) {
             throw new RuntimeException(

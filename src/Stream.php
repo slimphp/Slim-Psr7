@@ -189,7 +189,10 @@ class Stream implements StreamInterface
     {
         if ($this->stream && !$this->size) {
             $stats = fstat($this->stream);
-            $this->size = isset($stats['size']) && !$this->isPipe() ? $stats['size'] : null;
+
+            if ($stats) {
+                $this->size = isset($stats['size']) && !$this->isPipe() ? $stats['size'] : null;
+            }
         }
 
         return $this->size;
@@ -308,7 +311,7 @@ class Stream implements StreamInterface
     {
         $data = false;
 
-        if ($this->stream) {
+        if ($this->isReadable() && $this->stream) {
             $data = fread($this->stream, $length);
         }
 
@@ -332,7 +335,7 @@ class Stream implements StreamInterface
     {
         $written = false;
 
-        if ($this->stream) {
+        if ($this->isWritable() && $this->stream) {
             $written = fwrite($this->stream, $string);
         }
 
@@ -386,7 +389,11 @@ class Stream implements StreamInterface
             $this->isPipe = false;
 
             if ($this->stream) {
-                $this->isPipe = (fstat($this->stream)['mode'] & self::FSTAT_MODE_S_IFIFO) !== 0;
+                $stats = fstat($this->stream);
+
+                if ($stats) {
+                    $this->isPipe = isset($stats['mode']) && ($stats['mode'] & self::FSTAT_MODE_S_IFIFO) !== 0;
+                }
             }
         }
 
