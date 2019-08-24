@@ -117,8 +117,19 @@ class StreamTest extends TestCase
     public function testPipeToString()
     {
         $this->openPipeStream();
+        $content = trim((string) $this->pipeStream);
 
-        $this->assertSame('', (string) $this->pipeStream);
+        $this->assertSame('12', $content);
+    }
+
+    public function testConvertsToStringPartiallyReadNonSeekableStream()
+    {
+        $this->openPipeStream();
+        $head = $this->pipeStream->read(1);
+        $tail = trim((string) $this->pipeStream);
+
+        $this->assertSame('1', $head);
+        $this->assertSame('2', $tail);
     }
 
     public function testPipeGetContents()
