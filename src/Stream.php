@@ -152,18 +152,14 @@ class Stream implements StreamInterface
         if (!$this->stream) {
             return '';
         }
-
         if ($this->cache && $this->finished) {
             $this->cache->rewind();
             return $this->cache->getContents();
         }
-
-        try {
+        if ($this->isSeekable()) {
             $this->rewind();
-            return $this->getContents();
-        } catch (RuntimeException $e) {
-            return '';
         }
+        return $this->getContents();
     }
 
     /**
