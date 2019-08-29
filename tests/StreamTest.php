@@ -251,4 +251,21 @@ class StreamTest extends TestCase
         $this->assertEquals("0", $stream->read(100));
         $this->assertEquals("0", $stream->__toString());
     }
+
+    public function testDetachingStreamDropsCache()
+    {
+        $cache = new Stream(fopen('php://temp', 'w+'));
+        $resource = fopen('data://,foo', 'r');
+        $stream = new Stream($resource, $cache);
+
+        $stream->detach();
+
+        $cacheProperty = new ReflectionProperty(Stream::class, 'cache');
+        $cacheProperty->setAccessible(true);
+        $finishedProperty = new ReflectionProperty(Stream::class, 'finished');
+        $finishedProperty->setAccessible(true);
+
+        $this->assertNull($cacheProperty->getValue($stream));
+        $this->assertFalse($finishedProperty->getValue($stream));
+    }
 }

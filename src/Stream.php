@@ -62,7 +62,7 @@ class Stream implements StreamInterface
     /**
      * @var bool
      */
-    protected $finished;
+    protected $finished = false;
 
     /**
      * @var StreamInterface | null
@@ -140,6 +140,9 @@ class Stream implements StreamInterface
         $this->seekable = null;
         $this->size = null;
         $this->isPipe = null;
+
+        $this->cache = null;
+        $this->finished = false;
 
         return $oldResource;
     }
