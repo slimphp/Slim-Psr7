@@ -268,4 +268,14 @@ class StreamTest extends TestCase
         $this->assertNull($cacheProperty->getValue($stream));
         $this->assertFalse($finishedProperty->getValue($stream));
     }
+
+    public function testCachedStreamsRewindIfFinishedOnToString()
+    {
+        $resource = fopen('data://,foo', 'r');
+
+        $stream = new Stream($resource, new Stream(fopen('php://temp', 'w+')));
+
+        $this->assertEquals('foo', (string)$stream);
+        $this->assertEquals('foo', (string)$stream);
+    }
 }
