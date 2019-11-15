@@ -200,7 +200,7 @@ class CookiesTest extends TestCase
     {
         $cookies = Cookies::parseHeader('foo=bar; testarray=["someVar1","someVar2","someVar3"]');
         $this->assertEquals('bar', $cookies['foo']);
-        $this->assertContains('someVar3', json_decode($cookies['testarray']));
+        $this->assertContains('someVar3', \json_decode($cookies['testarray']));
     }
 
     public function testToHeaders()
@@ -224,8 +224,8 @@ class CookiesTest extends TestCase
                 'value' => 'Works'
             ]
         ];
-        $time = time();
-        $formattedDate = gmdate('D, d-M-Y H:i:s e', $time);
+        $time = \time();
+        $formattedDate = \gmdate('D, d-M-Y H:i:s e', $time);
         $propertiesComplex = [
             'name' => 'test_complex',
             'properties' => [
@@ -240,7 +240,7 @@ class CookiesTest extends TestCase
             ]
         ];
         $stringDate = '2016-01-01 12:00:00';
-        $formattedStringDate = gmdate('D, d-M-Y H:i:s e', strtotime($stringDate));
+        $formattedStringDate = \gmdate('D, d-M-Y H:i:s e', \strtotime($stringDate));
         $propertiesStringDate = [
             'name' => 'test_date',
             'properties' => [

@@ -44,15 +44,15 @@ class NonBufferedBodyTest extends TestCase
 
     public function testWrite()
     {
-        $ob_initial_level = ob_get_level();
+        $ob_initial_level = \ob_get_level();
 
         // Start output buffering.
-        ob_start();
+        \ob_start();
 
         // Start output buffering again to test the while-loop in the `write()`
         // method that calls `ob_get_clean()` as long as the ob level is bigger
         // than 0.
-        ob_start();
+        \ob_start();
         echo 'buffer content: ';
 
         // Set the ob level shift that should be applied in the `ob_get_level()`
@@ -66,10 +66,10 @@ class NonBufferedBodyTest extends TestCase
         $length1 = $body->write('world');
 
         unset($GLOBALS['ob_get_level_shift']);
-        $contents = ob_get_clean();
+        $contents = \ob_get_clean();
 
-        $this->assertEquals(strlen('buffer content: ') + strlen('hello '), $length0);
-        $this->assertEquals(strlen('world'), $length1);
+        $this->assertEquals(\strlen('buffer content: ') + \strlen('hello '), $length0);
+        $this->assertEquals(\strlen('world'), $length1);
         $this->assertEquals('buffer content: hello world', $contents);
     }
 

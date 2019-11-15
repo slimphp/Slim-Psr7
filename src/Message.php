@@ -70,7 +70,7 @@ abstract class Message implements MessageInterface
         if (!isset(self::$validProtocolVersions[$version])) {
             throw new InvalidArgumentException(
                 'Invalid HTTP version. Must be one of: '
-                . implode(', ', array_keys(self::$validProtocolVersions))
+                . \implode(', ', \array_keys(self::$validProtocolVersions))
             );
         }
 
@@ -110,7 +110,7 @@ abstract class Message implements MessageInterface
     public function getHeaderLine($name): string
     {
         $values = $this->headers->getHeader($name);
-        return implode(',', $values);
+        return \implode(',', $values);
     }
 
     /**
@@ -122,7 +122,7 @@ abstract class Message implements MessageInterface
         $clone->headers->setHeader($name, $value);
 
         if ($this instanceof Response && $this->body instanceof NonBufferedBody) {
-            header(sprintf('%s: %s', $name, $clone->getHeaderLine($name)));
+            \header(\sprintf('%s: %s', $name, $clone->getHeaderLine($name)));
         }
 
         return $clone;
@@ -137,7 +137,7 @@ abstract class Message implements MessageInterface
         $clone->headers->addHeader($name, $value);
 
         if ($this instanceof Response && $this->body instanceof NonBufferedBody) {
-            header(sprintf('%s: %s', $name, $clone->getHeaderLine($name)));
+            \header(\sprintf('%s: %s', $name, $clone->getHeaderLine($name)));
         }
 
         return $clone;
@@ -152,7 +152,7 @@ abstract class Message implements MessageInterface
         $clone->headers->removeHeader($name);
 
         if ($this instanceof Response && $this->body instanceof NonBufferedBody) {
-            header_remove($name);
+            \header_remove($name);
         }
 
         return $clone;

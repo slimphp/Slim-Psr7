@@ -53,7 +53,7 @@ class RequestFactory implements RequestFactoryInterface
      */
     public function createRequest(string $method, $uri): RequestInterface
     {
-        if (is_string($uri)) {
+        if (\is_string($uri)) {
             $uri = $this->uriFactory->createUri($uri);
         }
 

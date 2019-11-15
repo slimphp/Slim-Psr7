@@ -92,7 +92,7 @@ class Request extends Message implements ServerRequestInterface
         $this->uploadedFiles = $uploadedFiles;
 
         if (isset($serverParams['SERVER_PROTOCOL'])) {
-            $this->protocolVersion = str_replace('HTTP/', '', $serverParams['SERVER_PROTOCOL']);
+            $this->protocolVersion = \str_replace('HTTP/', '', $serverParams['SERVER_PROTOCOL']);
         }
 
         if (!$this->headers->hasHeader('Host') || $this->uri->getHost() !== '') {
@@ -141,15 +141,15 @@ class Request extends Message implements ServerRequestInterface
      */
     protected function filterMethod($method): string
     {
-        if (!is_string($method)) {
-            throw new InvalidArgumentException(sprintf(
+        if (!\is_string($method)) {
+            throw new InvalidArgumentException(\sprintf(
                 'Unsupported HTTP method; must be a string, received %s',
-                (is_object($method) ? get_class($method) : gettype($method))
+                (\is_object($method) ? \get_class($method) : \gettype($method))
             ));
         }
 
-        if (preg_match("/^[!#$%&'*+.^_`|~0-9a-z-]+$/i", $method) !== 1) {
-            throw new InvalidArgumentException(sprintf(
+        if (\preg_match("/^[!#$%&'*+.^_`|~0-9a-z-]+$/i", $method) !== 1) {
+            throw new InvalidArgumentException(\sprintf(
                 'Unsupported HTTP method "%s" provided',
                 $method
             ));
@@ -172,7 +172,7 @@ class Request extends Message implements ServerRequestInterface
         }
 
         $path = $this->uri->getPath();
-        $path = '/' . ltrim($path, '/');
+        $path = '/' . \ltrim($path, '/');
 
         $query = $this->uri->getQuery();
         if ($query) {
@@ -187,7 +187,7 @@ class Request extends Message implements ServerRequestInterface
      */
     public function withRequestTarget($requestTarget)
     {
-        if (preg_match('#\s#', $requestTarget)) {
+        if (\preg_match('#\s#', $requestTarget)) {
             throw new InvalidArgumentException(
                 'Invalid request target provided; must be a string and cannot contain whitespace'
             );
@@ -252,7 +252,7 @@ class Request extends Message implements ServerRequestInterface
      */
     public function getQueryParams(): array
     {
-        if (is_array($this->queryParams)) {
+        if (\is_array($this->queryParams)) {
             return $this->queryParams;
         }
 
@@ -260,7 +260,7 @@ class Request extends Message implements ServerRequestInterface
             return [];
         }
 
-        parse_str($this->uri->getQuery(), $this->queryParams); // <-- URL decodes data
+        \parse_str($this->uri->getQuery(), $this->queryParams); // <-- URL decodes data
 
         return $this->queryParams;
     }
@@ -355,7 +355,7 @@ class Request extends Message implements ServerRequestInterface
      */
     public function withParsedBody($data)
     {
-        if (!is_null($data) && !is_object($data) && !is_array($data)) {
+        if (!\is_null($data) && !\is_object($data) && !\is_array($data)) {
             throw new InvalidArgumentException('Parsed body value must be an array, an object, or null');
         }
 

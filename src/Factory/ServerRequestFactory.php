@@ -56,7 +56,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      */
     public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
     {
-        if (is_string($uri)) {
+        if (\is_string($uri)) {
             $uri = $this->uriFactory->createUri($uri);
         }
 
@@ -92,7 +92,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         $cookies = Cookies::parseHeader($headers->getHeader('Cookie', []));
 
         // Cache the php://input stream as it cannot be re-read
-        $cacheResource = fopen('php://temp', 'wb+');
+        $cacheResource = \fopen('php://temp', 'wb+');
         $cache = $cacheResource ? new Stream($cacheResource) : null;
 
         $body = (new StreamFactory())->createStreamFromFile('php://input', 'r', $cache);
@@ -103,12 +103,12 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
 
         $parsedContentType = '';
         foreach ($contentTypes as $contentType) {
-            $fragments = explode(';', $contentType);
-            $parsedContentType = current($fragments);
+            $fragments = \explode(';', $contentType);
+            $parsedContentType = \current($fragments);
         }
 
         $contentTypesWithParsedBodies = ['application/x-www-form-urlencoded', 'multipart/form-data'];
-        if ($method === 'POST' && in_array($parsedContentType, $contentTypesWithParsedBodies)) {
+        if ($method === 'POST' && \in_array($parsedContentType, $contentTypesWithParsedBodies)) {
             return $request->withParsedBody($_POST);
         }
 

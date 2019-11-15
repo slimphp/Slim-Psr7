@@ -24,14 +24,14 @@ class StreamFactory implements StreamFactoryInterface
      */
     public function createStream(string $content = ''): StreamInterface
     {
-        $resource = fopen('php://temp', 'rw+');
+        $resource = \fopen('php://temp', 'rw+');
 
-        if (!is_resource($resource)) {
+        if (!\is_resource($resource)) {
             throw new RuntimeException('StreamFactory::createStream() could not open temporary file stream.');
         }
 
-        fwrite($resource, $content);
-        rewind($resource);
+        \fwrite($resource, $content);
+        \rewind($resource);
 
         return $this->createStreamFromResource($resource);
     }
@@ -48,8 +48,8 @@ class StreamFactory implements StreamFactoryInterface
         // handler to check for errors and throw an exception instead.
         $exc = null;
 
-        set_error_handler(function (int $errno, string $errstr) use ($filename, $mode, &$exc) {
-            $exc = new RuntimeException(sprintf(
+        \set_error_handler(function (int $errno, string $errstr) use ($filename, $mode, &$exc) {
+            $exc = new RuntimeException(\sprintf(
                 'Unable to open %s using mode %s: %s',
                 $filename,
                 $mode,
@@ -57,15 +57,15 @@ class StreamFactory implements StreamFactoryInterface
             ));
         });
 
-        $resource = fopen($filename, $mode);
-        restore_error_handler();
+        $resource = \fopen($filename, $mode);
+        \restore_error_handler();
 
         if ($exc) {
             /** @var $exc RuntimeException */
             throw $exc;
         }
 
-        if (!is_resource($resource)) {
+        if (!\is_resource($resource)) {
             throw new RuntimeException(
                 "StreamFactory::createStreamFromFile() could not create resource from file `$filename`"
             );
@@ -79,7 +79,7 @@ class StreamFactory implements StreamFactoryInterface
      */
     public function createStreamFromResource($resource, StreamInterface $cache = null): StreamInterface
     {
-        if (!is_resource($resource)) {
+        if (!\is_resource($resource)) {
             throw new InvalidArgumentException(
                 'Parameter 1 of StreamFactory::createStreamFromResource() must be a resource.'
             );

@@ -29,16 +29,16 @@ class UploadedFileTest extends TestCase
 
     public static function setUpBeforeClass()
     {
-        $fh = fopen(self::$filename, "w");
-        fwrite($fh, "12345678");
-        fclose($fh);
+        $fh = \fopen(self::$filename, "w");
+        \fwrite($fh, "12345678");
+        \fclose($fh);
     }
 
     public static function tearDownAfterClass()
     {
         foreach (self::$tmpFiles as $filename) {
-            if (file_exists($filename)) {
-                unlink($filename);
+            if (\file_exists($filename)) {
+                \unlink($filename);
             }
         }
     }
@@ -61,11 +61,11 @@ class UploadedFileTest extends TestCase
      */
     protected function generateNewTmpFile()
     {
-        $filename = './php' . microtime();
+        $filename = './php' . \microtime();
 
-        $fh = fopen($filename, "w");
-        fwrite($fh, "12345678");
-        fclose($fh);
+        $fh = \fopen($filename, "w");
+        \fwrite($fh, "12345678");
+        \fclose($fh);
 
         self::$tmpFiles[] = $filename;
 
@@ -193,7 +193,7 @@ class UploadedFileTest extends TestCase
      */
     public function testMoveToNotWritable(UploadedFile $uploadedFile)
     {
-        $tempName = uniqid('file-');
+        $tempName = \uniqid('file-');
         $path = 'some_random_dir' . DIRECTORY_SEPARATOR . $tempName;
         $uploadedFile->moveTo($path);
     }
@@ -207,13 +207,13 @@ class UploadedFileTest extends TestCase
      */
     public function testMoveTo(UploadedFile $uploadedFile)
     {
-        $tempName = uniqid('file-');
-        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
+        $tempName = \uniqid('file-');
+        $path = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
         $uploadedFile->moveTo($path);
 
         $this->assertFileExists($path);
 
-        unlink($path);
+        \unlink($path);
 
         return $uploadedFile;
     }
@@ -226,8 +226,8 @@ class UploadedFileTest extends TestCase
     {
         $uploadedFile = $this->generateNewTmpFile();
 
-        $tempName = uniqid('file-');
-        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
+        $tempName = \uniqid('file-');
+        $path = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
 
         $GLOBALS['rename_return'] = false;
         $uploadedFile->moveTo($path);
@@ -242,8 +242,8 @@ class UploadedFileTest extends TestCase
      */
     public function testMoveToSapiNonUploadedFile(UploadedFile $uploadedFile)
     {
-        $tempName = uniqid('file-');
-        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
+        $tempName = \uniqid('file-');
+        $path = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
         $uploadedFile->moveTo($path);
     }
 
@@ -259,8 +259,8 @@ class UploadedFileTest extends TestCase
     {
         $GLOBALS['is_uploaded_file_return'] = true;
 
-        $tempName = uniqid('file-');
-        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
+        $tempName = \uniqid('file-');
+        $path = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
         $uploadedFile->moveTo($path);
     }
 
@@ -273,11 +273,11 @@ class UploadedFileTest extends TestCase
      */
     public function testMoveToCannotBeDoneTwice(UploadedFile $uploadedFile)
     {
-        $tempName = uniqid('file-');
-        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
+        $tempName = \uniqid('file-');
+        $path = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
         $uploadedFile->moveTo($path);
         $this->assertFileExists($path);
-        unlink($path);
+        \unlink($path);
 
         $uploadedFile->moveTo($path);
     }
@@ -293,8 +293,8 @@ class UploadedFileTest extends TestCase
      */
     public function testMoveToAgain(UploadedFile $uploadedFile)
     {
-        $tempName = uniqid('file-');
-        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
+        $tempName = \uniqid('file-');
+        $path = \sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
         $uploadedFile->moveTo($path);
     }
 
@@ -320,11 +320,11 @@ class UploadedFileTest extends TestCase
         $fileProperty->setAccessible(true);
         $fileName = $fileProperty->getValue($uploadedFile);
 
-        $contents = file_get_contents($fileName);
+        $contents = \file_get_contents($fileName);
 
-        ob_start();
+        \ob_start();
         $uploadedFile->moveTo('php://output');
-        $movedFileContents = ob_get_clean();
+        $movedFileContents = \ob_get_clean();
 
         $this->assertEquals($contents, $movedFileContents);
         $this->assertFileNotExists($fileName);
@@ -366,11 +366,11 @@ class UploadedFileTest extends TestCase
         $clientFilename = 'test.txt';
         $clientMediaType = 'text/plain';
 
-        $stream = call_user_func($streamFactory, $content);
-        $file = call_user_func(
+        $stream = \call_user_func($streamFactory, $content);
+        $file = \call_user_func(
             $uploadedFileFactory,
             $stream,
-            strlen($content),
+            \strlen($content),
             $error,
             $clientFilename,
             $clientMediaType
@@ -378,7 +378,7 @@ class UploadedFileTest extends TestCase
 
         $this->assertInstanceOf(UploadedFileInterface::class, $file);
         $this->assertSame($content, (string)$file->getStream());
-        $this->assertSame(strlen($content), $file->getSize());
+        $this->assertSame(\strlen($content), $file->getSize());
         $this->assertSame($error, $file->getError());
         $this->assertSame($clientFilename, $file->getClientFilename());
         $this->assertSame($clientMediaType, $file->getClientMediaType());

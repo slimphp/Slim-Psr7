@@ -32,7 +32,7 @@ class StreamTest extends TestCase
     {
         if ($this->pipeFh != null) {
             // prevent broken pipe error message
-            stream_get_contents($this->pipeFh);
+            \stream_get_contents($this->pipeFh);
         }
     }
 
@@ -45,7 +45,7 @@ class StreamTest extends TestCase
         $this->pipeStream->detach();
         $this->assertFalse($this->pipeStream->isPipe());
 
-        $fhFile = fopen(__FILE__, 'r');
+        $fhFile = \fopen(__FILE__, 'r');
         $fileStream = new Stream($fhFile);
         $this->assertFalse($fileStream->isPipe());
     }
@@ -106,7 +106,7 @@ class StreamTest extends TestCase
         $this->openPipeStream();
 
         // prevent broken pipe error message
-        stream_get_contents($this->pipeFh);
+        \stream_get_contents($this->pipeFh);
 
         $this->pipeStream->close();
         $this->pipeFh = null;
@@ -117,7 +117,7 @@ class StreamTest extends TestCase
     public function testPipeToString()
     {
         $this->openPipeStream();
-        $content = trim((string) $this->pipeStream);
+        $content = \trim((string) $this->pipeStream);
 
         $this->assertSame('12', $content);
     }
@@ -126,7 +126,7 @@ class StreamTest extends TestCase
     {
         $this->openPipeStream();
         $head = $this->pipeStream->read(1);
-        $tail = trim((string) $this->pipeStream);
+        $tail = \trim((string) $this->pipeStream);
 
         $this->assertSame('1', $head);
         $this->assertSame('2', $tail);
@@ -136,13 +136,13 @@ class StreamTest extends TestCase
     {
         $this->openPipeStream();
 
-        $contents = trim($this->pipeStream->getContents());
+        $contents = \trim($this->pipeStream->getContents());
         $this->assertSame('12', $contents);
     }
 
     public function testIsWriteable()
     {
-        $resource = fopen('php://temp', 'w');
+        $resource = \fopen('php://temp', 'w');
         $stream = new Stream($resource);
 
         $this->assertEquals(13, $stream->write('Hello, world!'));
@@ -152,7 +152,7 @@ class StreamTest extends TestCase
 
     public function testIsReadable()
     {
-        $resource = fopen('php://temp', 'r');
+        $resource = \fopen('php://temp', 'r');
         $stream = new Stream($resource);
 
         $this->assertTrue($stream->isReadable());
@@ -161,7 +161,7 @@ class StreamTest extends TestCase
 
     public function testIsWritableAndReadable()
     {
-        $resource = fopen('php://temp', 'w+');
+        $resource = \fopen('php://temp', 'w+');
         $stream = new Stream($resource);
 
         $stream->write('Hello, world!');
@@ -200,7 +200,7 @@ class StreamTest extends TestCase
 
     public function testGetMetaDataReturnsNullIfStreamIsDetached()
     {
-        $resource = fopen('php://temp', 'rw+');
+        $resource = \fopen('php://temp', 'rw+');
         $stream = new Stream($resource);
         $stream->detach();
 
@@ -209,14 +209,14 @@ class StreamTest extends TestCase
 
     private function openPipeStream()
     {
-        $this->pipeFh = popen('echo 12', 'r');
+        $this->pipeFh = \popen('echo 12', 'r');
         $this->pipeStream = new Stream($this->pipeFh);
     }
 
     public function testReadOnlyCachedStreamsAreDisallowed()
     {
-        $resource = fopen('php://temp', 'w+');
-        $cache =  new Stream(fopen('php://temp', 'r'));
+        $resource = \fopen('php://temp', 'w+');
+        $cache =  new Stream(\fopen('php://temp', 'r'));
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Cache stream must be seekable and writable');
@@ -225,8 +225,8 @@ class StreamTest extends TestCase
 
     public function testNonSeekableCachedStreamsAreDisallowed()
     {
-        $resource = fopen('php://temp', 'w+');
-        $cache =  new Stream(fopen('php://output', 'w'));
+        $resource = \fopen('php://temp', 'w+');
+        $cache =  new Stream(\fopen('php://output', 'w'));
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Cache stream must be seekable and writable');
@@ -236,8 +236,8 @@ class StreamTest extends TestCase
 
     public function testCachedStreamsGetsContentFromTheCache()
     {
-        $resource = popen('echo HelloWorld', 'r');
-        $stream = new Stream($resource, new Stream(fopen('php://temp', 'w+')));
+        $resource = \popen('echo HelloWorld', 'r');
+        $stream = new Stream($resource, new Stream(\fopen('php://temp', 'w+')));
 
         $this->assertEquals("HelloWorld\n", $stream->getContents());
         $this->assertEquals("HelloWorld\n", $stream->getContents());
@@ -245,8 +245,8 @@ class StreamTest extends TestCase
 
     public function testCachedStreamsFillsCacheOnRead()
     {
-        $resource = fopen('data://,0', 'r');
-        $stream = new Stream($resource, new Stream(fopen('php://temp', 'w+')));
+        $resource = \fopen('data://,0', 'r');
+        $stream = new Stream($resource, new Stream(\fopen('php://temp', 'w+')));
 
         $this->assertEquals("0", $stream->read(100));
         $this->assertEquals("0", $stream->__toString());
@@ -254,8 +254,8 @@ class StreamTest extends TestCase
 
     public function testDetachingStreamDropsCache()
     {
-        $cache = new Stream(fopen('php://temp', 'w+'));
-        $resource = fopen('data://,foo', 'r');
+        $cache = new Stream(\fopen('php://temp', 'w+'));
+        $resource = \fopen('data://,foo', 'r');
         $stream = new Stream($resource, $cache);
 
         $stream->detach();
@@ -271,9 +271,9 @@ class StreamTest extends TestCase
 
     public function testCachedStreamsRewindIfFinishedOnToString()
     {
-        $resource = fopen('data://,foo', 'r');
+        $resource = \fopen('data://,foo', 'r');
 
-        $stream = new Stream($resource, new Stream(fopen('php://temp', 'w+')));
+        $stream = new Stream($resource, new Stream(\fopen('php://temp', 'w+')));
 
         $this->assertEquals('foo', (string)$stream);
         $this->assertEquals('foo', (string)$stream);

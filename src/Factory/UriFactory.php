@@ -21,7 +21,7 @@ class UriFactory implements UriFactoryInterface
      */
     public function createUri(string $uri = ''): UriInterface
     {
-        $parts = parse_url($uri);
+        $parts = \parse_url($uri);
 
         if ($parts === false) {
             throw new InvalidArgumentException('URI cannot be parsed');
@@ -68,17 +68,17 @@ class UriFactory implements UriFactoryInterface
 
         // Authority: Port
         $port = !empty($globals['SERVER_PORT']) ? (int) $globals['SERVER_PORT'] : 80;
-        if (preg_match('/^(\[[a-fA-F0-9:.]+\])(:\d+)?\z/', $host, $matches)) {
+        if (\preg_match('/^(\[[a-fA-F0-9:.]+\])(:\d+)?\z/', $host, $matches)) {
             $host = $matches[1];
 
             if (isset($matches[2])) {
-                $port = (int) substr($matches[2], 1);
+                $port = (int) \substr($matches[2], 1);
             }
         } else {
-            $pos = strpos($host, ':');
+            $pos = \strpos($host, ':');
             if ($pos !== false) {
-                $port = (int) substr($host, $pos + 1);
-                $host = strstr($host, ':', true);
+                $port = (int) \substr($host, $pos + 1);
+                $host = \strstr($host, ':', true);
             }
         }
 
@@ -91,11 +91,11 @@ class UriFactory implements UriFactoryInterface
         // Request URI
         $requestUri = '';
         if (isset($globals['REQUEST_URI'])) {
-            $uriFragments = explode('?', $globals['REQUEST_URI']);
+            $uriFragments = \explode('?', $globals['REQUEST_URI']);
             $requestUri = $uriFragments[0];
 
-            if ($queryString === '' && count($uriFragments) > 1) {
-                $queryString = parse_url('http://www.example.com' . $globals['REQUEST_URI'], PHP_URL_QUERY) ?? '';
+            if ($queryString === '' && \count($uriFragments) > 1) {
+                $queryString = \parse_url('http://www.example.com' . $globals['REQUEST_URI'], PHP_URL_QUERY) ?? '';
             }
         }
 

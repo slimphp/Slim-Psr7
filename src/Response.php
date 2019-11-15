@@ -181,7 +181,7 @@ class Response extends Message implements ResponseInterface
      */
     protected function filterStatus($status): int
     {
-        if (!is_integer($status) || $status < StatusCodeInterface::STATUS_CONTINUE || $status > 599) {
+        if (!\is_integer($status) || $status < StatusCodeInterface::STATUS_CONTINUE || $status > 599) {
             throw new InvalidArgumentException('Invalid HTTP status code.');
         }
 
@@ -199,11 +199,11 @@ class Response extends Message implements ResponseInterface
      */
     protected function filterReasonPhrase($reasonPhrase = ''): string
     {
-        if (is_object($reasonPhrase) && method_exists($reasonPhrase, '__toString')) {
+        if (\is_object($reasonPhrase) && \method_exists($reasonPhrase, '__toString')) {
             $reasonPhrase = (string) $reasonPhrase;
         }
 
-        if (!is_string($reasonPhrase)) {
+        if (!\is_string($reasonPhrase)) {
             throw new InvalidArgumentException('Response reason phrase must be a string.');
         }
 

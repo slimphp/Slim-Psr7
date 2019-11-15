@@ -31,9 +31,9 @@ trait BaseTestFactories
      */
     protected function buildStream($data): Stream
     {
-        if (!is_resource($data)) {
-            $h = fopen('php://temp', 'w+');
-            fwrite($h, $data);
+        if (!\is_resource($data)) {
+            $h = \fopen('php://temp', 'w+');
+            \fwrite($h, $data);
 
             $data = $h;
         }

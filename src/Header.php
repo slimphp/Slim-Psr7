@@ -77,15 +77,15 @@ class Header
      */
     public function addValues($values): self
     {
-        if (is_string($values)) {
+        if (\is_string($values)) {
             return $this->addValue($values);
         }
 
-        if (!is_array($values)) {
+        if (!\is_array($values)) {
             throw new InvalidArgumentException('Parameter 1 of Header::addValues() should be a string or an array.');
         }
 
-        $this->values = array_merge($this->values, $values);
+        $this->values = \array_merge($this->values, $values);
 
         return $this;
     }

@@ -45,7 +45,7 @@ class RequestTest extends TestCase
         $request = $this->requestFactory();
         $request->foo = 'bar';
 
-        $this->assertFalse(property_exists($request, 'foo'));
+        $this->assertFalse(\property_exists($request, 'foo'));
     }
 
     public function testAddsHostHeaderFromUri()
@@ -307,13 +307,13 @@ class RequestTest extends TestCase
                 $this->assertGreaterThanOrEqual(
                     $mockEnv[$key],
                     $value,
-                    sprintf("%s value of %s was less than expected value of %s", $key, $value, $mockEnv[$key])
+                    \sprintf("%s value of %s was less than expected value of %s", $key, $value, $mockEnv[$key])
                 );
             } else {
                 $this->assertEquals(
                     $mockEnv[$key],
                     $value,
-                    sprintf("%s value of %s did not equal expected value of %s", $key, $value, $mockEnv[$key])
+                    \sprintf("%s value of %s did not equal expected value of %s", $key, $value, $mockEnv[$key])
                 );
             }
         }

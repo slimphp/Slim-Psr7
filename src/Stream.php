@@ -94,7 +94,7 @@ class Stream implements StreamInterface
             return null;
         }
 
-        $this->meta = stream_get_meta_data($this->stream);
+        $this->meta = \stream_get_meta_data($this->stream);
 
         if (!$key) {
             return $this->meta;
@@ -116,7 +116,7 @@ class Stream implements StreamInterface
      */
     protected function attach($stream): void
     {
-        if (!is_resource($stream)) {
+        if (!\is_resource($stream)) {
             throw new InvalidArgumentException(__METHOD__ . ' argument must be a valid PHP resource');
         }
 
@@ -172,9 +172,9 @@ class Stream implements StreamInterface
     {
         if ($this->stream) {
             if ($this->isPipe()) {
-                pclose($this->stream);
+                \pclose($this->stream);
             } else {
-                fclose($this->stream);
+                \fclose($this->stream);
             }
         }
 
@@ -187,7 +187,7 @@ class Stream implements StreamInterface
     public function getSize(): ?int
     {
         if ($this->stream && !$this->size) {
-            $stats = fstat($this->stream);
+            $stats = \fstat($this->stream);
 
             if ($stats) {
                 $this->size = isset($stats['size']) && !$this->isPipe() ? $stats['size'] : null;
@@ -205,7 +205,7 @@ class Stream implements StreamInterface
         $position = false;
 
         if ($this->stream) {
-            $position = ftell($this->stream);
+            $position = \ftell($this->stream);
         }
 
         if ($position === false || $this->isPipe()) {
@@ -220,7 +220,7 @@ class Stream implements StreamInterface
      */
     public function eof(): bool
     {
-        return $this->stream ? feof($this->stream) : true;
+        return $this->stream ? \feof($this->stream) : true;
     }
 
     /**
@@ -237,7 +237,7 @@ class Stream implements StreamInterface
                 if ($this->stream) {
                     $mode = $this->getMetadata('mode');
 
-                    if (strstr($mode, 'r') !== false || strstr($mode, '+') !== false) {
+                    if (\strstr($mode, 'r') !== false || \strstr($mode, '+') !== false) {
                         $this->readable = true;
                     }
                 }
@@ -258,7 +258,7 @@ class Stream implements StreamInterface
             if ($this->stream) {
                 $mode = $this->getMetadata('mode');
 
-                if (strstr($mode, 'w') !== false || strstr($mode, '+') !== false) {
+                if (\strstr($mode, 'w') !== false || \strstr($mode, '+') !== false) {
                     $this->writable = true;
                 }
             }
@@ -288,7 +288,7 @@ class Stream implements StreamInterface
      */
     public function seek($offset, $whence = SEEK_SET): void
     {
-        if (!$this->isSeekable() || $this->stream && fseek($this->stream, $offset, $whence) === -1) {
+        if (!$this->isSeekable() || $this->stream && \fseek($this->stream, $offset, $whence) === -1) {
             throw new RuntimeException('Could not seek in stream.');
         }
     }
@@ -298,7 +298,7 @@ class Stream implements StreamInterface
      */
     public function rewind(): void
     {
-        if (!$this->isSeekable() || $this->stream && rewind($this->stream) === false) {
+        if (!$this->isSeekable() || $this->stream && \rewind($this->stream) === false) {
             throw new RuntimeException('Could not rewind stream.');
         }
     }
@@ -311,10 +311,10 @@ class Stream implements StreamInterface
         $data = false;
 
         if ($this->isReadable() && $this->stream) {
-            $data = fread($this->stream, $length);
+            $data = \fread($this->stream, $length);
         }
 
-        if (is_string($data)) {
+        if (\is_string($data)) {
             if ($this->cache) {
                 $this->cache->write($data);
             }
@@ -335,7 +335,7 @@ class Stream implements StreamInterface
         $written = false;
 
         if ($this->isWritable() && $this->stream) {
-            $written = fwrite($this->stream, $string);
+            $written = \fwrite($this->stream, $string);
         }
 
         if ($written !== false) {
@@ -359,10 +359,10 @@ class Stream implements StreamInterface
         $contents = false;
 
         if ($this->stream) {
-            $contents = stream_get_contents($this->stream);
+            $contents = \stream_get_contents($this->stream);
         }
 
-        if (is_string($contents)) {
+        if (\is_string($contents)) {
             if ($this->cache) {
                 $this->cache->write($contents);
             }
@@ -388,7 +388,7 @@ class Stream implements StreamInterface
             $this->isPipe = false;
 
             if ($this->stream) {
-                $stats = fstat($this->stream);
+                $stats = \fstat($this->stream);
 
                 if ($stats) {
                     $this->isPipe = isset($stats['mode']) && ($stats['mode'] & self::FSTAT_MODE_S_IFIFO) !== 0;

@@ -122,7 +122,7 @@ class Uri implements UriInterface
      */
     protected function filterScheme($scheme): string
     {
-        if (!is_string($scheme)) {
+        if (!\is_string($scheme)) {
             throw new InvalidArgumentException('Uri scheme must be a string.');
         }
 
@@ -132,7 +132,7 @@ class Uri implements UriInterface
             'http' => true,
         ];
 
-        $scheme = str_replace('://', '', strtolower($scheme));
+        $scheme = \str_replace('://', '', \strtolower($scheme));
         if (!isset($valid[$scheme])) {
             throw new InvalidArgumentException('Uri scheme must be one of: "", "https", "http"');
         }
@@ -194,19 +194,19 @@ class Uri implements UriInterface
      */
     protected function filterUserInfo(?string $info = null): string
     {
-        if (!is_string($info)) {
+        if (!\is_string($info)) {
             return '';
         }
 
-        $match =  preg_replace_callback(
+        $match =  \preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=]+|%(?![A-Fa-f0-9]{2}))/u',
             function ($match) {
-                return rawurlencode($match[0]);
+                return \rawurlencode($match[0]);
             },
             $info
         );
 
-        return is_string($match) ? $match : '';
+        return \is_string($match) ? $match : '';
     }
 
     /**
@@ -242,19 +242,19 @@ class Uri implements UriInterface
      */
     protected function filterHost($host): string
     {
-        if (is_object($host) && method_exists($host, '__toString')) {
+        if (\is_object($host) && \method_exists($host, '__toString')) {
             $host = (string) $host;
         }
 
-        if (!is_string($host)) {
+        if (!\is_string($host)) {
             throw new InvalidArgumentException('Uri host must be a string');
         }
 
-        if (filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        if (\filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             $host = '[' . $host . ']';
         }
 
-        return strtolower($host);
+        return \strtolower($host);
     }
 
     /**
@@ -298,7 +298,7 @@ class Uri implements UriInterface
      */
     protected function filterPort($port): ?int
     {
-        if (is_null($port) || (is_integer($port) && ($port >= 1 && $port <= 65535))) {
+        if (\is_null($port) || (\is_integer($port) && ($port >= 1 && $port <= 65535))) {
             return $port;
         }
 
@@ -318,7 +318,7 @@ class Uri implements UriInterface
      */
     public function withPath($path)
     {
-        if (!is_string($path)) {
+        if (!\is_string($path)) {
             throw new InvalidArgumentException('Uri path must be a string');
         }
 
@@ -342,15 +342,15 @@ class Uri implements UriInterface
      */
     protected function filterPath($path): string
     {
-        $match = preg_replace_callback(
+        $match = \preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
             function ($match) {
-                return rawurlencode($match[0]);
+                return \rawurlencode($match[0]);
             },
             $path
         );
 
-        return is_string($match) ? $match : '';
+        return \is_string($match) ? $match : '';
     }
 
     /**
@@ -366,7 +366,7 @@ class Uri implements UriInterface
      */
     public function withQuery($query)
     {
-        $query = ltrim($this->filterQuery($query), '?');
+        $query = \ltrim($this->filterQuery($query), '?');
         $clone = clone $this;
         $clone->query = $query;
 
@@ -384,23 +384,23 @@ class Uri implements UriInterface
      */
     protected function filterQuery($query): string
     {
-        if (is_object($query) && method_exists($query, '__toString')) {
+        if (\is_object($query) && \method_exists($query, '__toString')) {
             $query = (string) $query;
         }
 
-        if (!is_string($query)) {
+        if (!\is_string($query)) {
             throw new InvalidArgumentException('Uri query must be a string.');
         }
 
-        $match = preg_replace_callback(
+        $match = \preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
             function ($match) {
-                return rawurlencode($match[0]);
+                return \rawurlencode($match[0]);
             },
             $query
         );
 
-        return is_string($match) ? $match : '';
+        return \is_string($match) ? $match : '';
     }
 
     /**
@@ -434,25 +434,25 @@ class Uri implements UriInterface
      */
     protected function filterFragment($fragment): string
     {
-        if (is_object($fragment) && method_exists($fragment, '__toString')) {
+        if (\is_object($fragment) && \method_exists($fragment, '__toString')) {
             $fragment = (string) $fragment;
         }
 
-        if (!is_string($fragment)) {
+        if (!\is_string($fragment)) {
             throw new InvalidArgumentException('Uri fragment must be a string.');
         }
 
-        $fragment = ltrim($fragment, '#');
+        $fragment = \ltrim($fragment, '#');
 
-        $match = preg_replace_callback(
+        $match = \preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=%:@\/\?]+|%(?![A-Fa-f0-9]{2}))/',
             function ($match) {
-                return rawurlencode($match[0]);
+                return \rawurlencode($match[0]);
             },
             $fragment
         );
 
-        return is_string($match) ? $match : '';
+        return \is_string($match) ? $match : '';
     }
 
     /**
@@ -466,7 +466,7 @@ class Uri implements UriInterface
         $query = $this->getQuery();
         $fragment = $this->getFragment();
 
-        $path = '/' . ltrim($path, '/');
+        $path = '/' . \ltrim($path, '/');
 
         return ($scheme !== '' ? $scheme . ':' : '')
             . ($authority !== '' ? '//' . $authority : '')

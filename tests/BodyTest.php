@@ -31,8 +31,8 @@ class BodyTest extends TestCase
 
     protected function tearDown()
     {
-        if (is_resource($this->stream) === true) {
-            fclose($this->stream);
+        if (\is_resource($this->stream) === true) {
+            \fclose($this->stream);
         }
     }
 
@@ -43,9 +43,9 @@ class BodyTest extends TestCase
      */
     public function resourceFactory($mode = 'r+')
     {
-        $stream = fopen('php://temp', $mode);
-        fwrite($stream, $this->text);
-        rewind($stream);
+        $stream = \fopen('php://temp', $mode);
+        \fwrite($stream, $this->text);
+        \rewind($stream);
 
         return $stream;
     }
@@ -74,7 +74,7 @@ class BodyTest extends TestCase
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
 
-        $this->assertTrue(is_array($body->getMetadata()));
+        $this->assertTrue(\is_array($body->getMetadata()));
     }
 
     public function testGetMetadataKey()
@@ -169,7 +169,7 @@ class BodyTest extends TestCase
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
 
-        $this->assertEquals(mb_strlen($this->text), $body->getSize());
+        $this->assertEquals(\mb_strlen($this->text), $body->getSize());
     }
 
     public function testGetSizeDetached()
@@ -187,7 +187,7 @@ class BodyTest extends TestCase
     {
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
-        fseek($this->stream, 10);
+        \fseek($this->stream, 10);
 
         $this->assertEquals(10, $body->tell());
     }
@@ -210,7 +210,7 @@ class BodyTest extends TestCase
     {
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
-        fseek($this->stream, 10);
+        \fseek($this->stream, 10);
 
         $this->assertFalse($body->eof());
     }
@@ -219,8 +219,8 @@ class BodyTest extends TestCase
     {
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
-        while (feof($this->stream) === false) {
-            fread($this->stream, 1024);
+        while (\feof($this->stream) === false) {
+            \fread($this->stream, 1024);
         }
 
         $this->assertTrue($body->eof());
@@ -247,11 +247,11 @@ class BodyTest extends TestCase
 
     public function isReadableAttachedFalse()
     {
-        $stream = fopen('php://temp', 'w');
+        $stream = \fopen('php://temp', 'w');
         $body = new Stream($this->stream);
 
         $this->assertFalse($body->isReadable());
-        fclose($stream);
+        \fclose($stream);
     }
 
     public function testIsReadableDetached()
@@ -273,11 +273,11 @@ class BodyTest extends TestCase
 
     public function isWritableAttachedFalse()
     {
-        $stream = fopen('php://temp', 'r');
+        $stream = \fopen('php://temp', 'r');
         $body = new Stream($this->stream);
 
         $this->assertFalse($body->isWritable());
-        fclose($stream);
+        \fclose($stream);
     }
 
     public function testIsWritableDetached()
@@ -314,7 +314,7 @@ class BodyTest extends TestCase
         $body = new Stream($this->stream);
         $body->seek(10);
 
-        $this->assertEquals(10, ftell($this->stream));
+        $this->assertEquals(10, \ftell($this->stream));
     }
 
     /**
@@ -333,10 +333,10 @@ class BodyTest extends TestCase
     {
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
-        fseek($this->stream, 10);
+        \fseek($this->stream, 10);
         $body->rewind();
 
-        $this->assertEquals(0, ftell($this->stream));
+        $this->assertEquals(0, \ftell($this->stream));
     }
 
     /**
@@ -356,7 +356,7 @@ class BodyTest extends TestCase
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
 
-        $this->assertEquals(substr($this->text, 0, 10), $body->read(10));
+        $this->assertEquals(\substr($this->text, 0, 10), $body->read(10));
     }
 
     /**
@@ -375,8 +375,8 @@ class BodyTest extends TestCase
     {
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
-        while (feof($this->stream) === false) {
-            fread($this->stream, 1024);
+        while (\feof($this->stream) === false) {
+            \fread($this->stream, 1024);
         }
         $body->write('foo');
 
@@ -399,9 +399,9 @@ class BodyTest extends TestCase
     {
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
-        fseek($this->stream, 10);
+        \fseek($this->stream, 10);
 
-        $this->assertEquals(substr($this->text, 10), $body->getContents());
+        $this->assertEquals(\substr($this->text, 10), $body->getContents());
     }
 
     /**

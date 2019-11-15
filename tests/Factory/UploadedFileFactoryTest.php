@@ -30,10 +30,10 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
      */
     protected function createStream($content)
     {
-        $file = tempnam(sys_get_temp_dir(), 'Slim_Http_UploadedFileTest_');
-        $resource = fopen($file, 'r+');
-        fwrite($resource, $content);
-        rewind($resource);
+        $file = \tempnam(\sys_get_temp_dir(), 'Slim_Http_UploadedFileTest_');
+        $resource = \fopen($file, 'r+');
+        \fwrite($resource, $content);
+        \rewind($resource);
 
         return (new StreamFactory())->createStreamFromResource($resource);
     }

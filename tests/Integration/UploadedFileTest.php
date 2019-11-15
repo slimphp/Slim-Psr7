@@ -22,7 +22,7 @@ class UploadedFileTest extends UploadedFileIntegrationTest
      */
     public function createSubject()
     {
-        $file = tempnam(sys_get_temp_dir(), 'Slim_Http_UploadedFileTest_');
+        $file = \tempnam(\sys_get_temp_dir(), 'Slim_Http_UploadedFileTest_');
 
         return new UploadedFile($file);
     }

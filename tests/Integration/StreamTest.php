@@ -27,11 +27,11 @@ class StreamTest extends StreamIntegrationTest
     {
         if ($data instanceof StreamInterface) {
             return $data;
-        } elseif (is_resource($data)) {
+        } elseif (\is_resource($data)) {
             return new Stream($data);
-        } elseif (is_string($data)) {
-            $s = fopen('php://temp', 'w+');
-            fwrite($s, $data);
+        } elseif (\is_string($data)) {
+            $s = \fopen('php://temp', 'w+');
+            \fwrite($s, $data);
             return new Stream($s);
         }
 

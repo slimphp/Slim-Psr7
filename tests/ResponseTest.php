@@ -36,7 +36,7 @@ class ResponseTest extends TestCase
     public function testConstructorWithCustomArgs()
     {
         $headers = new Headers();
-        $body = new Stream(fopen('php://temp', 'r+'));
+        $body = new Stream(\fopen('php://temp', 'r+'));
         $response = new Response(404, $headers, $body);
 
         $headersReflection = new ReflectionProperty($response, 'headers');
@@ -53,7 +53,7 @@ class ResponseTest extends TestCase
     public function testDeepCopyClone()
     {
         $headers = new Headers();
-        $body = new Stream(fopen('php://temp', 'r+'));
+        $body = new Stream(\fopen('php://temp', 'r+'));
         $response = new Response(404, $headers, $body);
         $clone = clone $response;
 
@@ -70,7 +70,7 @@ class ResponseTest extends TestCase
         $response = new Response();
         $response->foo = 'bar';
 
-        $this->assertFalse(property_exists($response, 'foo'));
+        $this->assertFalse(\property_exists($response, 'foo'));
     }
 
     public function testGetStatusCode()

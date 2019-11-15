@@ -88,12 +88,12 @@ class UploadedFile implements UploadedFileInterface
     ) {
         if ($fileNameOrStream instanceof StreamInterface) {
             $file = $fileNameOrStream->getMetadata('uri');
-            if (!is_string($file)) {
+            if (!\is_string($file)) {
                 throw new InvalidArgumentException('No URI associated with the stream.');
             }
             $this->file = $file;
             $this->stream = $fileNameOrStream;
-        } elseif (is_string($fileNameOrStream)) {
+        } elseif (\is_string($fileNameOrStream)) {
             $this->file = $fileNameOrStream;
         } else {
             throw new InvalidArgumentException(
@@ -113,7 +113,7 @@ class UploadedFile implements UploadedFileInterface
     public function getStream()
     {
         if ($this->moved) {
-            throw new RuntimeException(sprintf('Uploaded file %s has already been moved', $this->name));
+            throw new RuntimeException(\sprintf('Uploaded file %s has already been moved', $this->name));
         }
 
         if (!$this->stream) {
@@ -134,30 +134,30 @@ class UploadedFile implements UploadedFileInterface
             throw new RuntimeException('Uploaded file already moved');
         }
 
-        $targetIsStream = strpos($targetPath, '://') > 0;
-        if (!$targetIsStream && !is_writable(dirname($targetPath))) {
+        $targetIsStream = \strpos($targetPath, '://') > 0;
+        if (!$targetIsStream && !\is_writable(\dirname($targetPath))) {
             throw new InvalidArgumentException('Upload target path is not writable');
         }
 
         if ($targetIsStream) {
-            if (!copy($this->file, $targetPath)) {
-                throw new RuntimeException(sprintf('Error moving uploaded file %s to %s', $this->name, $targetPath));
+            if (!\copy($this->file, $targetPath)) {
+                throw new RuntimeException(\sprintf('Error moving uploaded file %s to %s', $this->name, $targetPath));
             }
 
-            if (!unlink($this->file)) {
-                throw new RuntimeException(sprintf('Error removing uploaded file %s', $this->name));
+            if (!\unlink($this->file)) {
+                throw new RuntimeException(\sprintf('Error removing uploaded file %s', $this->name));
             }
         } elseif ($this->sapi) {
-            if (!is_uploaded_file($this->file)) {
-                throw new RuntimeException(sprintf('%s is not a valid uploaded file', $this->file));
+            if (!\is_uploaded_file($this->file)) {
+                throw new RuntimeException(\sprintf('%s is not a valid uploaded file', $this->file));
             }
 
-            if (!move_uploaded_file($this->file, $targetPath)) {
-                throw new RuntimeException(sprintf('Error moving uploaded file %s to %s', $this->name, $targetPath));
+            if (!\move_uploaded_file($this->file, $targetPath)) {
+                throw new RuntimeException(\sprintf('Error moving uploaded file %s to %s', $this->name, $targetPath));
             }
         } else {
-            if (!rename($this->file, $targetPath)) {
-                throw new RuntimeException(sprintf('Error moving uploaded file %s to %s', $this->name, $targetPath));
+            if (!\rename($this->file, $targetPath)) {
+                throw new RuntimeException(\sprintf('Error moving uploaded file %s to %s', $this->name, $targetPath));
             }
         }
 
@@ -209,7 +209,7 @@ class UploadedFile implements UploadedFileInterface
      */
     public static function createFromGlobals(array $globals): array
     {
-        if (isset($globals['slim.files']) && is_array($globals['slim.files'])) {
+        if (isset($globals['slim.files']) && \is_array($globals['slim.files'])) {
             return $globals['slim.files'];
         }
 
@@ -234,14 +234,14 @@ class UploadedFile implements UploadedFileInterface
         $parsed = [];
         foreach ($uploadedFiles as $field => $uploadedFile) {
             if (!isset($uploadedFile['error'])) {
-                if (is_array($uploadedFile)) {
+                if (\is_array($uploadedFile)) {
                     $parsed[$field] = static::parseUploadedFiles($uploadedFile);
                 }
                 continue;
             }
 
             $parsed[$field] = [];
-            if (!is_array($uploadedFile['error'])) {
+            if (!\is_array($uploadedFile['error'])) {
                 $parsed[$field] = new static(
                     $uploadedFile['tmp_name'],
                     isset($uploadedFile['name']) ? $uploadedFile['name'] : null,

@@ -19,7 +19,7 @@ use Slim\Tests\Psr7\Assets\HeaderStack;
  */
 function getallheaders()
 {
-    if (array_key_exists('getallheaders_return', $GLOBALS)) {
+    if (\array_key_exists('getallheaders_return', $GLOBALS)) {
         return $GLOBALS['getallheaders_return'];
     }
 

@@ -87,7 +87,7 @@ class HeaderStack
     public static function remove($header)
     {
         foreach (self::$data as $key => $item) {
-            if (false !== strpos($item['header'], "$header:")) {
+            if (false !== \strpos($item['header'], "$header:")) {
                 unset(self::$data[$key]);
             }
         }

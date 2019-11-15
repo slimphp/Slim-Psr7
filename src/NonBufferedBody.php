@@ -100,15 +100,15 @@ class NonBufferedBody implements StreamInterface
     public function write($string): int
     {
         $buffered = '';
-        while (0 < ob_get_level()) {
-            $buffered = ob_get_clean() . $buffered;
+        while (0 < \ob_get_level()) {
+            $buffered = \ob_get_clean() . $buffered;
         }
 
         echo $buffered . $string;
 
-        flush();
+        \flush();
 
-        return strlen($string) + strlen($buffered);
+        return \strlen($string) + \strlen($buffered);
     }
 
     /**

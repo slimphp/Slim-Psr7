@@ -60,7 +60,7 @@ class Cookies
      */
     public function setDefaults(array $settings): self
     {
-        $this->defaults = array_replace($this->defaults, $settings);
+        $this->defaults = \array_replace($this->defaults, $settings);
 
         return $this;
     }
@@ -86,11 +86,11 @@ class Cookies
      */
     public function set(string $name, $value): self
     {
-        if (!is_array($value)) {
+        if (!\is_array($value)) {
             $value = ['value' => $value];
         }
 
-        $this->responseCookies[$name] = array_replace($this->defaults, $value);
+        $this->responseCookies[$name] = \array_replace($this->defaults, $value);
 
         return $this;
     }
@@ -121,7 +121,7 @@ class Cookies
      */
     protected function toHeader(string $name, array $properties): string
     {
-        $result = urlencode($name) . '=' . urlencode($properties['value']);
+        $result = \urlencode($name) . '=' . \urlencode($properties['value']);
 
         if (isset($properties['domain'])) {
             $result .= '; domain=' . $properties['domain'];
@@ -132,13 +132,13 @@ class Cookies
         }
 
         if (isset($properties['expires'])) {
-            if (is_string($properties['expires'])) {
-                $timestamp = strtotime($properties['expires']);
+            if (\is_string($properties['expires'])) {
+                $timestamp = \strtotime($properties['expires']);
             } else {
                 $timestamp = (int) $properties['expires'];
             }
             if ($timestamp && $timestamp !== 0) {
-                $result .= '; expires=' . gmdate('D, d-M-Y H:i:s e', $timestamp);
+                $result .= '; expires=' . \gmdate('D, d-M-Y H:i:s e', $timestamp);
             }
         }
 
@@ -154,7 +154,7 @@ class Cookies
             $result .= '; HttpOnly';
         }
 
-        if (isset($properties['samesite']) && in_array(strtolower($properties['samesite']), ['lax', 'strict'], true)) {
+        if (isset($properties['samesite']) && \in_array(\strtolower($properties['samesite']), ['lax', 'strict'], true)) {
             // While strtolower is needed for correct comparison, the RFC doesn't care about case
             $result .= '; SameSite=' . $properties['samesite'];
         }
@@ -173,25 +173,25 @@ class Cookies
      */
     public static function parseHeader($header): array
     {
-        if (is_array($header)) {
+        if (\is_array($header)) {
             $header = isset($header[0]) ? $header[0] : '';
         }
 
-        if (!is_string($header)) {
+        if (!\is_string($header)) {
             throw new InvalidArgumentException('Cannot parse Cookie data. Header value must be a string.');
         }
 
-        $header = rtrim($header, "\r\n");
-        $pieces = preg_split('@[;]\s*@', $header);
+        $header = \rtrim($header, "\r\n");
+        $pieces = \preg_split('@[;]\s*@', $header);
         $cookies = [];
 
-        if (is_array($pieces)) {
+        if (\is_array($pieces)) {
             foreach ($pieces as $cookie) {
-                $cookie = explode('=', $cookie, 2);
+                $cookie = \explode('=', $cookie, 2);
 
-                if (count($cookie) === 2) {
-                    $key = urldecode($cookie[0]);
-                    $value = urldecode($cookie[1]);
+                if (\count($cookie) === 2) {
+                    $key = \urldecode($cookie[0]);
+                    $value = \urldecode($cookie[1]);
 
                     if (!isset($cookies[$key])) {
                         $cookies[$key] = $value;
