@@ -83,3 +83,41 @@ function ob_get_level(): int
 
     return \ob_get_level();
 }
+
+/**
+ * @param string        $source
+ * @param string        $destination
+ * @param resource|null $context
+ *
+ * @return bool
+ */
+function copy(string $source, string $destination, $context = null): bool
+{
+    if (isset($GLOBALS['copy_return'])) {
+        return $GLOBALS['copy_return'];
+    }
+
+    if ($context === null) {
+        return \copy($source, $destination);
+    }
+    return \copy($source, $destination, $context);
+}
+
+/**
+ * @param string        $oldName
+ * @param string        $newName
+ * @param resource|null $context
+ *
+ * @return bool
+ */
+function rename(string $oldName, string $newName, $context = null): bool
+{
+    if (isset($GLOBALS['rename_return'])) {
+        return $GLOBALS['rename_return'];
+    }
+
+    if ($context === null) {
+        return \rename($oldName, $newName);
+    }
+    return \rename($oldName, $newName, $context = null);
+}
