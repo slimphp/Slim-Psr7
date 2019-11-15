@@ -48,6 +48,12 @@ class UploadedFileTest extends TestCase
         if (isset($GLOBALS['is_uploaded_file_return'])) {
             unset($GLOBALS['is_uploaded_file_return']);
         }
+        if (isset($GLOBALS['copy_return'])) {
+            unset($GLOBALS['copy_return']);
+        }
+        if (isset($GLOBALS['rename_return'])) {
+            unset($GLOBALS['rename_return']);
+        }
     }
 
     /**
@@ -213,6 +219,21 @@ class UploadedFileTest extends TestCase
     }
 
     /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessageRegExp /^Error moving uploaded file .* to .*$/
+     */
+    public function testMoveToRenameFailure()
+    {
+        $uploadedFile = $this->generateNewTmpFile();
+
+        $tempName = uniqid('file-');
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
+
+        $GLOBALS['rename_return'] = false;
+        $uploadedFile->moveTo($path);
+    }
+
+    /**
      * @depends testConstructorSapi
      *
      * @param UploadedFile $uploadedFile
@@ -307,6 +328,18 @@ class UploadedFileTest extends TestCase
 
         $this->assertEquals($contents, $movedFileContents);
         $this->assertFileNotExists($fileName);
+    }
+
+    /**
+     * @expectedException RuntimeException
+     * @expectedExceptionMessage Error moving uploaded file  to php://output
+     */
+    public function testMoveToStreamCopyFailure()
+    {
+        $uploadedFile = $this->generateNewTmpFile();
+
+        $GLOBALS['copy_return'] = false;
+        $uploadedFile->moveTo('php://output');
     }
 
     public function testFileUploadWithTempStream()
