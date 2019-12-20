@@ -234,7 +234,7 @@ class Headers implements HeadersInterface
      *
      * @throws InvalidArgumentException;
      */
-    protected function validateHeader($name, $value)
+    protected function validateHeader($name, $value): void
     {
         $this->validateHeaderName($name);
         $this->validateHeaderValue($value);
@@ -245,7 +245,7 @@ class Headers implements HeadersInterface
      *
      * @throws InvalidArgumentException
      */
-    protected function validateHeaderName($name)
+    protected function validateHeaderName($name): void
     {
         if (!is_string($name) || preg_match("@^[!#$%&'*+.^_`|~0-9A-Za-z-]+$@", $name) !== 1) {
             throw new InvalidArgumentException('Header name must be an RFC 7230 compatible string.');
@@ -257,7 +257,7 @@ class Headers implements HeadersInterface
      *
      * @throws InvalidArgumentException
      */
-    protected function validateHeaderValue($value)
+    protected function validateHeaderValue($value): void
     {
         $items = is_array($value) ? $value : [$value];
 
@@ -280,7 +280,7 @@ class Headers implements HeadersInterface
     }
 
     /**
-     * @return static
+     * @return self
      */
     public static function createFromGlobals()
     {
@@ -294,6 +294,6 @@ class Headers implements HeadersInterface
             $headers = [];
         }
 
-        return new static($headers);
+        return new self($headers);
     }
 }

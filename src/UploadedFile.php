@@ -128,7 +128,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return static
      */
-    public function moveTo($targetPath)
+    public function moveTo($targetPath): self
     {
         if ($this->moved) {
             throw new RuntimeException('Uploaded file already moved');
@@ -242,7 +242,7 @@ class UploadedFile implements UploadedFileInterface
 
             $parsed[$field] = [];
             if (!is_array($uploadedFile['error'])) {
-                $parsed[$field] = new static(
+                $parsed[$field] = new self(
                     $uploadedFile['tmp_name'],
                     isset($uploadedFile['name']) ? $uploadedFile['name'] : null,
                     isset($uploadedFile['type']) ? $uploadedFile['type'] : null,

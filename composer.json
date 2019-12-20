@@ -37,10 +37,10 @@
   "require-dev": {
     "ext-json": "*",
     "http-interop/http-factory-tests": "^0.6.0",
-    "php-http/psr7-integration-tests": "dev-master",
-    "phpstan/phpstan": "^0.10",
+    "php-http/psr7-integration-tests": "^1.0",
+    "phpstan/phpstan": "^0.12",
     "phpunit/phpunit": "^6.0|^7.0",
-    "squizlabs/php_codesniffer": "^3.3"
+    "squizlabs/php_codesniffer": "^3.5"
   },
   "provide": {
     "psr/http-message-implementation": "1.0"
