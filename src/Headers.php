@@ -28,7 +28,7 @@ class Headers implements HeadersInterface
      * @param array $headers
      * @param array $globals
      */
-    public function __construct(array $headers = [], ?array $globals = null)
+    final public function __construct(array $headers = [], ?array $globals = null)
     {
         $this->globals = $globals ?? $_SERVER;
         $this->setHeaders($headers);
@@ -280,7 +280,7 @@ class Headers implements HeadersInterface
     }
 
     /**
-     * @return self
+     * @return static
      */
     public static function createFromGlobals()
     {
@@ -294,6 +294,6 @@ class Headers implements HeadersInterface
             $headers = [];
         }
 
-        return new self($headers);
+        return new static($headers);
     }
 }

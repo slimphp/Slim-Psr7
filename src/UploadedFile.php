@@ -78,7 +78,7 @@ class UploadedFile implements UploadedFileInterface
      * @param int                    $error            The UPLOAD_ERR_XXX code representing the status of the upload.
      * @param bool                   $sapi             Indicates if the upload is in a SAPI environment.
      */
-    public function __construct(
+    final public function __construct(
         $fileNameOrStream,
         ?string $name = null,
         ?string $type = null,
@@ -242,7 +242,7 @@ class UploadedFile implements UploadedFileInterface
 
             $parsed[$field] = [];
             if (!is_array($uploadedFile['error'])) {
-                $parsed[$field] = new self(
+                $parsed[$field] = new static(
                     $uploadedFile['tmp_name'],
                     isset($uploadedFile['name']) ? $uploadedFile['name'] : null,
                     isset($uploadedFile['type']) ? $uploadedFile['type'] : null,
