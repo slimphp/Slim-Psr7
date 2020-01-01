@@ -81,18 +81,20 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testWithMethodInvalid()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->requestFactory()->withMethod('B@R');
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testCreateRequestWithInvalidMethodString()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $uri = (new UriFactory())->createUri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers();
         $cookies = [];
@@ -103,10 +105,11 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testCreateRequestWithInvalidMethodOther()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $uri = (new UriFactory())->createUri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers();
         $cookies = [];
@@ -149,10 +152,11 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testWithRequestTargetThatHasSpaces()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->requestFactory()->withRequestTarget('/test/m ore/stuff?user=1');
     }
 
@@ -443,18 +447,20 @@ class RequestTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testWithParsedBodyInvalid()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->requestFactory()->withParsedBody(2);
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testWithParsedBodyInvalidFalseValue()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->requestFactory()->withParsedBody(false);
     }
 }

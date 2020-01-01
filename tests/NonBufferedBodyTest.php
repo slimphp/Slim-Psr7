@@ -120,38 +120,42 @@ class NonBufferedBodyTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage A NonBufferedBody is not closable.
      */
     public function testCloseThrowsRuntimeException()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('A NonBufferedBody is not closable.');
+
         (new NonBufferedBody())->close();
     }
 
     /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage A NonBufferedBody is not seekable.
      */
     public function testSeekThrowsRuntimeException()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('A NonBufferedBody is not seekable.');
+
         (new NonBufferedBody())->seek(10);
     }
 
     /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage A NonBufferedBody is not rewindable.
      */
     public function testRewindThrowsRuntimeException()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('A NonBufferedBody is not rewindable.');
+
         (new NonBufferedBody())->rewind();
     }
 
     /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage A NonBufferedBody is not readable.
      */
     public function testReadThrowsRuntimeException()
     {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('A NonBufferedBody is not readable.');
+
         (new NonBufferedBody())->read(10);
     }
 }

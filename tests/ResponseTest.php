@@ -92,20 +92,22 @@ class ResponseTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testWithStatusInvalidStatusCodeThrowsException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $response = new Response();
         $response->withStatus(800);
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Response reason phrase must be a string
      */
     public function testWithStatusInvalidReasonPhraseThrowsException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Response reason phrase must be a string');
+
         $response = new Response();
         $response->withStatus(200, null);
     }

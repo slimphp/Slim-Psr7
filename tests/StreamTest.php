@@ -65,30 +65,33 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
      */
     public function testCannotSeekPipe()
     {
+        $this->expectException(\RuntimeException::class);
+
         $this->openPipeStream();
 
         $this->pipeStream->seek(0);
     }
 
     /**
-     * @expectedException RuntimeException
      */
     public function testCannotTellPipe()
     {
+        $this->expectException(\RuntimeException::class);
+
         $this->openPipeStream();
 
         $this->pipeStream->tell();
     }
 
     /**
-     * @expectedException RuntimeException
      */
     public function testCannotRewindPipe()
     {
+        $this->expectException(\RuntimeException::class);
+
         $this->openPipeStream();
 
         $this->pipeStream->rewind();

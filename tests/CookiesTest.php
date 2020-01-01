@@ -261,10 +261,11 @@ class CookiesTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testParseHeaderException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         Cookies::parseHeader(new stdClass);
     }
 }
