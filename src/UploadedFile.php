@@ -125,10 +125,8 @@ class UploadedFile implements UploadedFileInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @return static
      */
-    public function moveTo($targetPath): self
+    public function moveTo($targetPath): void
     {
         if ($this->moved) {
             throw new RuntimeException('Uploaded file already moved');
@@ -162,8 +160,6 @@ class UploadedFile implements UploadedFileInterface
         }
 
         $this->moved = true;
-
-        return $this;
     }
 
     /**
