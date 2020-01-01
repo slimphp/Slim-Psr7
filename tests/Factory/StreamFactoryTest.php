@@ -16,7 +16,7 @@ use Slim\Psr7\Factory\StreamFactory;
 
 class StreamFactoryTest extends StreamFactoryTestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         if (isset($GLOBALS['fopen_return'])) {
             unset($GLOBALS['fopen_return']);

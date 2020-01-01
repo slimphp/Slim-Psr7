@@ -27,14 +27,14 @@ class UploadedFileTest extends TestCase
 
     private static $tmpFiles = ['./phpUxcOty'];
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $fh = fopen(self::$filename, "w");
         fwrite($fh, "12345678");
         fclose($fh);
     }
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         foreach (self::$tmpFiles as $filename) {
             if (file_exists($filename)) {
@@ -43,7 +43,7 @@ class UploadedFileTest extends TestCase
         }
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if (isset($GLOBALS['is_uploaded_file_return'])) {
             unset($GLOBALS['is_uploaded_file_return']);

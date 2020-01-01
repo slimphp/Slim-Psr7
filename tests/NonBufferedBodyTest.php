@@ -17,12 +17,12 @@ use Slim\Tests\Psr7\Assets\HeaderStack;
 
 class NonBufferedBodyTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         HeaderStack::reset();
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         HeaderStack::reset();
     }

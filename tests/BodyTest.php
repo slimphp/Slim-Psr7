@@ -29,7 +29,7 @@ class BodyTest extends TestCase
      */
     protected $stream;
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if (is_resource($this->stream) === true) {
             fclose($this->stream);
