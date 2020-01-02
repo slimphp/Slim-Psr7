@@ -9,14 +9,14 @@ declare(strict_types=1);
 
 namespace Slim\Tests\Psr7\Factory;
 
-use InvalidArgumentException;
 use Interop\Http\Factory\StreamFactoryTestCase;
+use InvalidArgumentException;
 use RuntimeException;
 use Slim\Psr7\Factory\StreamFactory;
 
 class StreamFactoryTest extends StreamFactoryTestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         if (isset($GLOBALS['fopen_return'])) {
             unset($GLOBALS['fopen_return']);
@@ -32,11 +32,12 @@ class StreamFactoryTest extends StreamFactoryTestCase
     }
 
     /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage StreamFactory::createStream() could not open temporary file stream.
      */
     public function testCreateStreamThrowsRuntimeException()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('StreamFactory::createStream() could not open temporary file stream.');
+
         $GLOBALS['fopen_return'] = false;
 
         $factory = $this->createStreamFactory();
@@ -45,12 +46,13 @@ class StreamFactoryTest extends StreamFactoryTestCase
     }
 
     /**
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage StreamFactory::createStreamFromFile() could not create resource
-     *                           from file `non-readable`
      */
     public function testCreateStreamFromFileThrowsRuntimeException()
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('StreamFactory::createStreamFromFile() could not create resource'
+                                      . ' from file `non-readable`');
+
         $GLOBALS['fopen_return'] = false;
 
         $factory = $this->createStreamFactory();
@@ -59,11 +61,12 @@ class StreamFactoryTest extends StreamFactoryTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Parameter 1 of StreamFactory::createStreamFromResource() must be a resource.
      */
     public function testCreateStreamFromResourceThrowsRuntimeException()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Parameter 1 of StreamFactory::createStreamFromResource() must be a resource.');
+
         $factory = $this->createStreamFactory();
 
         $factory->createStreamFromResource('not-resource');

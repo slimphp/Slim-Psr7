@@ -36,12 +36,13 @@ class RequestFactoryTest extends RequestFactoryTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Parameter 2 of RequestFactory::createRequest() must be a string
-     *                           or a compatible UriInterface.
      */
     public function testCreateRequestThrowsExceptionWithInvalidUri()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Parameter 2 of RequestFactory::createRequest() must be a string' .
+                                      ' or a compatible UriInterface.');
+
         $factory = $this->createRequestFactory();
 
         $factory->createRequest('GET', new stdClass);

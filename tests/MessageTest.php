@@ -35,10 +35,11 @@ class MessageTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testWithProtocolVersionInvalidThrowsException()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $message = new MessageStub();
         $message->withProtocolVersion('3.0');
     }
