@@ -55,10 +55,11 @@ class HeadersTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testAddHeaderValueEmptyArray()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $headers = new Headers();
         $headers->addHeader('Header', []);
     }
@@ -103,10 +104,11 @@ class HeadersTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testGetHeaderThrowsExceptionWithInvalidDefaultArgument()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $headers = new Headers([]);
 
         $headers->getHeader('accept', new stdClass());

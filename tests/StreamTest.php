@@ -28,7 +28,7 @@ class StreamTest extends TestCase
      */
     private $pipeStream;
 
-    public function tearDown()
+    public function tearDown(): void
     {
         if ($this->pipeFh != null) {
             // prevent broken pipe error message
@@ -65,30 +65,33 @@ class StreamTest extends TestCase
     }
 
     /**
-     * @expectedException RuntimeException
      */
     public function testCannotSeekPipe()
     {
+        $this->expectException(RuntimeException::class);
+
         $this->openPipeStream();
 
         $this->pipeStream->seek(0);
     }
 
     /**
-     * @expectedException RuntimeException
      */
     public function testCannotTellPipe()
     {
+        $this->expectException(RuntimeException::class);
+
         $this->openPipeStream();
 
         $this->pipeStream->tell();
     }
 
     /**
-     * @expectedException RuntimeException
      */
     public function testCannotRewindPipe()
     {
+        $this->expectException(RuntimeException::class);
+
         $this->openPipeStream();
 
         $this->pipeStream->rewind();

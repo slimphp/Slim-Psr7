@@ -194,19 +194,21 @@ class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testCreateServerRequestWithNullAsUri()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $env = Environment::mock();
         $this->createServerRequestFactory()->createServerRequest('GET', null, $env);
     }
 
     /**
-     * @expectedException InvalidArgumentException
      */
     public function testCreateServerRequestWithInvalidUriObject()
     {
+        $this->expectException(InvalidArgumentException::class);
+
         $env = Environment::mock();
         $this->createServerRequestFactory()->createServerRequest('GET', new stdClass(), $env);
     }

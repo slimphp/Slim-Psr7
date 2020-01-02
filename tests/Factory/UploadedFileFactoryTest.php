@@ -63,11 +63,12 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage File is not readable.
      */
     public function testCreateUploadedFileWithInvalidUri()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('File is not readable.');
+
         // Prophesize a `\Psr\Http\Message\StreamInterface` with a `getMetadata` method prophecy.
         $streamProphecy = $this->prophesize(StreamInterface::class);
 
@@ -84,11 +85,12 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage File is not readable.
      */
     public function testCreateUploadedFileWithNonReadableFile()
     {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('File is not readable.');
+
         // Prophesize a `\Psr\Http\Message\StreamInterface` with a `getMetadata` and `isReadable` method prophecies.
         $streamProphecy = $this->prophesize(StreamInterface::class);
 
