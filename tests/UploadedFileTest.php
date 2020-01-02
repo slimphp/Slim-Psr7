@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -20,6 +21,24 @@ use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Factory\UploadedFileFactory;
 use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
+
+use function call_user_func;
+use function fclose;
+use function file_exists;
+use function file_get_contents;
+use function fopen;
+use function fwrite;
+use function microtime;
+use function ob_get_clean;
+use function ob_start;
+use function strlen;
+use function sys_get_temp_dir;
+use function uniqid;
+use function unlink;
+
+use const DIRECTORY_SEPARATOR;
+use const UPLOAD_ERR_CANT_WRITE;
+use const UPLOAD_ERR_OK;
 
 class UploadedFileTest extends TestCase
 {

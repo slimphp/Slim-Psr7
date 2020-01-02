@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -15,6 +16,11 @@ use ReflectionClass;
 use ReflectionProperty;
 use Slim\Psr7\Cookies;
 use stdClass;
+
+use function gmdate;
+use function json_decode;
+use function strtotime;
+use function time;
 
 class CookiesTest extends TestCase
 {
@@ -42,7 +48,7 @@ class CookiesTest extends TestCase
             'samesite' => null
         ];
 
-        $cookies = new Cookies;
+        $cookies = new Cookies();
 
         $prop = new ReflectionProperty($cookies, 'defaults');
         $prop->setAccessible(true);
@@ -57,7 +63,7 @@ class CookiesTest extends TestCase
 
     public function testSetCookieValues()
     {
-        $cookies = new Cookies;
+        $cookies = new Cookies();
         $cookies->set('foo', 'bar');
 
         $prop = new ReflectionProperty($cookies, 'responseCookies');
@@ -81,7 +87,7 @@ class CookiesTest extends TestCase
 
     public function testSetCookieValuesContainDefaults()
     {
-        $cookies = new Cookies;
+        $cookies = new Cookies();
         $defaults = [
             'value' => 'toast',
             'domain' => null,
@@ -117,7 +123,7 @@ class CookiesTest extends TestCase
 
     public function testSetCookieValuesCanOverrideDefaults()
     {
-        $cookies = new Cookies;
+        $cookies = new Cookies();
         $defaults = [
             'value' => 'toast',
             'domain' => null,
@@ -205,7 +211,7 @@ class CookiesTest extends TestCase
 
     public function testToHeaders()
     {
-        $cookies = new Cookies;
+        $cookies = new Cookies();
         $cookies->set('test', 'Works');
         $cookies->set('test_array', ['value' => 'bar', 'domain' => 'example.com']);
         $this->assertEquals('test=Works', $cookies->toHeaders()[0]);
@@ -266,6 +272,6 @@ class CookiesTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        Cookies::parseHeader(new stdClass);
+        Cookies::parseHeader(new stdClass());
     }
 }

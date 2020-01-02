@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -18,6 +19,9 @@ use Slim\Psr7\Factory\ServerRequestFactory;
 use Slim\Psr7\Factory\UriFactory;
 use Slim\Psr7\UploadedFile;
 use stdClass;
+
+use function microtime;
+use function time;
 
 class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
 {

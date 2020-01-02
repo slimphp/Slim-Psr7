@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -14,6 +15,12 @@ use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Factory\UploadedFileFactory;
+
+use function fopen;
+use function fwrite;
+use function rewind;
+use function sys_get_temp_dir;
+use function tempnam;
 
 class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
 {

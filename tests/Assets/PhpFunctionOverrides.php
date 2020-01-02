@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -10,6 +11,8 @@ declare(strict_types=1);
 namespace Slim\Psr7;
 
 use Slim\Tests\Psr7\Assets\HeaderStack;
+
+use function array_key_exists;
 
 /**
  * Return the value of the global variable $GLOBALS['getallheaders_return'] if it exists. Otherwise the

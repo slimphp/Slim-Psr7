@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -14,6 +15,19 @@ use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
 use RuntimeException;
 use Slim\Psr7\Stream;
+
+use function fclose;
+use function feof;
+use function fopen;
+use function fread;
+use function fseek;
+use function ftell;
+use function fwrite;
+use function is_array;
+use function is_resource;
+use function mb_strlen;
+use function rewind;
+use function substr;
 
 class BodyTest extends TestCase
 {
