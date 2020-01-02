@@ -39,7 +39,7 @@ class RequestFactoryTest extends RequestFactoryTestCase
      */
     public function testCreateRequestThrowsExceptionWithInvalidUri()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Parameter 2 of RequestFactory::createRequest() must be a string' .
                                       ' or a compatible UriInterface.');
 

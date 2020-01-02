@@ -84,7 +84,7 @@ class RequestTest extends TestCase
      */
     public function testWithMethodInvalid()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->requestFactory()->withMethod('B@R');
     }
@@ -93,7 +93,7 @@ class RequestTest extends TestCase
      */
     public function testCreateRequestWithInvalidMethodString()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $uri = (new UriFactory())->createUri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers();
@@ -108,7 +108,7 @@ class RequestTest extends TestCase
      */
     public function testCreateRequestWithInvalidMethodOther()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $uri = (new UriFactory())->createUri('https://example.com:443/foo/bar?abc=123');
         $headers = new Headers();
@@ -155,7 +155,7 @@ class RequestTest extends TestCase
      */
     public function testWithRequestTargetThatHasSpaces()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->requestFactory()->withRequestTarget('/test/m ore/stuff?user=1');
     }
@@ -450,7 +450,7 @@ class RequestTest extends TestCase
      */
     public function testWithParsedBodyInvalid()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->requestFactory()->withParsedBody(2);
     }
@@ -459,7 +459,7 @@ class RequestTest extends TestCase
      */
     public function testWithParsedBodyInvalidFalseValue()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->requestFactory()->withParsedBody(false);
     }

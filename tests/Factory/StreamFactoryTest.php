@@ -9,8 +9,8 @@ declare(strict_types=1);
 
 namespace Slim\Tests\Psr7\Factory;
 
-use InvalidArgumentException;
 use Interop\Http\Factory\StreamFactoryTestCase;
+use InvalidArgumentException;
 use RuntimeException;
 use Slim\Psr7\Factory\StreamFactory;
 
@@ -35,7 +35,7 @@ class StreamFactoryTest extends StreamFactoryTestCase
      */
     public function testCreateStreamThrowsRuntimeException()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('StreamFactory::createStream() could not open temporary file stream.');
 
         $GLOBALS['fopen_return'] = false;
@@ -49,7 +49,7 @@ class StreamFactoryTest extends StreamFactoryTestCase
      */
     public function testCreateStreamFromFileThrowsRuntimeException()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('StreamFactory::createStreamFromFile() could not create resource'
                                       . ' from file `non-readable`');
 
@@ -64,7 +64,7 @@ class StreamFactoryTest extends StreamFactoryTestCase
      */
     public function testCreateStreamFromResourceThrowsRuntimeException()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Parameter 1 of StreamFactory::createStreamFromResource() must be a resource.');
 
         $factory = $this->createStreamFactory();

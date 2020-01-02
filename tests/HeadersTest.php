@@ -58,7 +58,7 @@ class HeadersTest extends TestCase
      */
     public function testAddHeaderValueEmptyArray()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $headers = new Headers();
         $headers->addHeader('Header', []);
@@ -107,7 +107,7 @@ class HeadersTest extends TestCase
      */
     public function testGetHeaderThrowsExceptionWithInvalidDefaultArgument()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $headers = new Headers([]);
 

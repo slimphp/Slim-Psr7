@@ -64,7 +64,7 @@ class BodyTest extends TestCase
      */
     public function testConstructorInvalidStream()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->stream = 'foo';
         $body = new Stream($this->stream);
@@ -197,7 +197,7 @@ class BodyTest extends TestCase
      */
     public function testTellDetachedThrowsRuntimeException()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
@@ -323,7 +323,7 @@ class BodyTest extends TestCase
      */
     public function testSeekDetachedThrowsRuntimeException()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
@@ -346,7 +346,7 @@ class BodyTest extends TestCase
      */
     public function testRewindDetachedThrowsRuntimeException()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
@@ -367,7 +367,7 @@ class BodyTest extends TestCase
      */
     public function testReadDetachedThrowsRuntimeException()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
@@ -392,7 +392,7 @@ class BodyTest extends TestCase
      */
     public function testWriteDetachedThrowsRuntimeException()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);
@@ -414,7 +414,7 @@ class BodyTest extends TestCase
      */
     public function testGetContentsDetachedThrowsRuntimeException()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $this->stream = $this->resourceFactory();
         $body = new Stream($this->stream);

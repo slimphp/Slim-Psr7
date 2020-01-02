@@ -192,7 +192,7 @@ class UploadedFileTest extends TestCase
      */
     public function testMoveToNotWritable(UploadedFile $uploadedFile)
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $tempName = uniqid('file-');
         $path = 'some_random_dir' . DIRECTORY_SEPARATOR . $tempName;
@@ -223,7 +223,7 @@ class UploadedFileTest extends TestCase
      */
     public function testMoveToRenameFailure()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageRegExp('/^Error moving uploaded file .* to .*$/');
 
         $uploadedFile = $this->generateNewTmpFile();
@@ -243,7 +243,7 @@ class UploadedFileTest extends TestCase
      */
     public function testMoveToSapiNonUploadedFile(UploadedFile $uploadedFile)
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $tempName = uniqid('file-');
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
@@ -258,7 +258,7 @@ class UploadedFileTest extends TestCase
      */
     public function testMoveToSapiMoveUploadedFileFails(UploadedFile $uploadedFile)
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessageRegExp('~Error moving uploaded file.*~');
 
         $GLOBALS['is_uploaded_file_return'] = true;
@@ -276,7 +276,7 @@ class UploadedFileTest extends TestCase
      */
     public function testMoveToCannotBeDoneTwice(UploadedFile $uploadedFile)
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $tempName = uniqid('file-');
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
@@ -297,7 +297,7 @@ class UploadedFileTest extends TestCase
      */
     public function testMoveToAgain(UploadedFile $uploadedFile)
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $tempName = uniqid('file-');
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
@@ -314,7 +314,7 @@ class UploadedFileTest extends TestCase
      */
     public function testMovedStream(UploadedFile $uploadedFile)
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $uploadedFile->getStream();
     }
@@ -341,7 +341,7 @@ class UploadedFileTest extends TestCase
      */
     public function testMoveToStreamCopyFailure()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Error moving uploaded file  to php://output');
 
         $uploadedFile = $this->generateNewTmpFile();
@@ -396,7 +396,7 @@ class UploadedFileTest extends TestCase
      */
     public function testCreateUploadedFileWithInvalidArguments()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         new UploadedFile(42); // a random value that is neither a string nor an instance of StreamInterface
     }
@@ -405,7 +405,7 @@ class UploadedFileTest extends TestCase
      */
     public function testCreateUploadedFileWithInvalidUri()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $streamProphecy = $this->prophesize(StreamInterface::class);
 

@@ -63,7 +63,7 @@ class HeaderTest extends TestCase
      */
     public function testAddValuesNull()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Parameter 1 of Header::addValues() should be a string or an array.');
 
         $header = $this->headerFactory();

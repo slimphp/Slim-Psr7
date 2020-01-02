@@ -60,7 +60,7 @@ class UriTest extends TestCase
      */
     public function testWithSchemeInvalid()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Uri scheme must be one of: "", "https", "http"');
 
         $this->uriFactory()->withScheme('ftp');
@@ -70,7 +70,7 @@ class UriTest extends TestCase
      */
     public function testWithSchemeInvalidType()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Uri scheme must be a string');
 
         $this->uriFactory()->withScheme([]);
@@ -137,7 +137,7 @@ class UriTest extends TestCase
      */
     public function testWithHostInvalidObject()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Uri host must be a string');
 
         $this->uriFactory()->withHost(new stdClass());
@@ -198,7 +198,7 @@ class UriTest extends TestCase
      */
     public function testWithPortInvalidInt()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->uriFactory()->withPort(70000);
     }
@@ -207,7 +207,7 @@ class UriTest extends TestCase
      */
     public function testWithPortInvalidString()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $this->uriFactory()->withPort('Foo');
     }
@@ -256,7 +256,7 @@ class UriTest extends TestCase
      */
     public function testWithPathInvalidType()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Uri path must be a string');
 
         $this->uriFactory()->withPath(['foo']);
@@ -310,7 +310,7 @@ class UriTest extends TestCase
      */
     public function testWithQueryInvalidType()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Uri query must be a string');
 
         $this->uriFactory()->withQuery(['foo']);
@@ -364,7 +364,7 @@ class UriTest extends TestCase
      */
     public function testWithFragmentInvalidType()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Uri fragment must be a string');
 
         $this->uriFactory()->withFragment(['foo']);
