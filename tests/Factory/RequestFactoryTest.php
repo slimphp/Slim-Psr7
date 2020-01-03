@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -45,6 +46,6 @@ class RequestFactoryTest extends RequestFactoryTestCase
 
         $factory = $this->createRequestFactory();
 
-        $factory->createRequest('GET', new stdClass);
+        $factory->createRequest('GET', new stdClass());
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -10,6 +11,20 @@ declare(strict_types=1);
 namespace Slim\Psr7;
 
 use InvalidArgumentException;
+
+use function array_replace;
+use function count;
+use function explode;
+use function gmdate;
+use function in_array;
+use function is_array;
+use function is_string;
+use function preg_split;
+use function rtrim;
+use function strtolower;
+use function strtotime;
+use function urldecode;
+use function urlencode;
 
 class Cookies
 {

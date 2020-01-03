@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -15,6 +16,9 @@ use ReflectionProperty;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Response;
 use Slim\Psr7\Stream;
+
+use function fopen;
+use function property_exists;
 
 class ResponseTest extends TestCase
 {

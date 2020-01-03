@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -19,6 +20,9 @@ use Slim\Psr7\Headers;
 use Slim\Psr7\Request;
 use Slim\Psr7\UploadedFile;
 use Slim\Psr7\Uri;
+
+use function property_exists;
+use function sprintf;
 
 class RequestTest extends TestCase
 {

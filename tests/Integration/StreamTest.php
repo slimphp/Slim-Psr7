@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -13,6 +14,11 @@ use Http\Psr7Test\StreamIntegrationTest;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Slim\Psr7\Stream;
+
+use function fopen;
+use function fwrite;
+use function is_resource;
+use function is_string;
 
 class StreamTest extends StreamIntegrationTest
 {

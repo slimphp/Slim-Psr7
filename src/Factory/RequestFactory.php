@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -17,6 +18,8 @@ use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Request;
+
+use function is_string;
 
 class RequestFactory implements RequestFactoryInterface
 {

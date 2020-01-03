@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -13,6 +14,8 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Headers;
 use stdClass;
+
+use function base64_encode;
 
 class HeadersTest extends TestCase
 {

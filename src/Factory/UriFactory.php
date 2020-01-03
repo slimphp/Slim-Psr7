@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -13,6 +14,16 @@ use InvalidArgumentException;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use Slim\Psr7\Uri;
+
+use function count;
+use function explode;
+use function parse_url;
+use function preg_match;
+use function strpos;
+use function strstr;
+use function substr;
+
+use const PHP_URL_QUERY;
 
 class UriFactory implements UriFactoryInterface
 {
