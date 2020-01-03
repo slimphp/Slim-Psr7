@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -14,6 +15,11 @@ use RuntimeException;
 use Slim\Psr7\NonBufferedBody;
 use Slim\Psr7\Response;
 use Slim\Tests\Psr7\Assets\HeaderStack;
+
+use function ob_get_clean;
+use function ob_get_level;
+use function ob_start;
+use function strlen;
 
 class NonBufferedBodyTest extends TestCase
 {

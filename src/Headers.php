@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -11,6 +12,19 @@ namespace Slim\Psr7;
 
 use InvalidArgumentException;
 use Slim\Psr7\Interfaces\HeadersInterface;
+
+use function base64_encode;
+use function function_exists;
+use function getallheaders;
+use function is_array;
+use function is_numeric;
+use function is_string;
+use function preg_match;
+use function strpos;
+use function strtolower;
+use function strtr;
+use function substr;
+use function trim;
 
 class Headers implements HeadersInterface
 {

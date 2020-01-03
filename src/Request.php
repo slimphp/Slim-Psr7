@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -15,6 +16,18 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 use Slim\Psr7\Interfaces\HeadersInterface;
+
+use function get_class;
+use function gettype;
+use function is_array;
+use function is_null;
+use function is_object;
+use function is_string;
+use function ltrim;
+use function parse_str;
+use function preg_match;
+use function sprintf;
+use function str_replace;
 
 class Request extends Message implements ServerRequestInterface
 {

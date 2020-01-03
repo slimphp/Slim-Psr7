@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -20,6 +21,12 @@ use Slim\Psr7\Headers;
 use Slim\Psr7\Request;
 use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
+
+use function current;
+use function explode;
+use function fopen;
+use function in_array;
+use function is_string;
 
 class ServerRequestFactory implements ServerRequestFactoryInterface
 {

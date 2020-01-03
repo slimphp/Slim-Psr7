@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -13,6 +14,10 @@ use Psr\Http\Message\UriInterface;
 use Slim\Psr7\Factory\UriFactory;
 use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
+
+use function fopen;
+use function fwrite;
+use function is_resource;
 
 trait BaseTestFactories
 {

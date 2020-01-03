@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -13,6 +14,23 @@ use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 
+use function fclose;
+use function feof;
+use function fread;
+use function fseek;
+use function fstat;
+use function ftell;
+use function fwrite;
+use function is_resource;
+use function is_string;
+use function pclose;
+use function rewind;
+use function stream_get_contents;
+use function stream_get_meta_data;
+use function strstr;
+
+use const SEEK_SET;
+
 class Stream implements StreamInterface
 {
     /**
@@ -20,7 +38,7 @@ class Stream implements StreamInterface
      *
      * This is octal as per header stat.h
      */
-    const FSTAT_MODE_S_IFIFO = 0010000;
+    public const FSTAT_MODE_S_IFIFO = 0010000;
 
     /**
      * The underlying stream resource

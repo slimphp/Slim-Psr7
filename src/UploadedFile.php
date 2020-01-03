@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -14,6 +15,20 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 use Slim\Psr7\Factory\StreamFactory;
+
+use function copy;
+use function dirname;
+use function is_array;
+use function is_string;
+use function is_uploaded_file;
+use function is_writable;
+use function move_uploaded_file;
+use function rename;
+use function sprintf;
+use function strpos;
+use function unlink;
+
+use const UPLOAD_ERR_OK;
 
 class UploadedFile implements UploadedFileInterface
 {

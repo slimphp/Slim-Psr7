@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Slim Framework (https://slimframework.com)
  *
@@ -15,6 +16,11 @@ use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
 use Slim\Psr7\Stream;
+
+use function fopen;
+use function popen;
+use function stream_get_contents;
+use function trim;
 
 class StreamTest extends TestCase
 {

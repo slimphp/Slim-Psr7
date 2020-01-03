@@ -1,10 +1,13 @@
 <?php
+
 /**
  * This is a direct copy of zend-diactoros/test/TestAsset/Functions.php and is used to override
  * header() and headers_sent() so we can test that they do the right thing.
  */
 
 namespace Slim\Tests\Psr7\Assets;
+
+use function strpos;
 
 /**
  * Zend Framework (http://framework.zend.com/)
