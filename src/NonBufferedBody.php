@@ -81,7 +81,7 @@ class NonBufferedBody implements StreamInterface
     /**
      * {@inheritdoc}
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): void
     {
         throw new RuntimeException('A NonBufferedBody is not seekable.');
     }

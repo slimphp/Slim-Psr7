@@ -39,7 +39,7 @@
     "adriansuter/php-autoload-override": "v0.1-beta",
     "http-interop/http-factory-tests": "^0.6.0",
     "php-http/psr7-integration-tests": "dev-master",
-    "phpstan/phpstan": "^0.10",
+    "phpstan/phpstan": "^0.12",
     "phpunit/phpunit": "^8.5",
     "squizlabs/php_codesniffer": "^3.5"
   },

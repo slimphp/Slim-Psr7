@@ -42,7 +42,7 @@ class Headers implements HeadersInterface
      * @param array $headers
      * @param array $globals
      */
-    public function __construct(array $headers = [], ?array $globals = null)
+    final public function __construct(array $headers = [], ?array $globals = null)
     {
         $this->globals = $globals ?? $_SERVER;
         $this->setHeaders($headers);
@@ -248,7 +248,7 @@ class Headers implements HeadersInterface
      *
      * @throws InvalidArgumentException;
      */
-    protected function validateHeader($name, $value)
+    protected function validateHeader($name, $value): void
     {
         $this->validateHeaderName($name);
         $this->validateHeaderValue($value);
@@ -259,7 +259,7 @@ class Headers implements HeadersInterface
      *
      * @throws InvalidArgumentException
      */
-    protected function validateHeaderName($name)
+    protected function validateHeaderName($name): void
     {
         if (!is_string($name) || preg_match("@^[!#$%&'*+.^_`|~0-9A-Za-z-]+$@", $name) !== 1) {
             throw new InvalidArgumentException('Header name must be an RFC 7230 compatible string.');
@@ -271,7 +271,7 @@ class Headers implements HeadersInterface
      *
      * @throws InvalidArgumentException
      */
-    protected function validateHeaderValue($value)
+    protected function validateHeaderValue($value): void
     {
         $items = is_array($value) ? $value : [$value];
 
