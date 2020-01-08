@@ -70,7 +70,7 @@ class StreamFactory implements StreamFactoryInterface
         restore_error_handler();
 
         if ($exc) {
-            /** @var $exc RuntimeException */
+            /** @var RuntimeException $exc */
             throw $exc;
         }
 
