@@ -16,13 +16,20 @@ use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 use Slim\Psr7\Factory\StreamFactory;
 
+use function array_map;
+use function array_combine;
+use function array_column;
+use function array_keys;
 use function copy;
 use function dirname;
+use function filesize;
 use function is_array;
 use function is_string;
 use function is_uploaded_file;
 use function is_writable;
+use function mime_content_type;
 use function move_uploaded_file;
+use function realpath;
 use function rename;
 use function sprintf;
 use function strpos;
@@ -101,7 +108,7 @@ class UploadedFile implements UploadedFileInterface
         int $error = UPLOAD_ERR_OK,
         bool $sapi = false
     ) {
-        if ($fileNameOrStream instanceof StreamInterface) {
+        if (is_object($fileNameOrStream) && $fileNameOrStream instanceof StreamInterface) {
             $file = $fileNameOrStream->getMetadata('uri');
             if (!is_string($file)) {
                 throw new InvalidArgumentException('No URI associated with the stream.');
@@ -109,15 +116,16 @@ class UploadedFile implements UploadedFileInterface
             $this->file = $file;
             $this->stream = $fileNameOrStream;
         } elseif (is_string($fileNameOrStream)) {
-            $this->file = $fileNameOrStream;
-        } else {
+            $this->file = realpath($fileNameOrStream);
+        }
+        if (! $this->file) {
             throw new InvalidArgumentException(
                 'Please provide a string (full path to the uploaded file) or an instance of StreamInterface.'
             );
         }
         $this->name = $name;
-        $this->type = $type;
-        $this->size = $size;
+        $this->type = $type ?? mime_content_type($this->file);
+        $this->size = $size ?? ($this->stream ? $this->stream->getSize() : filesize($this->file));
         $this->error = $error;
         $this->sapi = $sapi;
     }
@@ -151,7 +159,11 @@ class UploadedFile implements UploadedFileInterface
         if (!$targetIsStream && !is_writable(dirname($targetPath))) {
             throw new InvalidArgumentException('Upload target path is not writable');
         }
-
+        
+        if ($this->stream) {
+            $this->stream->close();
+        }
+        
         if ($targetIsStream) {
             if (!copy($this->file, $targetPath)) {
                 throw new RuntimeException(sprintf('Error moving uploaded file %s to %s', $this->name, $targetPath));
@@ -224,58 +236,41 @@ class UploadedFile implements UploadedFileInterface
             return $globals['slim.files'];
         }
 
-        if (!empty($_FILES)) {
-            return static::parseUploadedFiles($_FILES);
+        if (empty($_FILES)) {
+            return [];
         }
 
-        return [];
+        return array_map(['static', 'parseUploadedFiles'], $_FILES);
     }
-
+    
     /**
-     * Parse a non-normalized, i.e. $_FILES superglobal, tree of uploaded file data.
-     *
+     * Provides the normalized structure for consumers.
+     * 
      * @internal This method is not part of the PSR-7 standard.
-     *
-     * @param array $uploadedFiles The non-normalized tree of uploaded file data.
-     *
-     * @return array A normalized tree of UploadedFile instances.
+     * 
+     * @param array $array Uploaded file data.
+     * 
+     * @return array|static Self instance(s).
      */
-    private static function parseUploadedFiles(array $uploadedFiles): array
+    private static function parseUploadedFiles(array $array)
     {
-        $parsed = [];
-        foreach ($uploadedFiles as $field => $uploadedFile) {
-            if (!isset($uploadedFile['error'])) {
-                if (is_array($uploadedFile)) {
-                    $parsed[$field] = static::parseUploadedFiles($uploadedFile);
-                }
-                continue;
+        if (is_array($array['error'])) {
+            $subArray = [];
+            $keys = array_keys($array);
+            foreach ($array['error'] as $key => $error) {
+                $subArray[$key] = array_combine($keys, array_column($array, $key));
+                $subArray[$key] = static::parseUploadedFiles($subArray[$key]);
             }
-
-            $parsed[$field] = [];
-            if (!is_array($uploadedFile['error'])) {
-                $parsed[$field] = new static(
-                    $uploadedFile['tmp_name'],
-                    isset($uploadedFile['name']) ? $uploadedFile['name'] : null,
-                    isset($uploadedFile['type']) ? $uploadedFile['type'] : null,
-                    isset($uploadedFile['size']) ? $uploadedFile['size'] : null,
-                    $uploadedFile['error'],
-                    true
-                );
-            } else {
-                $subArray = [];
-                foreach ($uploadedFile['error'] as $fileIdx => $error) {
-                    // Normalize sub array and re-parse to move the input's key name up a level
-                    $subArray[$fileIdx]['name'] = $uploadedFile['name'][$fileIdx];
-                    $subArray[$fileIdx]['type'] = $uploadedFile['type'][$fileIdx];
-                    $subArray[$fileIdx]['tmp_name'] = $uploadedFile['tmp_name'][$fileIdx];
-                    $subArray[$fileIdx]['error'] = $uploadedFile['error'][$fileIdx];
-                    $subArray[$fileIdx]['size'] = $uploadedFile['size'][$fileIdx];
-
-                    $parsed[$field] = static::parseUploadedFiles($subArray);
-                }
-            }
+            return $subArray;
         }
-
-        return $parsed;
+        
+        return new static(
+            $array['tmp_name'] ?? null,
+            $array['name'] ?? null,
+            $array['type'] ?? null,
+            $array['size'] ?? null,
+            $array['error'],
+            true
+        );
     }
 }
