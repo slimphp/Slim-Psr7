@@ -78,8 +78,8 @@ class UriFactory implements UriFactoryInterface
         }
 
         // Authority: Port
-        $port = !empty($globals['SERVER_PORT']) ? (int) $globals['SERVER_PORT'] : 80;
-        if (preg_match('/^(\[[a-fA-F0-9:.]+\])(:\d+)?\z/', $host, $matches)) {
+        $port = !empty($globals['SERVER_PORT']) ? (int)$globals['SERVER_PORT'] : ($scheme === 'https' ? 443 : 80);
+        if (preg_match('/^(\[[a-fA-F0-9:.]+])(:\d+)?\z/', $host, $matches)) {
             $host = $matches[1];
 
             if (isset($matches[2])) {
@@ -110,9 +110,7 @@ class UriFactory implements UriFactoryInterface
             }
         }
 
-        // Build Uri
-        $uri = new Uri($scheme, $host, $port, $requestUri, $queryString, '', $username, $password);
-
-        return $uri;
+        // Build Uri and return
+        return new Uri($scheme, $host, $port, $requestUri, $queryString, '', $username, $password);
     }
 }
