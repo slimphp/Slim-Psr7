@@ -108,6 +108,27 @@ class UriFactoryTest extends UriFactoryTestCase
         $this->assertEquals('', $uri->getFragment());
     }
 
+    public function testCreateFromGlobalsWithHttps()
+    {
+        $globals = Environment::mock(
+            [
+                'HTTPS' => 'on',
+                'HTTP_HOST' => 'example.com'
+            ]
+        );
+
+        // Make the 'SERVER_PORT' empty as we want to test if the default server port gets set correctly.
+        $globals['SERVER_PORT'] = '';
+
+        $uri = $this->createUriFactory()->createFromGlobals($globals);
+
+        $this->assertEquals('https', $uri->getScheme());
+        $this->assertEquals('example.com', $uri->getHost());
+
+        // The port is expected to be NULL as the server port is the default standard (443 in case of https).
+        $this->assertNull($uri->getPort());
+    }
+
     public function testCreateFromGlobalsUsesServerNameAsHostIfHostHeaderIsNotPresent()
     {
         $globals = Environment::mock([
