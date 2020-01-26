@@ -189,8 +189,9 @@ class CookiesTest extends TestCase
 
     public function testGet()
     {
-        $cookies = new Cookies(['foo' => 'bar']);
+        $cookies = new Cookies(['foo' => 'bar', 'baz' => null]);
         $this->assertEquals('bar', $cookies->get('foo'));
+        $this->assertNull($cookies->get('baz', 'defaultValue'));
         $this->assertNull($cookies->get('missing'));
         $this->assertEquals('defaultValue', $cookies->get('missing', 'defaultValue'));
     }
