@@ -13,6 +13,7 @@ namespace Slim\Tests\Psr7;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use ReflectionProperty;
+use Slim\Psr7\Environment;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Response;
 use Slim\Psr7\Stream;
@@ -146,7 +147,7 @@ class ResponseTest extends TestCase
     {
         $response = new Response();
         $response = $response->withStatus(199);
-        
+
         $this->assertSame('', $response->getReasonPhrase());
     }
 
@@ -164,5 +165,17 @@ class ResponseTest extends TestCase
         $clone = $response->withStatus(200, 'Custom Phrase');
 
         $this->assertEquals('Custom Phrase', $clone->getReasonPhrase());
+    }
+
+    public function testResponseHeadersDoNotContainAuthorizationHeader()
+    {
+        $_SERVER = Environment::mock(
+            [
+                'PHP_AUTH_USER' => 'foo'
+            ]
+        );
+
+        $response = new Response();
+        $this->assertEmpty($response->getHeaders());
     }
 }
