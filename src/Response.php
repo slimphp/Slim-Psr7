@@ -124,7 +124,7 @@ class Response extends Message implements ResponseInterface
         ?StreamInterface $body = null
     ) {
         $this->status = $this->filterStatus($status);
-        $this->headers = $headers ? $headers : new Headers();
+        $this->headers = $headers ? $headers : new Headers([], []);
         $this->body = $body ? $body : (new StreamFactory())->createStream();
     }
 
