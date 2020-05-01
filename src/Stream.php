@@ -21,6 +21,7 @@ use function fseek;
 use function fstat;
 use function ftell;
 use function fwrite;
+use function is_array;
 use function is_resource;
 use function is_string;
 use function pclose;
@@ -408,7 +409,7 @@ class Stream implements StreamInterface
             if ($this->stream) {
                 $stats = fstat($this->stream);
 
-                if ($stats) {
+                if (is_array($stats)) {
                     $this->isPipe = isset($stats['mode']) && ($stats['mode'] & self::FSTAT_MODE_S_IFIFO) !== 0;
                 }
             }
