@@ -213,7 +213,7 @@ class Response extends Message implements ResponseInterface
             throw new InvalidArgumentException('Response reason phrase must be a string.');
         }
 
-        if (strpos($reasonPhrase, '\r') || strpos($reasonPhrase, '\n')) {
+        if (strpos($reasonPhrase, "\r") || strpos($reasonPhrase, "\n")) {
             throw new InvalidArgumentException('Reason phrase contains one of the following prohibited characters: \r \n');
         }
 
