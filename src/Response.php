@@ -214,7 +214,9 @@ class Response extends Message implements ResponseInterface
         }
 
         if (strpos($reasonPhrase, "\r") || strpos($reasonPhrase, "\n")) {
-            throw new InvalidArgumentException('Reason phrase contains one of the following prohibited characters: \r \n');
+            throw new InvalidArgumentException(
+                'Reason phrase contains one of the following prohibited characters: \r \n'
+            );
         }
 
         return $reasonPhrase;
