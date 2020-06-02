@@ -17,6 +17,8 @@ use Slim\Psr7\Response;
 
 class ResponseFactory implements ResponseFactoryInterface
 {
+    public static $responseClass = Response::class;
+
     /**
      * {@inheritdoc}
      */
@@ -24,7 +26,7 @@ class ResponseFactory implements ResponseFactoryInterface
         int $code = StatusCodeInterface::STATUS_OK,
         string $reasonPhrase = ''
     ): ResponseInterface {
-        $res = new Response($code);
+        $res = new static::$responseClass($code);
 
         if ($reasonPhrase !== '') {
             $res = $res->withStatus($code, $reasonPhrase);

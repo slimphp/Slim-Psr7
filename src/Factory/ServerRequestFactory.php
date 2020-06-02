@@ -30,6 +30,8 @@ use function is_string;
 
 class ServerRequestFactory implements ServerRequestFactoryInterface
 {
+    public static $requestClass = Request::class;
+
     /**
      * @var StreamFactoryInterface|StreamFactory
      */
@@ -80,7 +82,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
             $cookies = Cookies::parseHeader($headers->getHeader('Cookie', []));
         }
 
-        return new Request($method, $uri, $headers, $cookies, $serverParams, $body);
+        return new static::$requestClass($method, $uri, $headers, $cookies, $serverParams, $body);
     }
 
     /**
@@ -88,9 +90,9 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      *
      * @internal This method is not part of PSR-17
      *
-     * @return Request
+     * @return ServerRequestInterface
      */
-    public static function createFromGlobals(): Request
+    public static function createFromGlobals(): ServerRequestInterface
     {
         $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
         $uri = (new UriFactory())->createFromGlobals($_SERVER);
@@ -105,7 +107,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         $body = (new StreamFactory())->createStreamFromFile('php://input', 'r', $cache);
         $uploadedFiles = UploadedFile::createFromGlobals($_SERVER);
 
-        $request = new Request($method, $uri, $headers, $cookies, $_SERVER, $body, $uploadedFiles);
+        $request = new static::$requestClass($method, $uri, $headers, $cookies, $_SERVER, $body, $uploadedFiles);
         $contentTypes = $request->getHeader('Content-Type') ?? [];
 
         $parsedContentType = '';
