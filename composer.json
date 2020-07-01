@@ -36,7 +36,7 @@
   },
   "require-dev": {
     "ext-json": "*",
-    "adriansuter/php-autoload-override": "^1.1",
+    "adriansuter/php-autoload-override": "^1.2",
     "http-interop/http-factory-tests": "^0.6.0",
     "php-http/psr7-integration-tests": "dev-master",
     "phpstan/phpstan": "^0.12",
