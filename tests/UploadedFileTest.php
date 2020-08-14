@@ -153,6 +153,7 @@ class UploadedFileTest extends TestCase
         $this->assertEquals($attr['type'], $uploadedFile->getClientMediaType());
         $this->assertEquals($attr['size'], $uploadedFile->getSize());
         $this->assertEquals($attr['error'], $uploadedFile->getError());
+        $this->assertEquals($attr['tmp_name'], $uploadedFile->getFilePath());
 
         return $uploadedFile;
     }
@@ -183,6 +184,7 @@ class UploadedFileTest extends TestCase
         $this->assertEquals($attr['type'], $uploadedFile->getClientMediaType());
         $this->assertEquals($attr['size'], $uploadedFile->getSize());
         $this->assertEquals($attr['error'], $uploadedFile->getError());
+        $this->assertEquals($attr['tmp_name'], $uploadedFile->getFilePath());
 
         return $uploadedFile;
     }
@@ -409,6 +411,7 @@ class UploadedFileTest extends TestCase
         $this->assertSame($error, $file->getError());
         $this->assertSame($clientFilename, $file->getClientFilename());
         $this->assertSame($clientMediaType, $file->getClientMediaType());
+        $this->assertSame($stream->getMetadata('uri'), $file->getFilePath());
     }
 
     /**
