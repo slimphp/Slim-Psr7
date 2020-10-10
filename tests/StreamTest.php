@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -24,6 +25,8 @@ use function trim;
 
 class StreamTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var resource pipe stream file handle
      */

@@ -12,6 +12,7 @@ namespace Slim\Tests\Psr7\Factory;
 
 use Interop\Http\Factory\UploadedFileFactoryTestCase;
 use InvalidArgumentException;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\StreamInterface;
 use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Factory\UploadedFileFactory;
@@ -24,6 +25,8 @@ use function tempnam;
 
 class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
 {
+    use ProphecyTrait;
+
     /**
      * @return UploadedFileFactory
      */

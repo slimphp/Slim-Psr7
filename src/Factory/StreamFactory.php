@@ -66,7 +66,16 @@ class StreamFactory implements StreamFactoryInterface
             ));
         });
 
-        $resource = fopen($filename, $mode);
+        try {
+            $resource = fopen($filename, $mode);
+        } catch (\ValueError $exception) {
+            throw new RuntimeException(sprintf(
+                'Unable to open %s using mode %s: %s',
+                $filename,
+                $mode,
+                $exception->getMessage()
+            ));
+        }
         restore_error_handler();
 
         if ($exc) {
