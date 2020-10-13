@@ -70,7 +70,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * @return $this;
+     * @return static
      * {@inheritdoc}
      */
     public function withProtocolVersion($version)
@@ -122,7 +122,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * @return $this;
+     * @return static
      * {@inheritdoc}
      */
     public function withHeader($name, $value)
@@ -138,7 +138,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * @return $this;
+     * @return static
      * {@inheritdoc}
      */
     public function withAddedHeader($name, $value)
@@ -154,7 +154,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * @return $this;
+     * @return static
      * {@inheritdoc}
      */
     public function withoutHeader($name)
@@ -178,7 +178,7 @@ abstract class Message implements MessageInterface
     }
 
     /**
-     * @return $this;
+     * @return static
      * {@inheritdoc}
      */
     public function withBody(StreamInterface $body)
