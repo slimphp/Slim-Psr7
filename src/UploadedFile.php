@@ -169,7 +169,16 @@ class UploadedFile implements UploadedFileInterface
                 throw new RuntimeException(sprintf('Error moving uploaded file %s to %s', $this->name, $targetPath));
             }
         } else {
-            if (!rename($this->file, $targetPath)) {
+            if (strpos($this->file, 'php://') === 0) {
+                $target = fopen($targetPath, 'w');
+                $source = $this->getStream()->detach();
+                if (!is_resource($source) || !is_resource($target)) {
+                    throw new RuntimeException(sprintf('Error moving uploaded file from stream to %s.', $targetPath));
+                }
+                stream_copy_to_stream($source, $target);
+                fclose($source);
+                fclose($target);
+            } elseif (!rename($this->file, $targetPath)) {
                 throw new RuntimeException(sprintf('Error moving uploaded file %s to %s', $this->name, $targetPath));
             }
         }
@@ -208,7 +217,7 @@ class UploadedFile implements UploadedFileInterface
     {
         return $this->size;
     }
-    
+
     /**
      * Returns the client-provided full path to the file
      *

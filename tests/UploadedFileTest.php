@@ -240,6 +240,21 @@ class UploadedFileTest extends TestCase
         return $uploadedFile;
     }
 
+    public function testMoveToWhenUploadFileInitializedFromStream()
+    {
+        $uploadedFile = new UploadedFile(
+            (new StreamFactory())->createStream('12345678')
+        );
+
+        $tempName = uniqid('file-');
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
+        $uploadedFile->moveTo($path);
+
+        $this->assertFileExists($path);
+
+        unlink($path);
+    }
+
     /**
      */
     public function testMoveToRenameFailure()
