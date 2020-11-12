@@ -208,7 +208,7 @@ class UploadedFile implements UploadedFileInterface
     {
         return $this->size;
     }
-    
+
     /**
      * Returns the client-provided full path to the file
      *
