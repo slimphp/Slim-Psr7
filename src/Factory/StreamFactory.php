@@ -15,6 +15,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 use Slim\Psr7\Stream;
+use ValueError;
 
 use function fopen;
 use function fwrite;
@@ -78,7 +79,7 @@ class StreamFactory implements StreamFactoryInterface
             $resource = fopen($filename, $mode);
         // @codeCoverageIgnoreStart
         // (Can only be executed in PHP >= 8.0)
-        } catch (\ValueError $exception) {
+        } catch (ValueError $exception) {
             $errorHandler($exception->getMessage());
         }
         // @codeCoverageIgnoreEnd
