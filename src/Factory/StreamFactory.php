@@ -77,12 +77,9 @@ class StreamFactory implements StreamFactoryInterface
 
         try {
             $resource = fopen($filename, $mode);
-        // @codeCoverageIgnoreStart
-        // (Can only be executed in PHP >= 8.0)
         } catch (ValueError $exception) {
             $errorHandler($exception->getMessage());
         }
-        // @codeCoverageIgnoreEnd
         restore_error_handler();
 
         if ($exc) {
