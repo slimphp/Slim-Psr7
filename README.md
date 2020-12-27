@@ -3,7 +3,7 @@
 Strict PSR-7 implementation used by the [Slim Framework](http://www.slimframework.com/), but you may use it
 separately with any framework compatible with the [PSR-7 standard](https://www.php-fig.org/psr/psr-7/).
 
-[![Build Status](https://travis-ci.org/slimphp/Slim-Psr7.svg?branch=master)](https://travis-ci.org/slimphp/Slim-Psr7)
+[![Build Status](https://github.com/slimphp/Slim-Psr7/workflows/Tests/badge.svg?branch=master)](https://github.com/slimphp/Slim-Psr7/actions?query=branch:master)
 [![Coverage Status](https://coveralls.io/repos/github/slimphp/Slim-Psr7/badge.svg?branch=master)](https://coveralls.io/github/slimphp/Slim-Psr7?branch=master)
 [![Total Downloads](https://poser.pugx.org/slim/psr7/downloads)](https://packagist.org/packages/slim/psr7)
 [![License](https://poser.pugx.org/slim/psr7/license)](https://packagist.org/packages/slim/psr7)
@@ -18,7 +18,7 @@ $ composer require slim/psr7
 ```
 
 This will install the `slim/psr7` component and all required dependencies.
-PHP 7.1 or newer is required.
+PHP 7.2 or newer is required.
 
 ## Tests
 
