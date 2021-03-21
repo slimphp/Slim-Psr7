@@ -73,6 +73,7 @@ class StreamFactory implements StreamFactoryInterface
 
         set_error_handler(function (int $errno, string $errstr) use ($errorHandler) {
             $errorHandler($errstr);
+            return true;
         });
 
         try {
