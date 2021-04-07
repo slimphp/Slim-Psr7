@@ -243,6 +243,54 @@ class UploadedFileTest extends TestCase
         return $uploadedFile;
     }
 
+    public function testMoveToWhenUploadFileInitializedFromStream()
+    {
+        $uploadedFile = new UploadedFile(
+            (new StreamFactory())->createStream('12345678')
+        );
+
+        $tempName = uniqid('file-');
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
+        $uploadedFile->moveTo($path);
+
+        $this->assertFileExists($path);
+
+        unlink($path);
+    }
+
+    public function testMoveToFailsWhenFromStreamDetachmentFails()
+    {
+        $stub = $this->createStub(StreamInterface::class);
+        $stub->method('getMetadata')
+            ->will(
+                $this->returnValueMap(
+                    [
+                        ['uri', 'php://stub'],
+                    ]
+                )
+            );
+
+        $stub->method('detach')
+            ->willReturn(null);
+        $this->expectExceptionMessage('Source detaching returned null');
+
+        $uploadedFile = new UploadedFile($stub);
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . '/stub.txt';
+        $uploadedFile->moveTo($path);
+    }
+
+    public function testMoveToOpeningTargetFailureWhenFromStream()
+    {
+        $uploadedFile = new UploadedFile(
+            (new StreamFactory())->createStream('12345678')
+        );
+
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'does-not-exist' . DIRECTORY_SEPARATOR . 'stub.txt';
+        $this->expectExceptionMessage('Could not open target');
+        $uploadedFile->moveTo($path);
+    }
+
+
     /**
      */
     public function testMoveToRenameFailure()
