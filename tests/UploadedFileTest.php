@@ -22,6 +22,7 @@ use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Factory\UploadedFileFactory;
 use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
+
 use function call_user_func;
 use function fclose;
 use function file_exists;
@@ -35,6 +36,7 @@ use function strlen;
 use function sys_get_temp_dir;
 use function uniqid;
 use function unlink;
+
 use const DIRECTORY_SEPARATOR;
 use const UPLOAD_ERR_CANT_WRITE;
 use const UPLOAD_ERR_OK;
@@ -261,7 +263,8 @@ class UploadedFileTest extends TestCase
         $stub = $this->createStub(StreamInterface::class);
         $stub->method('getMetadata')
             ->will(
-                $this->returnValueMap([
+                $this->returnValueMap(
+                    [
                         ['uri', 'php://stub'],
                     ]
                 )
@@ -282,7 +285,7 @@ class UploadedFileTest extends TestCase
             (new StreamFactory())->createStream('12345678')
         );
 
-        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'target-path-that-does-not-exist' . DIRECTORY_SEPARATOR . 'stub.txt';
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'does-not-exist' . DIRECTORY_SEPARATOR . 'stub.txt';
         $this->expectExceptionMessage('Could not open target');
         $uploadedFile->moveTo($path);
     }
