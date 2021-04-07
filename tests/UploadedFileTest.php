@@ -12,6 +12,7 @@ namespace Slim\Tests\Psr7;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use ReflectionProperty;
@@ -42,6 +43,8 @@ use const UPLOAD_ERR_OK;
 
 class UploadedFileTest extends TestCase
 {
+    use ProphecyTrait;
+
     private static $filename = './phpUxcOty';
 
     private static $tmpFiles = ['./phpUxcOty'];
@@ -260,7 +263,7 @@ class UploadedFileTest extends TestCase
     public function testMoveToRenameFailure()
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessageRegExp('/^Error moving uploaded file .* to .*$/');
+        $this->expectExceptionMessageMatches('/^Error moving uploaded file .* to .*$/');
 
         $uploadedFile = $this->generateNewTmpFile();
 
@@ -295,7 +298,7 @@ class UploadedFileTest extends TestCase
     public function testMoveToSapiMoveUploadedFileFails(UploadedFile $uploadedFile)
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessageRegExp('~Error moving uploaded file.*~');
+        $this->expectExceptionMessageMatches('~Error moving uploaded file.*~');
 
         $GLOBALS['is_uploaded_file_return'] = true;
 
