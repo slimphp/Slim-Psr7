@@ -147,8 +147,9 @@ class UploadedFile implements UploadedFileInterface
             throw new RuntimeException('Uploaded file already moved');
         }
 
+        $sourceIsStream = strpos($this->file, '://') > 0;
         $targetIsStream = strpos($targetPath, '://') > 0;
-        if (!$targetIsStream && !is_writable(dirname($targetPath))) {
+        if (!$sourceIsStream && !$targetIsStream && !is_writable(dirname($targetPath))) {
             throw new InvalidArgumentException('Upload target path is not writable');
         }
 
@@ -169,12 +170,15 @@ class UploadedFile implements UploadedFileInterface
                 throw new RuntimeException(sprintf('Error moving uploaded file %s to %s', $this->name, $targetPath));
             }
         } else {
-            if (strpos($this->file, 'php://') === 0) {
+            if ($sourceIsStream) {
                 $source = $this->getStream()->detach();
                 if (!is_resource($source)) {
                     throw new RuntimeException(sprintf('Error moving uploaded file from stream to %s. Source detaching returned null.', $targetPath));
                 }
-                $target = fopen($targetPath, 'w');
+                $target = @fopen($targetPath, 'w');
+                if (!is_resource($target)) {
+                    throw new RuntimeException(sprintf('Error moving uploaded file from stream to %s. Could not open target.', $targetPath));
+                }
                 stream_copy_to_stream($source, $target);
                 fclose($source);
                 fclose($target);

@@ -276,6 +276,18 @@ class UploadedFileTest extends TestCase
         $uploadedFile->moveTo($path);
     }
 
+    public function testMoveToOpeningTargetFailureWhenFromStream()
+    {
+        $uploadedFile = new UploadedFile(
+            (new StreamFactory())->createStream('12345678')
+        );
+
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'target-path-that-does-not-exist' . DIRECTORY_SEPARATOR . 'stub.txt';
+        $this->expectExceptionMessage('Could not open target');
+        $uploadedFile->moveTo($path);
+    }
+
+
     /**
      */
     public function testMoveToRenameFailure()
