@@ -170,8 +170,11 @@ class UploadedFile implements UploadedFileInterface
             }
         } else {
             if (strpos($this->file, 'php://') === 0) {
-                $target = fopen($targetPath, 'w');
                 $source = $this->getStream()->detach();
+                if (!is_resource($source)) {
+                    throw new RuntimeException(sprintf('Error moving uploaded file from stream to %s. Source detaching returned null.', $targetPath));
+                }
+                $target = fopen($targetPath, 'w');
                 stream_copy_to_stream($source, $target);
                 fclose($source);
                 fclose($target);

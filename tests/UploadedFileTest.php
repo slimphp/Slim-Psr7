@@ -22,7 +22,6 @@ use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Factory\UploadedFileFactory;
 use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
-
 use function call_user_func;
 use function fclose;
 use function file_exists;
@@ -36,7 +35,6 @@ use function strlen;
 use function sys_get_temp_dir;
 use function uniqid;
 use function unlink;
-
 use const DIRECTORY_SEPARATOR;
 use const UPLOAD_ERR_CANT_WRITE;
 use const UPLOAD_ERR_OK;
@@ -256,6 +254,26 @@ class UploadedFileTest extends TestCase
         $this->assertFileExists($path);
 
         unlink($path);
+    }
+
+    public function testMoveToFailsWhenFromStreamDetachmentFails()
+    {
+        $stub = $this->createStub(StreamInterface::class);
+        $stub->method('getMetadata')
+            ->will(
+                $this->returnValueMap([
+                        ['uri', 'php://stub'],
+                    ]
+                )
+            );
+
+        $stub->method('detach')
+            ->willReturn(null);
+        $this->expectExceptionMessage('Source detaching returned null');
+
+        $uploadedFile = new UploadedFile($stub);
+        $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . '/stub.txt';
+        $uploadedFile->moveTo($path);
     }
 
     /**
