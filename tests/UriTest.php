@@ -62,7 +62,7 @@ class UriTest extends TestCase
     public function testWithSchemeInvalid()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Uri scheme must be one of: "", "https", "http"');
+        $this->expectExceptionMessageMatches('/^Uri scheme must be one of:.*$/');
 
         $this->uriFactory()->withScheme('ftp');
     }
