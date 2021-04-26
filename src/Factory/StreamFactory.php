@@ -15,6 +15,7 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 use Slim\Psr7\Stream;
+use ValueError;
 
 use function fopen;
 use function fwrite;
@@ -63,6 +64,8 @@ class StreamFactory implements StreamFactoryInterface
 
         try {
             $resource = fopen($filename, $mode);
+        } catch (ValueError $exception) {
+            throw $exception;
         } finally {
             restore_error_handler();
         }
