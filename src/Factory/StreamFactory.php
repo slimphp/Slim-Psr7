@@ -65,7 +65,7 @@ class StreamFactory implements StreamFactoryInterface
         try {
             $resource = fopen($filename, $mode);
         } catch (ValueError $exception) {
-            throw $exception;
+            throw new RuntimeException("Unable to open $filename using mode $mode: " . $exception->getMessage());
         } finally {
             restore_error_handler();
         }
