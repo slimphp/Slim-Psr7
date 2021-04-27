@@ -30,7 +30,7 @@ use const FILTER_VALIDATE_IP;
 
 class Uri implements UriInterface
 {
-    protected const SUPPORTED_SCHEMES = [
+    public const SUPPORTED_SCHEMES = [
         '' => null,
         'http' => 80,
         'https' => 443
