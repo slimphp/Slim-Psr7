@@ -30,7 +30,7 @@ use const FILTER_VALIDATE_IP;
 
 class Uri implements UriInterface
 {
-    protected const SUPPORTED_SCHEME = [
+    protected const SUPPORTED_SCHEMES = [
         '' => null,
         'http' => 80,
         'https' => 443
@@ -140,7 +140,7 @@ class Uri implements UriInterface
      * @return string
      *
      * @throws InvalidArgumentException If the Uri scheme is not a string.
-     * @throws InvalidArgumentException If Uri scheme is not exists in SUPPORTED_SCHEME
+     * @throws InvalidArgumentException If Uri scheme is not exists in SUPPORTED_SCHEMES
      */
     protected function filterScheme($scheme): string
     {
@@ -149,9 +149,9 @@ class Uri implements UriInterface
         }
 
         $scheme = str_replace('://', '', strtolower($scheme));
-        if (!key_exists($scheme, self::SUPPORTED_SCHEME)) {
+        if (!key_exists($scheme, self::SUPPORTED_SCHEMES)) {
             throw new InvalidArgumentException(
-                'Uri scheme must be one of: "' . implode('", "', array_keys(static::SUPPORTED_SCHEME)) . '"'
+                'Uri scheme must be one of: "' . implode('", "', array_keys(static::SUPPORTED_SCHEMES)) . '"'
             );
         }
 
@@ -302,7 +302,7 @@ class Uri implements UriInterface
      */
     protected function hasStandardPort(): bool
     {
-        return static::SUPPORTED_SCHEME[$this->scheme] === $this->port;
+        return static::SUPPORTED_SCHEMES[$this->scheme] === $this->port;
     }
 
     /**
