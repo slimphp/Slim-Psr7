@@ -12,6 +12,7 @@ namespace Slim\Tests\Psr7;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Runner\Version;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -36,6 +37,7 @@ use function strlen;
 use function sys_get_temp_dir;
 use function uniqid;
 use function unlink;
+use function version_compare;
 
 use const DIRECTORY_SEPARATOR;
 use const UPLOAD_ERR_CANT_WRITE;
@@ -358,7 +360,11 @@ class UploadedFileTest extends TestCase
         $movedFileContents = ob_get_clean();
 
         $this->assertEquals($contents, $movedFileContents);
-        $this->assertFileNotExists($fileName);
+        if (version_compare(Version::series(), '9.1', '>=')) {
+            $this->assertFileDoesNotExist($fileName);
+        } else {
+            $this->assertFileNotExists($fileName);
+        }
     }
 
     /**
