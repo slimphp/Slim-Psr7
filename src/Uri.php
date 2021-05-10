@@ -149,7 +149,7 @@ class Uri implements UriInterface
         }
 
         $scheme = str_replace('://', '', strtolower($scheme));
-        if (!key_exists($scheme, self::SUPPORTED_SCHEMES)) {
+        if (!key_exists($scheme, static::SUPPORTED_SCHEMES)) {
             throw new InvalidArgumentException(
                 'Uri scheme must be one of: "' . implode('", "', array_keys(static::SUPPORTED_SCHEMES)) . '"'
             );

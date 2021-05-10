@@ -31,6 +31,18 @@ class UriTest extends TestCase
         return new Uri($scheme, $host, $port, $path, $query, $fragment, $user, $password);
     }
 
+    public function testSupportOtherSchemes()
+    {
+        $wsUri = new class ('ws', 'example.com') extends Uri {
+            public const SUPPORTED_SCHEMES = [
+                'ws' => 80,
+                'wss' => 443,
+            ];
+        };
+
+        $this->assertEquals('ws', $wsUri->getScheme());
+    }
+
     public function testGetScheme()
     {
         $this->assertEquals('https', $this->uriFactory()->getScheme());
