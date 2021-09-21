@@ -6,10 +6,3 @@ updates:
     interval: monthly
   open-pull-requests-limit: 10
   versioning-strategy: increase
-  ignore:
-  - dependency-name: symfony/polyfill-php80
-    versions:
-    - 1.22.0
-  - dependency-name: phpunit/phpunit
-    versions:
-    - 8.5.14

@@ -18,9 +18,6 @@ use Slim\Tests\Psr7\Assets\HeaderStack;
 
 $classLoader = require __DIR__ . '/../vendor/autoload.php';
 
-//require __DIR__ . '/Assets/PhpFunctionOverrides.php';
-//require __DIR__ . '/Assets/PhpFactoryFunctionOverrides.php';
-
 Override::apply($classLoader, [
     Headers::class => [
         'getallheaders' => function () {
