@@ -275,4 +275,11 @@ class CookiesTest extends TestCase
 
         Cookies::parseHeader(new stdClass());
     }
+
+    public function testSetSameSiteNoneToHeaders()
+    {
+        $cookies = new Cookies();
+        $cookies->set('foo', ['value' => 'bar', 'samesite' => 'None']);
+        $this->assertEquals('foo=bar; SameSite=None', $cookies->toHeaders()[0]);
+    }
 }
