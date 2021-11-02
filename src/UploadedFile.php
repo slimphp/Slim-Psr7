@@ -237,7 +237,7 @@ class UploadedFile implements UploadedFileInterface
         }
 
         if (!empty($_FILES)) {
-            return static::parseUploadedFiles($_FILES);
+            return self::parseUploadedFiles($_FILES);
         }
 
         return [];
@@ -258,7 +258,7 @@ class UploadedFile implements UploadedFileInterface
         foreach ($uploadedFiles as $field => $uploadedFile) {
             if (!isset($uploadedFile['error'])) {
                 if (is_array($uploadedFile)) {
-                    $parsed[$field] = static::parseUploadedFiles($uploadedFile);
+                    $parsed[$field] = self::parseUploadedFiles($uploadedFile);
                 }
                 continue;
             }
@@ -283,7 +283,7 @@ class UploadedFile implements UploadedFileInterface
                     $subArray[$fileIdx]['error'] = $uploadedFile['error'][$fileIdx];
                     $subArray[$fileIdx]['size'] = $uploadedFile['size'][$fileIdx];
 
-                    $parsed[$field] = static::parseUploadedFiles($subArray);
+                    $parsed[$field] = self::parseUploadedFiles($subArray);
                 }
             }
         }

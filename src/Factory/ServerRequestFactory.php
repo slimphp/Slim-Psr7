@@ -106,7 +106,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         $uploadedFiles = UploadedFile::createFromGlobals($_SERVER);
 
         $request = new Request($method, $uri, $headers, $cookies, $_SERVER, $body, $uploadedFiles);
-        $contentTypes = $request->getHeader('Content-Type') ?? [];
+        $contentTypes = $request->getHeader('Content-Type');
 
         $parsedContentType = '';
         foreach ($contentTypes as $contentType) {

@@ -201,7 +201,7 @@ class Request extends Message implements ServerRequestInterface
      */
     public function withRequestTarget($requestTarget)
     {
-        if (preg_match('#\s#', $requestTarget)) {
+        if (!is_string($requestTarget) || preg_match('#\s#', $requestTarget)) {
             throw new InvalidArgumentException(
                 'Invalid request target provided; must be a string and cannot contain whitespace'
             );
