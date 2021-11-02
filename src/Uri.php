@@ -177,7 +177,7 @@ class Uri implements UriInterface
     {
         $info = $this->user;
 
-        if (isset($this->password) && $this->password !== '') {
+        if ($this->password !== '') {
             $info .= ':' . $this->password;
         }
 

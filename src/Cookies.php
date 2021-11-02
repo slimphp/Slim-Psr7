@@ -193,7 +193,7 @@ class Cookies
     public static function parseHeader($header): array
     {
         if (is_array($header)) {
-            $header = isset($header[0]) ? $header[0] : '';
+            $header = $header[0] ?? '';
         }
 
         if (!is_string($header)) {

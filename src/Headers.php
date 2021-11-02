@@ -191,7 +191,7 @@ class Headers implements HeadersInterface
             if (isset($this->globals['REDIRECT_HTTP_AUTHORIZATION'])) {
                 $headers['Authorization'] = $this->globals['REDIRECT_HTTP_AUTHORIZATION'];
             } elseif (isset($this->globals['PHP_AUTH_USER'])) {
-                $pw = isset($this->globals['PHP_AUTH_PW']) ? $this->globals['PHP_AUTH_PW'] : '';
+                $pw = $this->globals['PHP_AUTH_PW'] ?? '';
                 $headers['Authorization'] = 'Basic ' . base64_encode($this->globals['PHP_AUTH_USER'] . ':' . $pw);
             } elseif (isset($this->globals['PHP_AUTH_DIGEST'])) {
                 $headers['Authorization'] = $this->globals['PHP_AUTH_DIGEST'];

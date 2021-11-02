@@ -201,7 +201,7 @@ class Request extends Message implements ServerRequestInterface
      */
     public function withRequestTarget($requestTarget)
     {
-        if (preg_match('#\s#', $requestTarget)) {
+        if (!is_string($requestTarget) || preg_match('#\s#', $requestTarget)) {
             throw new InvalidArgumentException(
                 'Invalid request target provided; must be a string and cannot contain whitespace'
             );
@@ -331,7 +331,7 @@ class Request extends Message implements ServerRequestInterface
      */
     public function getAttribute($name, $default = null)
     {
-        return isset($this->attributes[$name]) ? $this->attributes[$name] : $default;
+        return $this->attributes[$name] ?? $default;
     }
 
     /**
