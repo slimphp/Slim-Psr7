@@ -119,7 +119,7 @@ class Stream implements StreamInterface
             return $this->meta;
         }
 
-        return isset($this->meta[$key]) ? $this->meta[$key] : null;
+        return $this->meta[$key] ?? null;
     }
 
     /**
@@ -239,7 +239,7 @@ class Stream implements StreamInterface
      */
     public function eof(): bool
     {
-        return $this->stream ? feof($this->stream) : true;
+        return !$this->stream || feof($this->stream);
     }
 
     /**

@@ -92,7 +92,7 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      */
     public static function createFromGlobals(): Request
     {
-        $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+        $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
         $uri = (new UriFactory())->createFromGlobals($_SERVER);
 
         $headers = Headers::createFromGlobals();
