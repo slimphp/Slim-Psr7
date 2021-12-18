@@ -24,20 +24,11 @@ use function method_exists;
 
 class Response extends Message implements ResponseInterface
 {
-    /**
-     * @var int
-     */
-    protected $status = StatusCodeInterface::STATUS_OK;
+    protected int $status = StatusCodeInterface::STATUS_OK;
 
-    /**
-     * @var string
-     */
-    protected $reasonPhrase = '';
+    protected string $reasonPhrase = '';
 
-    /**
-     * @var array
-     */
-    protected static $messages = [
+    protected static array $messages = [
         // Informational 1xx
         StatusCodeInterface::STATUS_CONTINUE => 'Continue',
         StatusCodeInterface::STATUS_SWITCHING_PROTOCOLS => 'Switching Protocols',

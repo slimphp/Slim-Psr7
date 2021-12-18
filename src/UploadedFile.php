@@ -60,17 +60,13 @@ class UploadedFile implements UploadedFileInterface
 
     /**
      * A valid PHP UPLOAD_ERR_xxx code for the file upload.
-     *
-     * @var int
      */
-    protected $error = UPLOAD_ERR_OK;
+    protected int $error = UPLOAD_ERR_OK;
 
     /**
      * Indicates if the upload is from a SAPI environment.
-     *
-     * @var bool
      */
-    protected $sapi = false;
+    protected bool $sapi = false;
 
     /**
      * @var StreamInterface|null
@@ -79,10 +75,8 @@ class UploadedFile implements UploadedFileInterface
 
     /**
      * Indicates if the uploaded file has already been moved.
-     *
-     * @var bool
      */
-    protected $moved = false;
+    protected bool $moved = false;
 
     /**
      * @param string|StreamInterface $fileNameOrStream The full path to the uploaded file provided by the client,

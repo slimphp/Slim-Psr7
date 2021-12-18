@@ -23,15 +23,9 @@ use function sprintf;
 
 abstract class Message implements MessageInterface
 {
-    /**
-     * @var string
-     */
-    protected $protocolVersion = '1.1';
+    protected string $protocolVersion = '1.1';
 
-    /**
-     * @var array
-     */
-    protected static $validProtocolVersions = [
+    protected static array $validProtocolVersions = [
         '1.0' => true,
         '1.1' => true,
         '2.0' => true,
