@@ -38,49 +38,31 @@ class Uri implements UriInterface
 
     /**
      * Uri scheme (without "://" suffix)
-     *
-     * @var string
      */
-    protected $scheme = '';
+    protected string $scheme = '';
 
-    /**
-     * @var string
-     */
-    protected $user = '';
+    protected string $user = '';
 
-    /**
-     * @var string
-     */
-    protected $password = '';
+    protected string $password = '';
 
-    /**
-     * @var string
-     */
-    protected $host = '';
+    protected string $host = '';
 
     /**
      * @var null|int
      */
     protected $port;
 
-    /**
-     * @var string
-     */
-    protected $path = '';
+    protected string $path = '';
 
     /**
      * Uri query string (without "?" prefix)
-     *
-     * @var string
      */
-    protected $query = '';
+    protected string $query = '';
 
     /**
      * Uri fragment string (without "#" prefix)
-     *
-     * @var string
      */
-    protected $fragment = '';
+    protected string $fragment = '';
 
     /**
      * @param string $scheme   Uri scheme.

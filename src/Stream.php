@@ -78,10 +78,7 @@ class Stream implements StreamInterface
      */
     protected $isPipe;
 
-    /**
-     * @var bool
-     */
-    protected $finished = false;
+    protected bool $finished = false;
 
     /**
      * @var StreamInterface | null

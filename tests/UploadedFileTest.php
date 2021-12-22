@@ -47,9 +47,9 @@ class UploadedFileTest extends TestCase
 {
     use ProphecyTrait;
 
-    private static $filename = './phpUxcOty';
+    private static string $filename = './phpUxcOty';
 
-    private static $tmpFiles = ['./phpUxcOty'];
+    private static array $tmpFiles = ['./phpUxcOty'];
 
     public static function setUpBeforeClass(): void
     {

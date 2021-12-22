@@ -31,10 +31,7 @@ use function strpos;
 
 class HeaderStack
 {
-    /**
-     * @var string[][]
-     */
-    private static $data = [];
+    private static array $data = [];
 
     /**
      * Reset state

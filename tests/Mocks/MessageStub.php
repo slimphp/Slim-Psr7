@@ -18,10 +18,8 @@ class MessageStub extends Message
 {
     /**
      * Protocol version
-     *
-     * @var string
      */
-    public $protocolVersion;
+    public string $protocolVersion;
 
     /**
      * Headers
