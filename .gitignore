@@ -1,9 +1,0 @@
-.DS_Store
-.idea
-.tmp
-.phpunit.result.cache
-composer.lock
-phpunit.xml
-clover.xml
-vendor
-coverage
