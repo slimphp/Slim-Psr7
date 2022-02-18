@@ -378,5 +378,8 @@ class UriTest extends TestCase
 
         $uri = $uri->withPath('/bar');
         $this->assertEquals('https://josh:sekrit@example.com/bar?abc=123#section3', (string) $uri);
+
+        $uri = $uri->withScheme('')->withHost('')->withPort(null)->withUserInfo('')->withPath('//bar');
+        $this->assertEquals('/bar?abc=123#section3', (string) $uri);
     }
 }
