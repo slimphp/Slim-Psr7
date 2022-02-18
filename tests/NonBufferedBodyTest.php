@@ -125,8 +125,6 @@ class NonBufferedBodyTest extends TestCase
         self::assertSame([], HeaderStack::stack());
     }
 
-    /**
-     */
     public function testCloseThrowsRuntimeException()
     {
         $this->expectException(RuntimeException::class);
@@ -135,8 +133,6 @@ class NonBufferedBodyTest extends TestCase
         (new NonBufferedBody())->close();
     }
 
-    /**
-     */
     public function testSeekThrowsRuntimeException()
     {
         $this->expectException(RuntimeException::class);
@@ -145,8 +141,6 @@ class NonBufferedBodyTest extends TestCase
         (new NonBufferedBody())->seek(10);
     }
 
-    /**
-     */
     public function testRewindThrowsRuntimeException()
     {
         $this->expectException(RuntimeException::class);
@@ -155,8 +149,6 @@ class NonBufferedBodyTest extends TestCase
         (new NonBufferedBody())->rewind();
     }
 
-    /**
-     */
     public function testReadThrowsRuntimeException()
     {
         $this->expectException(RuntimeException::class);

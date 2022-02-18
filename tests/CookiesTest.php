@@ -267,8 +267,6 @@ class CookiesTest extends TestCase
         $this->assertEquals('test_date=Works; expires=' . $formattedStringDate, $cookieStringDate);
     }
 
-    /**
-     */
     public function testParseHeaderException()
     {
         $this->expectException(InvalidArgumentException::class);

@@ -71,8 +71,6 @@ class BodyTest extends TestCase
         $this->assertSame($this->stream, $bodyStream->getValue($body));
     }
 
-    /**
-     */
     public function testConstructorInvalidStream()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -204,8 +202,6 @@ class BodyTest extends TestCase
         $this->assertEquals(10, $body->tell());
     }
 
-    /**
-     */
     public function testTellDetachedThrowsRuntimeException()
     {
         $this->expectException(RuntimeException::class);
@@ -330,8 +326,6 @@ class BodyTest extends TestCase
         $this->assertEquals(10, ftell($this->stream));
     }
 
-    /**
-     */
     public function testSeekDetachedThrowsRuntimeException()
     {
         $this->expectException(RuntimeException::class);
@@ -353,8 +347,6 @@ class BodyTest extends TestCase
         $this->assertEquals(0, ftell($this->stream));
     }
 
-    /**
-     */
     public function testRewindDetachedThrowsRuntimeException()
     {
         $this->expectException(RuntimeException::class);
@@ -374,8 +366,6 @@ class BodyTest extends TestCase
         $this->assertEquals(substr($this->text, 0, 10), $body->read(10));
     }
 
-    /**
-     */
     public function testReadDetachedThrowsRuntimeException()
     {
         $this->expectException(RuntimeException::class);
@@ -399,8 +389,6 @@ class BodyTest extends TestCase
         $this->assertEquals($this->text . 'foo', (string) $body);
     }
 
-    /**
-     */
     public function testWriteDetachedThrowsRuntimeException()
     {
         $this->expectException(RuntimeException::class);
@@ -421,8 +409,6 @@ class BodyTest extends TestCase
         $this->assertEquals(substr($this->text, 10), $body->getContents());
     }
 
-    /**
-     */
     public function testGetContentsDetachedThrowsRuntimeException()
     {
         $this->expectException(RuntimeException::class);

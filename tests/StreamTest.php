@@ -73,8 +73,6 @@ class StreamTest extends TestCase
         $this->assertFalse($this->pipeStream->isSeekable());
     }
 
-    /**
-     */
     public function testCannotSeekPipe()
     {
         $this->expectException(RuntimeException::class);
@@ -84,8 +82,6 @@ class StreamTest extends TestCase
         $this->pipeStream->seek(0);
     }
 
-    /**
-     */
     public function testCannotTellPipe()
     {
         $this->expectException(RuntimeException::class);
@@ -95,8 +91,6 @@ class StreamTest extends TestCase
         $this->pipeStream->tell();
     }
 
-    /**
-     */
     public function testCannotRewindPipe()
     {
         $this->expectException(RuntimeException::class);

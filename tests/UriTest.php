@@ -69,8 +69,6 @@ class UriTest extends TestCase
         $this->assertEquals('', $uri->getScheme());
     }
 
-    /**
-     */
     public function testWithSchemeInvalid()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -79,8 +77,6 @@ class UriTest extends TestCase
         $this->uriFactory()->withScheme('ftp');
     }
 
-    /**
-     */
     public function testWithSchemeInvalidType()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -146,8 +142,6 @@ class UriTest extends TestCase
         $this->assertEquals('host.test', $uri->getHost());
     }
 
-    /**
-     */
     public function testWithHostInvalidObject()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -207,8 +201,6 @@ class UriTest extends TestCase
         $this->assertEquals(null, $uri->getPort());
     }
 
-    /**
-     */
     public function testWithPortInvalidInt()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -216,8 +208,6 @@ class UriTest extends TestCase
         $this->uriFactory()->withPort(70000);
     }
 
-    /**
-     */
     public function testWithPortInvalidString()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -265,8 +255,6 @@ class UriTest extends TestCase
         $this->assertEquals('/include%25s/new', $uri->getPath());
     }
 
-    /**
-     */
     public function testWithPathInvalidType()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -319,8 +307,6 @@ class UriTest extends TestCase
         $this->assertEquals('foobar=%25match', $uri->getQuery());
     }
 
-    /**
-     */
     public function testWithQueryInvalidType()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -373,8 +359,6 @@ class UriTest extends TestCase
         $this->assertEquals('%5Ea', $uri->getFragment());
     }
 
-    /**
-     */
     public function testWithFragmentInvalidType()
     {
         $this->expectException(InvalidArgumentException::class);

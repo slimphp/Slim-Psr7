@@ -72,8 +72,6 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
         return $stream;
     }
 
-    /**
-     */
     public function testCreateUploadedFileWithInvalidUri()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -94,8 +92,6 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
         $this->factory->createUploadedFile($stream);
     }
 
-    /**
-     */
     public function testCreateUploadedFileWithNonReadableFile()
     {
         $this->expectException(InvalidArgumentException::class);

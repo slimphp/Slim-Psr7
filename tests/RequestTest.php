@@ -84,8 +84,6 @@ class RequestTest extends TestCase
         $this->assertEquals("!#$%&'*+.^_`|~09AZ-", $request->getMethod());
     }
 
-    /**
-     */
     public function testWithMethodInvalid()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -93,8 +91,6 @@ class RequestTest extends TestCase
         $this->requestFactory()->withMethod('B@R');
     }
 
-    /**
-     */
     public function testCreateRequestWithInvalidMethodString()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -108,8 +104,6 @@ class RequestTest extends TestCase
         new Request('B@R', $uri, $headers, $cookies, $serverParams, $body);
     }
 
-    /**
-     */
     public function testCreateRequestWithInvalidMethodOther()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -155,8 +149,6 @@ class RequestTest extends TestCase
         $this->assertEquals('/test?user=1', $clone->getRequestTarget());
     }
 
-    /**
-     */
     public function testWithRequestTargetThatHasSpaces()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -450,8 +442,6 @@ class RequestTest extends TestCase
         $this->assertNull($request->getParsedBody());
     }
 
-    /**
-     */
     public function testWithParsedBodyInvalid()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -459,8 +449,6 @@ class RequestTest extends TestCase
         $this->requestFactory()->withParsedBody(2);
     }
 
-    /**
-     */
     public function testWithParsedBodyInvalidFalseValue()
     {
         $this->expectException(InvalidArgumentException::class);

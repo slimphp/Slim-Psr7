@@ -96,8 +96,6 @@ class ResponseTest extends TestCase
         $this->assertEquals(302, $clone->getStatusCode());
     }
 
-    /**
-     */
     public function testWithStatusInvalidStatusCodeThrowsException()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -106,8 +104,6 @@ class ResponseTest extends TestCase
         $response->withStatus(800);
     }
 
-    /**
-     */
     public function testWithStatusInvalidReasonPhraseThrowsException()
     {
         $this->expectException(InvalidArgumentException::class);

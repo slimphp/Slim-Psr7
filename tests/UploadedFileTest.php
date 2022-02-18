@@ -245,8 +245,6 @@ class UploadedFileTest extends TestCase
         return $uploadedFile;
     }
 
-    /**
-     */
     public function testMoveToRenameFailure()
     {
         $this->expectException(RuntimeException::class);
@@ -367,8 +365,6 @@ class UploadedFileTest extends TestCase
         }
     }
 
-    /**
-     */
     public function testMoveToStreamCopyFailure()
     {
         $this->expectException(RuntimeException::class);
@@ -423,8 +419,6 @@ class UploadedFileTest extends TestCase
         $this->assertSame($stream->getMetadata('uri'), $file->getFilePath());
     }
 
-    /**
-     */
     public function testCreateUploadedFileWithInvalidArguments()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -432,8 +426,6 @@ class UploadedFileTest extends TestCase
         new UploadedFile(42); // a random value that is neither a string nor an instance of StreamInterface
     }
 
-    /**
-     */
     public function testCreateUploadedFileWithInvalidUri()
     {
         $this->expectException(InvalidArgumentException::class);

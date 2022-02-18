@@ -57,8 +57,6 @@ class HeadersTest extends TestCase
         $this->assertEquals(['Accept' => ['application/json', 'text/html']], $headers->getHeaders(true));
     }
 
-    /**
-     */
     public function testAddHeaderValueEmptyArray()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -106,8 +104,6 @@ class HeadersTest extends TestCase
         $this->assertEquals(['application/json'], $headers->getHeader('accept', ' application/json'));
     }
 
-    /**
-     */
     public function testGetHeaderThrowsExceptionWithInvalidDefaultArgument()
     {
         $this->expectException(InvalidArgumentException::class);
