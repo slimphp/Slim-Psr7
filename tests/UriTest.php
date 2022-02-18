@@ -137,7 +137,7 @@ class UriTest extends TestCase
 
     public function testWithHostValidObject()
     {
-        $mock = $this->getMockBuilder('UriTestHost')->setMethods(['__toString'])->getMock();
+        $mock = $this->getMockBuilder(stdClass::class)->addMethods(['__toString'])->getMock();
         $mock->expects($this->once())
             ->method('__toString')
             ->will($this->returnValue('host.test'));
@@ -303,7 +303,7 @@ class UriTest extends TestCase
 
     public function testWithQueryValidObject()
     {
-        $mock = $this->getMockBuilder('UriTestQuery')->setMethods(['__toString'])->getMock();
+        $mock = $this->getMockBuilder(stdClass::class)->addMethods(['__toString'])->getMock();
         $mock->expects($this->once())
             ->method('__toString')
             ->will($this->returnValue('xyz=123'));
@@ -357,7 +357,7 @@ class UriTest extends TestCase
 
     public function testWithFragmentValidObject()
     {
-        $mock = $this->getMockBuilder('UriTestFragment')->setMethods(['__toString'])->getMock();
+        $mock = $this->getMockBuilder(stdClass::class)->addMethods(['__toString'])->getMock();
         $mock->expects($this->once())
             ->method('__toString')
             ->will($this->returnValue('other-fragment'));
