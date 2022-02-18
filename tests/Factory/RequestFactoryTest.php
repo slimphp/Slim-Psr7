@@ -36,8 +36,6 @@ class RequestFactoryTest extends RequestFactoryTestCase
         return (new UriFactory())->createUri($uri);
     }
 
-    /**
-     */
     public function testCreateRequestThrowsExceptionWithInvalidUri()
     {
         $this->expectException(InvalidArgumentException::class);

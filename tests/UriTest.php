@@ -69,8 +69,6 @@ class UriTest extends TestCase
         $this->assertEquals('', $uri->getScheme());
     }
 
-    /**
-     */
     public function testWithSchemeInvalid()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -79,8 +77,6 @@ class UriTest extends TestCase
         $this->uriFactory()->withScheme('ftp');
     }
 
-    /**
-     */
     public function testWithSchemeInvalidType()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -137,7 +133,7 @@ class UriTest extends TestCase
 
     public function testWithHostValidObject()
     {
-        $mock = $this->getMockBuilder('UriTestHost')->setMethods(['__toString'])->getMock();
+        $mock = $this->getMockBuilder(stdClass::class)->addMethods(['__toString'])->getMock();
         $mock->expects($this->once())
             ->method('__toString')
             ->will($this->returnValue('host.test'));
@@ -146,8 +142,6 @@ class UriTest extends TestCase
         $this->assertEquals('host.test', $uri->getHost());
     }
 
-    /**
-     */
     public function testWithHostInvalidObject()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -207,8 +201,6 @@ class UriTest extends TestCase
         $this->assertEquals(null, $uri->getPort());
     }
 
-    /**
-     */
     public function testWithPortInvalidInt()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -216,8 +208,6 @@ class UriTest extends TestCase
         $this->uriFactory()->withPort(70000);
     }
 
-    /**
-     */
     public function testWithPortInvalidString()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -265,8 +255,6 @@ class UriTest extends TestCase
         $this->assertEquals('/include%25s/new', $uri->getPath());
     }
 
-    /**
-     */
     public function testWithPathInvalidType()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -303,7 +291,7 @@ class UriTest extends TestCase
 
     public function testWithQueryValidObject()
     {
-        $mock = $this->getMockBuilder('UriTestQuery')->setMethods(['__toString'])->getMock();
+        $mock = $this->getMockBuilder(stdClass::class)->addMethods(['__toString'])->getMock();
         $mock->expects($this->once())
             ->method('__toString')
             ->will($this->returnValue('xyz=123'));
@@ -319,8 +307,6 @@ class UriTest extends TestCase
         $this->assertEquals('foobar=%25match', $uri->getQuery());
     }
 
-    /**
-     */
     public function testWithQueryInvalidType()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -357,7 +343,7 @@ class UriTest extends TestCase
 
     public function testWithFragmentValidObject()
     {
-        $mock = $this->getMockBuilder('UriTestFragment')->setMethods(['__toString'])->getMock();
+        $mock = $this->getMockBuilder(stdClass::class)->addMethods(['__toString'])->getMock();
         $mock->expects($this->once())
             ->method('__toString')
             ->will($this->returnValue('other-fragment'));
@@ -373,8 +359,6 @@ class UriTest extends TestCase
         $this->assertEquals('%5Ea', $uri->getFragment());
     }
 
-    /**
-     */
     public function testWithFragmentInvalidType()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -394,5 +378,8 @@ class UriTest extends TestCase
 
         $uri = $uri->withPath('/bar');
         $this->assertEquals('https://josh:sekrit@example.com/bar?abc=123#section3', (string) $uri);
+
+        $uri = $uri->withScheme('')->withHost('')->withPort(null)->withUserInfo('')->withPath('//bar');
+        $this->assertEquals('/bar?abc=123#section3', (string) $uri);
     }
 }

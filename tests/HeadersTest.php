@@ -57,8 +57,6 @@ class HeadersTest extends TestCase
         $this->assertEquals(['Accept' => ['application/json', 'text/html']], $headers->getHeaders(true));
     }
 
-    /**
-     */
     public function testAddHeaderValueEmptyArray()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -106,8 +104,6 @@ class HeadersTest extends TestCase
         $this->assertEquals(['application/json'], $headers->getHeader('accept', ' application/json'));
     }
 
-    /**
-     */
     public function testGetHeaderThrowsExceptionWithInvalidDefaultArgument()
     {
         $this->expectException(InvalidArgumentException::class);
@@ -199,11 +195,15 @@ class HeadersTest extends TestCase
 
     public function testParseAuthorizationHeader()
     {
+        $expectedValue = 'Basic ' . base64_encode('user:password');
+
+        $headers = new Headers(['Authorization' => $expectedValue]);
+        $this->assertEquals([$expectedValue], $headers->getHeader('Authorization'));
+
         $headers = new Headers([], ['REDIRECT_HTTP_AUTHORIZATION' => 'cookie']);
         $this->assertEquals(['cookie'], $headers->getHeader('Authorization'));
 
         $headers = new Headers([], ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'password']);
-        $expectedValue = 'Basic ' . base64_encode('user' . ':' . 'password');
         $this->assertEquals([$expectedValue], $headers->getHeader('Authorization'));
 
         $headers = new Headers([], ['PHP_AUTH_DIGEST' => 'digest']);

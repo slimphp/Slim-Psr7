@@ -35,8 +35,6 @@ class MessageTest extends TestCase
         $this->assertEquals('1.0', $clone->protocolVersion);
     }
 
-    /**
-     */
     public function testWithProtocolVersionInvalidThrowsException()
     {
         $this->expectException(InvalidArgumentException::class);

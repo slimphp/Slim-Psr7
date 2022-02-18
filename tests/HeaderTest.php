@@ -60,8 +60,6 @@ class HeaderTest extends TestCase
         $this->assertSame($header2, $header);
     }
 
-    /**
-     */
     public function testAddValuesNull()
     {
         $this->expectException(InvalidArgumentException::class);
