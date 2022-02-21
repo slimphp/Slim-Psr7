@@ -24,10 +24,7 @@ class StreamFactoryTest extends StreamFactoryTestCase
         }
     }
 
-    /**
-     * @return StreamFactory
-     */
-    protected function createStreamFactory()
+    protected function createStreamFactory(): StreamFactory
     {
         return new StreamFactory();
     }

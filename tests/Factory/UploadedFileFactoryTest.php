@@ -27,18 +27,12 @@ class UploadedFileFactoryTest extends UploadedFileFactoryTestCase
 {
     use ProphecyTrait;
 
-    /**
-     * @return UploadedFileFactory
-     */
-    protected function createUploadedFileFactory()
+    protected function createUploadedFileFactory(): UploadedFileFactory
     {
         return new UploadedFileFactory();
     }
 
-    /**
-     * @return StreamInterface
-     */
-    protected function createStream($content)
+    protected function createStream($content): StreamInterface
     {
         $file = tempnam(sys_get_temp_dir(), 'Slim_Http_UploadedFileTest_');
         $resource = fopen($file, 'r+');

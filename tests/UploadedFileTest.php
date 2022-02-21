@@ -80,10 +80,7 @@ class UploadedFileTest extends TestCase
         }
     }
 
-    /**
-     * @return UploadedFile
-     */
-    protected function generateNewTmpFile()
+    protected function generateNewTmpFile(): UploadedFile
     {
         $filename = './php' . microtime();
 
@@ -132,10 +129,7 @@ class UploadedFileTest extends TestCase
         $this->assertEquals([], $uploadedFile);
     }
 
-    /**
-     * @return UploadedFile
-     */
-    public function testConstructor()
+    public function testConstructor(): UploadedFile
     {
         $attr = [
             'tmp_name' => self::$filename,
@@ -163,10 +157,7 @@ class UploadedFileTest extends TestCase
         return $uploadedFile;
     }
 
-    /**
-     * @return UploadedFile
-     */
-    public function testConstructorSapi()
+    public function testConstructorSapi(): UploadedFile
     {
         $attr = [
             'tmp_name' => self::$filename,
@@ -201,7 +192,7 @@ class UploadedFileTest extends TestCase
      *
      * @return UploadedFile
      */
-    public function testGetStream(UploadedFile $uploadedFile)
+    public function testGetStream(UploadedFile $uploadedFile): UploadedFile
     {
         $stream = $uploadedFile->getStream();
         $this->assertEquals(true, $uploadedFile->getStream() instanceof Stream);
@@ -232,7 +223,7 @@ class UploadedFileTest extends TestCase
      *
      * @return UploadedFile
      */
-    public function testMoveTo(UploadedFile $uploadedFile)
+    public function testMoveTo(UploadedFile $uploadedFile): UploadedFile
     {
         $tempName = uniqid('file-');
         $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $tempName;
@@ -444,7 +435,7 @@ class UploadedFileTest extends TestCase
         new UploadedFile($stream);
     }
 
-    public function providerCreateFromGlobals()
+    public function providerCreateFromGlobals(): array
     {
         return [
             // no nest: <input name="avatar" type="file">

@@ -56,7 +56,7 @@ class HeaderStack
      *
      * @return string[][]
      */
-    public static function stack()
+    public static function stack(): array
     {
         return self::$data;
     }
@@ -68,7 +68,7 @@ class HeaderStack
      *
      * @return bool
      */
-    public static function has($header)
+    public static function has($header): bool
     {
         foreach (self::$data as $item) {
             if ($item['header'] === $header) {
@@ -84,7 +84,7 @@ class HeaderStack
      *
      * @param string $header
      */
-    public static function remove($header)
+    public static function remove($header): void
     {
         foreach (self::$data as $key => $item) {
             if (false !== strpos($item['header'], "$header:")) {

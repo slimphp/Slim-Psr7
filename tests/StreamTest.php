@@ -32,10 +32,7 @@ class StreamTest extends TestCase
      */
     private $pipeFh;
 
-    /**
-     * @var Stream
-     */
-    private $pipeStream;
+    private Stream $pipeStream;
 
     public function tearDown(): void
     {

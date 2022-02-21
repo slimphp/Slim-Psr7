@@ -52,7 +52,7 @@ class BodyTest extends TestCase
      *
      * @return resource
      */
-    public function resourceFactory($mode = 'r+')
+    public function resourceFactory(string $mode = 'r+')
     {
         $stream = fopen('php://temp', $mode);
         fwrite($stream, $this->text);
