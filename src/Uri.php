@@ -62,14 +62,14 @@ class Uri implements UriInterface
     protected string $fragment = '';
 
     /**
-     * @param string $scheme   Uri scheme.
-     * @param string $host     Uri host.
-     * @param int    $port     Uri port number.
-     * @param string $path     Uri path.
-     * @param string $query    Uri query string.
-     * @param string $fragment Uri fragment.
-     * @param string $user     Uri user.
-     * @param string $password Uri password.
+     * @param string   $scheme   Uri scheme.
+     * @param string   $host     Uri host.
+     * @param int|null $port     Uri port number.
+     * @param string   $path     Uri path.
+     * @param string   $query    Uri query string.
+     * @param string   $fragment Uri fragment.
+     * @param string   $user     Uri user.
+     * @param string   $password Uri password.
      */
     public function __construct(
         string $scheme,
@@ -287,9 +287,9 @@ class Uri implements UriInterface
     /**
      * Filter Uri port.
      *
-     * @param  null|int $port The Uri port number.
+     * @param  int|null $port The Uri port number.
      *
-     * @return null|int
+     * @return int|null
      *
      * @throws InvalidArgumentException If the port is invalid.
      */
