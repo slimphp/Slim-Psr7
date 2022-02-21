@@ -30,6 +30,9 @@ class Headers implements HeadersInterface
 {
     protected array $globals;
 
+    /**
+     * @var Header[]
+     */
     protected array $headers;
 
     /**
