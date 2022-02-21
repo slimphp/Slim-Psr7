@@ -28,19 +28,13 @@ use function trim;
 
 class Headers implements HeadersInterface
 {
-    /**
-     * @var array
-     */
-    protected $globals;
+    protected array $globals;
+
+    protected array $headers;
 
     /**
-     * @var Header[]
-     */
-    protected $headers;
-
-    /**
-     * @param array $headers
-     * @param array $globals
+     * @param array      $headers
+     * @param array|null $globals
      */
     final public function __construct(array $headers = [], ?array $globals = null)
     {

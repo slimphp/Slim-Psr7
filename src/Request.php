@@ -13,7 +13,6 @@ namespace Slim\Psr7;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
 use Slim\Psr7\Interfaces\HeadersInterface;
 
@@ -51,30 +50,18 @@ class Request extends Message implements ServerRequestInterface
      */
     protected $queryParams;
 
-    /**
-     * @var array
-     */
-    protected $cookies;
+    protected array $cookies;
 
-    /**
-     * @var array
-     */
-    protected $serverParams;
+    protected array $serverParams;
 
-    /**
-     * @var array
-     */
-    protected $attributes;
+    protected array $attributes;
 
     /**
      * @var null|array|object
      */
     protected $parsedBody;
 
-    /**
-     * @var UploadedFileInterface[]
-     */
-    protected $uploadedFiles;
+    protected array $uploadedFiles;
 
     /**
      * @param string           $method        The request method

@@ -48,10 +48,7 @@ class Stream implements StreamInterface
      */
     protected $stream;
 
-    /**
-     * @var array|null
-     */
-    protected $meta;
+    protected ?array $meta;
 
     /**
      * @var bool|null
@@ -80,10 +77,7 @@ class Stream implements StreamInterface
 
     protected bool $finished = false;
 
-    /**
-     * @var StreamInterface | null
-     */
-    protected $cache;
+    protected ?StreamInterface $cache;
 
     /**
      * @param  resource $stream  A PHP resource handle.
@@ -91,7 +85,7 @@ class Stream implements StreamInterface
      *
      * @throws InvalidArgumentException If argument is not a resource.
      */
-    public function __construct($stream, StreamInterface $cache = null)
+    public function __construct($stream, ?StreamInterface $cache = null)
     {
         $this->attach($stream);
 

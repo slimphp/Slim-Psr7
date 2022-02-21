@@ -47,10 +47,7 @@ class Uri implements UriInterface
 
     protected string $host = '';
 
-    /**
-     * @var null|int
-     */
-    protected $port;
+    protected ?int $port;
 
     protected string $path = '';
 

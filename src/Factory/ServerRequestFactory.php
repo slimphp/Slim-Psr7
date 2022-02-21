@@ -30,15 +30,9 @@ use function is_string;
 
 class ServerRequestFactory implements ServerRequestFactoryInterface
 {
-    /**
-     * @var StreamFactoryInterface|StreamFactory
-     */
-    protected $streamFactory;
+    protected StreamFactoryInterface $streamFactory;
 
-    /**
-     * @var UriFactoryInterface|UriFactory
-     */
-    protected $uriFactory;
+    protected UriFactoryInterface $uriFactory;
 
     /**
      * @param StreamFactoryInterface|null $streamFactory

@@ -34,29 +34,20 @@ class UploadedFile implements UploadedFileInterface
 {
     /**
      * The client-provided full path to the file
-     *
-     * @var string
      */
-    protected $file;
+    protected string $file;
 
     /**
      * The client-provided file name.
-     *
-     * @var string|null
      */
-    protected $name;
+    protected ?string $name;
 
     /**
      * The client-provided media type of the file.
-     *
-     * @var string|null
      */
-    protected $type;
+    protected ?string $type;
 
-    /**
-     * @var int|null
-     */
-    protected $size;
+    protected ?int $size;
 
     /**
      * A valid PHP UPLOAD_ERR_xxx code for the file upload.
