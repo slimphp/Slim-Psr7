@@ -33,16 +33,8 @@ class RequestFactory implements RequestFactoryInterface
      */
     public function __construct(?StreamFactoryInterface $streamFactory = null, ?UriFactoryInterface $uriFactory = null)
     {
-        if (!isset($streamFactory)) {
-            $streamFactory = new StreamFactory();
-        }
-
-        if (!isset($uriFactory)) {
-            $uriFactory = new UriFactory();
-        }
-
-        $this->streamFactory = $streamFactory;
-        $this->uriFactory = $uriFactory;
+        $this->streamFactory = $streamFactory ?? new StreamFactory();
+        $this->uriFactory = $uriFactory ?? new UriFactory();
     }
 
     /**
