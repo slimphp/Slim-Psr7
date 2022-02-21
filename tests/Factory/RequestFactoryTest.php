@@ -19,19 +19,12 @@ use stdClass;
 
 class RequestFactoryTest extends RequestFactoryTestCase
 {
-    /**
-     * @return RequestFactory
-     */
-    protected function createRequestFactory()
+    protected function createRequestFactory(): RequestFactory
     {
         return new RequestFactory();
     }
 
-    /**
-     * @param string $uri
-     * @return UriInterface
-     */
-    protected function createUri($uri)
+    protected function createUri($uri): UriInterface
     {
         return (new UriFactory())->createUri($uri);
     }

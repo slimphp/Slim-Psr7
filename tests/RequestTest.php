@@ -26,7 +26,7 @@ use function sprintf;
 
 class RequestTest extends TestCase
 {
-    public function requestFactory($envData = [])
+    public function requestFactory($envData = []): Request
     {
         $env = Environment::mock($envData);
 

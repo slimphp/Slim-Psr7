@@ -16,10 +16,7 @@ use Slim\Psr7\Factory\UriFactory;
 
 class UriFactoryTest extends UriFactoryTestCase
 {
-    /**
-     * @return UriFactory
-     */
-    protected function createUriFactory()
+    protected function createUriFactory(): UriFactory
     {
         return new UriFactory();
     }

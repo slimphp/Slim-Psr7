@@ -16,20 +16,12 @@ use Slim\Psr7\Factory\ResponseFactory;
 
 class ResponseFactoryTest extends ResponseFactoryTestCase
 {
-    /**
-     * @return ResponseFactory
-     */
-    protected function createResponseFactory()
+    protected function createResponseFactory(): ResponseFactory
     {
         return new ResponseFactory();
     }
 
-    /**
-     * @param ResponseInterface $response
-     * @param int $code
-     * @param string $reasonPhrase
-     */
-    protected function assertResponseCodeAndReasonPhrase($response, $code, $reasonPhrase)
+    protected function assertResponseCodeAndReasonPhrase(ResponseInterface $response, int $code, string $reasonPhrase)
     {
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertSame($code, $response->getStatusCode());
@@ -38,9 +30,10 @@ class ResponseFactoryTest extends ResponseFactoryTestCase
 
     /**
      * @dataProvider dataCodes
+     *
      * @param int $code
      */
-    public function testCreateResponseWithReasonPhrase($code)
+    public function testCreateResponseWithReasonPhrase(int $code)
     {
         $response = $this->factory->createResponse($code, 'Reason');
         $this->assertResponse($response, $code);

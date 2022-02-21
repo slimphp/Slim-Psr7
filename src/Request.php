@@ -51,20 +51,11 @@ class Request extends Message implements ServerRequestInterface
      */
     protected $queryParams;
 
-    /**
-     * @var array
-     */
-    protected $cookies;
+    protected array $cookies;
 
-    /**
-     * @var array
-     */
-    protected $serverParams;
+    protected array $serverParams;
 
-    /**
-     * @var array
-     */
-    protected $attributes;
+    protected array $attributes;
 
     /**
      * @var null|array|object
@@ -74,7 +65,7 @@ class Request extends Message implements ServerRequestInterface
     /**
      * @var UploadedFileInterface[]
      */
-    protected $uploadedFiles;
+    protected array $uploadedFiles;
 
     /**
      * @param string           $method        The request method

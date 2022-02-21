@@ -17,7 +17,7 @@ use stdClass;
 
 class UriTest extends TestCase
 {
-    public function uriFactory()
+    public function uriFactory(): Uri
     {
         $scheme = 'https';
         $host = 'example.com';

@@ -25,19 +25,12 @@ use function time;
 
 class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
 {
-    /**
-     * @return ServerRequestFactory
-     */
-    protected function createServerRequestFactory()
+    protected function createServerRequestFactory(): ServerRequestFactory
     {
         return new ServerRequestFactory();
     }
 
-    /**
-     * @param string $uri
-     * @return UriInterface
-     */
-    protected function createUri($uri)
+    protected function createUri($uri): UriInterface
     {
         return (new UriFactory())->createUri($uri);
     }
