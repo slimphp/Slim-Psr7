@@ -121,7 +121,7 @@ class ResponseTest extends TestCase
         $this->assertEquals('', $responseWithNoMessage->getReasonPhrase());
     }
 
-    public function testResonPhraseContainsCarriageReturn()
+    public function testReasonPhraseContainsCarriageReturn()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Reason phrase contains one of the following prohibited characters: \r \n');
@@ -130,7 +130,7 @@ class ResponseTest extends TestCase
         $response = $response->withStatus(404, "Not Found\r");
     }
 
-    public function testResonPhraseContainsLineFeed()
+    public function testReasonPhraseContainsLineFeed()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Reason phrase contains one of the following prohibited characters: \r \n');
