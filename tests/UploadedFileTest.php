@@ -12,7 +12,6 @@ namespace Slim\Tests\Psr7;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Runner\Version;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -349,11 +348,7 @@ class UploadedFileTest extends TestCase
         $movedFileContents = ob_get_clean();
 
         $this->assertEquals($contents, $movedFileContents);
-        if (version_compare(Version::series(), '9.1', '>=')) {
-            $this->assertFileDoesNotExist($fileName);
-        } else {
-            $this->assertFileNotExists($fileName);
-        }
+        $this->assertFileDoesNotExist($fileName);
     }
 
     public function testMoveToStreamCopyFailure()
