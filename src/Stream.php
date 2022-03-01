@@ -50,30 +50,15 @@ class Stream implements StreamInterface
 
     protected ?array $meta;
 
-    /**
-     * @var bool|null
-     */
-    protected $readable;
+    protected ?bool $readable = null;
 
-    /**
-     * @var bool|null
-     */
-    protected $writable;
+    protected ?bool $writable = null;
 
-    /**
-     * @var bool|null
-     */
-    protected $seekable;
+    protected ?bool $seekable = null;
 
-    /**
-     * @var null|int
-     */
-    protected $size;
+    protected ?int $size = null;
 
-    /**
-     * @var bool|null
-     */
-    protected $isPipe;
+    protected ?bool $isPipe = null;
 
     protected bool $finished = false;
 
