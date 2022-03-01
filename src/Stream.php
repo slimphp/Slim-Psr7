@@ -238,19 +238,17 @@ class Stream implements StreamInterface
      */
     public function isReadable(): bool
     {
-        if ($this->readable === null) {
-            if ($this->isPipe()) {
+        if ($this->readable !== null) {
+            return $this->readable;
+        }
+
+        $this->readable = false;
+
+        if ($this->stream) {
+            $mode = $this->getMetadata('mode');
+
+            if (is_string($mode) && (strstr($mode, 'r') !== false || strstr($mode, '+') !== false)) {
                 $this->readable = true;
-            } else {
-                $this->readable = false;
-
-                if ($this->stream) {
-                    $mode = $this->getMetadata('mode');
-
-                    if (is_string($mode) && (strstr($mode, 'r') !== false || strstr($mode, '+') !== false)) {
-                        $this->readable = true;
-                    }
-                }
             }
         }
 
