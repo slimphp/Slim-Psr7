@@ -50,30 +50,15 @@ class Stream implements StreamInterface
 
     protected ?array $meta;
 
-    /**
-     * @var bool|null
-     */
-    protected $readable;
+    protected ?bool $readable = null;
 
-    /**
-     * @var bool|null
-     */
-    protected $writable;
+    protected ?bool $writable = null;
 
-    /**
-     * @var bool|null
-     */
-    protected $seekable;
+    protected ?bool $seekable = null;
 
-    /**
-     * @var null|int
-     */
-    protected $size;
+    protected ?int $size = null;
 
-    /**
-     * @var bool|null
-     */
-    protected $isPipe;
+    protected ?bool $isPipe = null;
 
     protected bool $finished = false;
 
@@ -238,19 +223,17 @@ class Stream implements StreamInterface
      */
     public function isReadable(): bool
     {
-        if ($this->readable === null) {
-            if ($this->isPipe()) {
+        if ($this->readable !== null) {
+            return $this->readable;
+        }
+
+        $this->readable = false;
+
+        if ($this->stream) {
+            $mode = $this->getMetadata('mode');
+
+            if (is_string($mode) && (strstr($mode, 'r') !== false || strstr($mode, '+') !== false)) {
                 $this->readable = true;
-            } else {
-                $this->readable = false;
-
-                if ($this->stream) {
-                    $mode = $this->getMetadata('mode');
-
-                    if (is_string($mode) && (strstr($mode, 'r') !== false || strstr($mode, '+') !== false)) {
-                        $this->readable = true;
-                    }
-                }
             }
         }
 
