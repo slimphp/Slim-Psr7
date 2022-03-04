@@ -53,7 +53,7 @@ class UriFactoryTest extends UriFactoryTestCase
     {
         $uri = $this
             ->createUriFactory()
-            ->createUri('https://bob%40example.com:pass%3Aword@example.com:443/foo/bar?abc=123#section3');
+            ->createUri('https://bob@example.com:pass:word@example.com:443/foo/bar?abc=123#section3');
 
         $this->assertEquals('bob%40example.com:pass%3Aword', $uri->getUserInfo());
     }

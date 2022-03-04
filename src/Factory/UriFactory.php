@@ -94,10 +94,7 @@ class UriFactory implements UriFactoryInterface
         }
 
         // Query string
-        $queryString = '';
-        if (isset($globals['QUERY_STRING'])) {
-            $queryString = $globals['QUERY_STRING'];
-        }
+        $queryString = $globals['QUERY_STRING'] ?? '';
 
         // Request URI
         $requestUri = '';
