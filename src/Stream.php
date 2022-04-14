@@ -82,6 +82,7 @@ class Stream implements StreamInterface
 
     /**
      * {@inheritdoc}
+     * @return array|mixed
      */
     public function getMetadata($key = null)
     {
@@ -322,6 +323,7 @@ class Stream implements StreamInterface
 
     /**
      * {@inheritdoc}
+     * @return int
      */
     public function write($string)
     {

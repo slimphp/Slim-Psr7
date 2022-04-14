@@ -138,6 +138,7 @@ class Response extends Message implements ResponseInterface
 
     /**
      * {@inheritdoc}
+     * @return static
      */
     public function withStatus($code, $reasonPhrase = '')
     {

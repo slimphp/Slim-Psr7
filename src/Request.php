@@ -124,6 +124,7 @@ class Request extends Message implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
+     * @return static
      */
     public function withMethod($method)
     {
@@ -189,6 +190,7 @@ class Request extends Message implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
+     * @return static
      */
     public function withRequestTarget($requestTarget)
     {
@@ -214,6 +216,7 @@ class Request extends Message implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
+     * @return static
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
@@ -243,6 +246,7 @@ class Request extends Message implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
+     * @return static
      */
     public function withCookieParams(array $cookies)
     {
@@ -273,6 +277,7 @@ class Request extends Message implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
+     * @return static
      */
     public function withQueryParams(array $query)
     {
@@ -292,6 +297,7 @@ class Request extends Message implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
+     * @return static
      */
     public function withUploadedFiles(array $uploadedFiles)
     {
@@ -319,6 +325,7 @@ class Request extends Message implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
+     * @return mixed
      */
     public function getAttribute($name, $default = null)
     {
@@ -327,6 +334,7 @@ class Request extends Message implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
+     * @return static
      */
     public function withAttribute($name, $value)
     {
@@ -338,6 +346,7 @@ class Request extends Message implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
+     * @return static
      */
     public function withoutAttribute($name)
     {
@@ -358,6 +367,7 @@ class Request extends Message implements ServerRequestInterface
 
     /**
      * {@inheritdoc}
+     * @return static
      */
     public function withParsedBody($data)
     {
