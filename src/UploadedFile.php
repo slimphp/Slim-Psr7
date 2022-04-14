@@ -109,6 +109,7 @@ class UploadedFile implements UploadedFileInterface
 
     /**
      * {@inheritdoc}
+     * @return StreamInterface
      */
     public function getStream()
     {
