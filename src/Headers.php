@@ -178,7 +178,7 @@ class Headers implements HeadersInterface
     {
         $hasAuthorizationHeader = false;
         foreach ($headers as $name => $value) {
-            if (strtolower($name) === 'authorization') {
+            if (strtolower((string) $name) === 'authorization') {
                 $hasAuthorizationHeader = true;
                 break;
             }
