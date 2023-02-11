@@ -23,6 +23,7 @@ use function method_exists;
 use function preg_replace_callback;
 use function rawurlencode;
 use function str_replace;
+use function str_starts_with;
 use function strtolower;
 
 use const FILTER_FLAG_IPV6;
