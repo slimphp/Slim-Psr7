@@ -10,10 +10,7 @@ declare(strict_types=1);
 
 namespace Slim\Psr7;
 
-use InvalidArgumentException;
-
 use function array_merge;
-use function is_array;
 use function is_string;
 
 class Header
@@ -75,10 +72,6 @@ class Header
     {
         if (is_string($values)) {
             return $this->addValue($values);
-        }
-
-        if (!is_array($values)) {
-            throw new InvalidArgumentException('Parameter 1 of Header::addValues() should be a string or an array.');
         }
 
         $this->values = array_merge($this->values, $values);
