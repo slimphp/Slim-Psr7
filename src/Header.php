@@ -71,7 +71,7 @@ class Header
      *
      * @return self
      */
-    public function addValues($values): self
+    public function addValues(array|string $values): self
     {
         if (is_string($values)) {
             return $this->addValue($values);
