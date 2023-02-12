@@ -21,13 +21,6 @@ class Header
 
     private array $values;
 
-    /**
-     * Header constructor.
-     *
-     * @param string $originalName
-     * @param string $normalizedName
-     * @param array  $values
-     */
     public function __construct(string $originalName, string $normalizedName, array $values)
     {
         $this->originalName = $originalName;
@@ -35,27 +28,16 @@ class Header
         $this->values = $values;
     }
 
-    /**
-     * @return string
-     */
     public function getOriginalName(): string
     {
         return $this->originalName;
     }
 
-    /**
-     * @return string
-     */
     public function getNormalizedName(): string
     {
         return $this->normalizedName;
     }
 
-    /**
-     * @param string $value
-     *
-     * @return self
-     */
     public function addValue(string $value): self
     {
         $this->values[] = $value;
@@ -63,11 +45,6 @@ class Header
         return $this;
     }
 
-    /**
-     * @param array|string $values
-     *
-     * @return self
-     */
     public function addValues(array|string $values): self
     {
         if (is_string($values)) {
@@ -79,9 +56,6 @@ class Header
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getValues(): array
     {
         return $this->values;
