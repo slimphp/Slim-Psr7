@@ -23,6 +23,7 @@ use function method_exists;
 use function preg_replace_callback;
 use function rawurlencode;
 use function str_replace;
+use function str_starts_with;
 use function strtolower;
 
 use const FILTER_FLAG_IPV6;
@@ -311,6 +312,11 @@ class Uri implements UriInterface
      */
     public function getPath(): string
     {
+        if (str_starts_with($this->path, '/')) {
+            // Use only one leading slash to prevent XSS attempts.
+            return '/' . ltrim($this->path, '/');
+        }
+
         return $this->path;
     }
 
@@ -346,9 +352,7 @@ class Uri implements UriInterface
     {
         $match = preg_replace_callback(
             '/(?:[^a-zA-Z0-9_\-\.~:@&=\+\$,\/;%]+|%(?![A-Fa-f0-9]{2}))/',
-            function ($match) {
-                return rawurlencode($match[0]);
-            },
+            fn (array $match) => rawurlencode($match[0]),
             $path
         );
 
@@ -466,7 +470,7 @@ class Uri implements UriInterface
     {
         $scheme = $this->getScheme();
         $authority = $this->getAuthority();
-        $path = $this->getPath();
+        $path = $this->path;
         $query = $this->getQuery();
         $fragment = $this->getFragment();
 
