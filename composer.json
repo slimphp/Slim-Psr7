@@ -72,5 +72,11 @@
   },
   "config": {
     "sort-packages": true
+  },
+  "archive": {
+      "exclude": [
+          "/tests",
+          "/phpunit.xml.dist"
+      ]
   }
 }
