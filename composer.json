@@ -40,7 +40,7 @@
     "adriansuter/php-autoload-override": "^1.4",
     "http-interop/http-factory-tests": "^0.9.0",
     "php-http/psr7-integration-tests": "dev-master",
-    "phpspec/prophecy": "^1.16",
+    "phpspec/prophecy": "^1.17",
     "phpspec/prophecy-phpunit": "^2.0",
     "phpstan/phpstan": "^1.9",
     "phpunit/phpunit": "^9.5",
