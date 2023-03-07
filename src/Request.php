@@ -31,10 +31,7 @@ use function str_replace;
 
 class Request extends Message implements ServerRequestInterface
 {
-    /**
-     * @var string
-     */
-    protected $method;
+    protected string $method;
 
     /**
      * @var UriInterface

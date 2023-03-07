@@ -10,7 +10,6 @@ declare(strict_types=1);
 
 namespace Slim\Tests\Psr7;
 
-use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Header;
 
@@ -30,19 +29,19 @@ class HeaderTest extends TestCase
         return new Header($originalName, $normalizedName, $values);
     }
 
-    public function testGetOriginalName()
+    public function testGetOriginalName(): void
     {
         $header = $this->headerFactory();
         $this->assertEquals('ACCEPT', $header->getOriginalName());
     }
 
-    public function testGetNormalizedName()
+    public function testGetNormalizedName(): void
     {
         $header = $this->headerFactory();
         $this->assertEquals('accept', $header->getNormalizedName());
     }
 
-    public function testAddValue()
+    public function testAddValue(): void
     {
         $header = $this->headerFactory();
         $header2 = $header->addValue('text/html');
@@ -51,21 +50,12 @@ class HeaderTest extends TestCase
         $this->assertSame($header2, $header);
     }
 
-    public function testAddValuesString()
+    public function testAddValuesString(): void
     {
         $header = $this->headerFactory();
         $header2 = $header->addValues('text/html');
 
         $this->assertEquals(['application/json', 'text/html'], $header->getValues());
         $this->assertSame($header2, $header);
-    }
-
-    public function testAddValuesNull()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Parameter 1 of Header::addValues() should be a string or an array.');
-
-        $header = $this->headerFactory();
-        $header->addValues(null);
     }
 }
