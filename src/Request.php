@@ -269,10 +269,11 @@ class Request extends Message implements ServerRequestInterface
             return [];
         }
 
-        parse_str($this->uri->getQuery(), $this->queryParams); // <-- URL decodes data
-        assert(is_array($this->queryParams));
+        // Decode URL data
+        parse_str($this->uri->getQuery(), $this->queryParams);
 
-        return $this->queryParams;
+        // @phpstan-ignore-next-line
+        return is_array($this->queryParams) ? $this->queryParams : [];
     }
 
     /**
