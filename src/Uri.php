@@ -199,7 +199,7 @@ class Uri implements UriInterface
         }
 
         $match =  preg_replace_callback(
-            '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=]+|%(?![A-Fa-f0-9]{2}))/u',
+            '/(?:[^%a-zA-Z0-9_\-\.~\pL!\$&\'\(\)\*\+,;=]+|%(?![A-Fa-f0-9]{2}))/u',
             function ($match) {
                 return rawurlencode($match[0]);
             },
