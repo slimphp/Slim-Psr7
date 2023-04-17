@@ -209,4 +209,80 @@ class HeadersTest extends TestCase
         $headers = new Headers([], ['PHP_AUTH_DIGEST' => 'digest']);
         $this->assertEquals(['digest'], $headers->getHeader('Authorization'));
     }
+
+    /**
+     * @dataProvider provideInvalidHeaderNames
+     */
+    public function testWithInvalidHeaderName($headerName): void
+    {
+        $headers = new Headers();
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $headers->setHeader($headerName, 'foo');
+    }
+
+    public static function provideInvalidHeaderNames(): array
+    {
+        return [
+            [[]],
+            [false],
+            [new \stdClass()],
+            ["Content-Type\r\n\r\n"],
+            ["Content-Type\r\n"],
+            ["Content-Type\n"],
+            ["\r\nContent-Type"],
+            ["\nContent-Type"],
+            ["\n"],
+            ["\r\n"],
+            ["\t"],
+        ];
+    }
+
+    /**
+     * @dataProvider provideInvalidHeaderValues
+     */
+    public function testSetInvalidHeaderValue($headerValue)
+    {
+        $headers = new Headers();
+
+        $this->expectException(\InvalidArgumentException::class);
+
+        $headers->setHeader('Content-Type', $headerValue);
+    }
+
+    public static function provideInvalidHeaderValues(): array
+    {
+        // Explicit tests for newlines as the most common exploit vector.
+        $tests = [
+            ["new\nline"],
+            ["new\r\nline"],
+            ["new\rline"],
+            ["new\r\n line"],
+            ["newline\n"],
+            ["\nnewline"],
+            ["newline\r\n"],
+            ["\n\rnewline"],
+        ];
+
+        for ($i = 0; $i <= 0xff; $i++) {
+            if (\chr($i) == "\t") {
+                continue;
+            }
+            if (\chr($i) == " ") {
+                continue;
+            }
+            if ($i >= 0x21 && $i <= 0x7e) {
+                continue;
+            }
+            if ($i >= 0x80) {
+                continue;
+            }
+
+            $tests[] = ["foo" . \chr($i) . "bar"];
+            $tests[] = ["foo" . \chr($i)];
+        }
+
+        return $tests;
+    }
 }
