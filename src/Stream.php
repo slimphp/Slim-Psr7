@@ -325,7 +325,7 @@ class Stream implements StreamInterface
      * {@inheritdoc}
      * @return int
      */
-    public function write($string)
+    public function write($string): int
     {
         $written = false;
 
