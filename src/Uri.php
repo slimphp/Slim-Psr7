@@ -104,7 +104,7 @@ class Uri implements UriInterface
      * {@inheritdoc}
      * @return static
      */
-    public function withScheme($scheme)
+    public function withScheme($scheme): UriInterface
     {
         $scheme = $this->filterScheme($scheme);
         $clone = clone $this;
@@ -169,7 +169,7 @@ class Uri implements UriInterface
      * {@inheritdoc}
      * @return static
      */
-    public function withUserInfo($user, $password = null)
+    public function withUserInfo($user, $password = null): UriInterface
     {
         $clone = clone $this;
         $clone->user = $this->filterUserInfo($user);
@@ -221,7 +221,7 @@ class Uri implements UriInterface
      * {@inheritdoc}
      * @return static
      */
-    public function withHost($host)
+    public function withHost($host): UriInterface
     {
         $clone = clone $this;
         $clone->host = $this->filterHost($host);
@@ -270,7 +270,7 @@ class Uri implements UriInterface
      * {@inheritdoc}
      * @return static
      */
-    public function withPort($port)
+    public function withPort($port): UriInterface
     {
         $port = $this->filterPort($port);
         $clone = clone $this;
@@ -324,7 +324,7 @@ class Uri implements UriInterface
      * {@inheritdoc}
      * @return static
      */
-    public function withPath($path)
+    public function withPath($path): UriInterface
     {
         if (!is_string($path)) {
             throw new InvalidArgumentException('Uri path must be a string');
@@ -371,7 +371,7 @@ class Uri implements UriInterface
      * {@inheritdoc}
      * @return static
      */
-    public function withQuery($query)
+    public function withQuery($query): UriInterface
     {
         $query = ltrim($this->filterQuery($query), '?');
         $clone = clone $this;
@@ -422,7 +422,7 @@ class Uri implements UriInterface
      * {@inheritdoc}
      * @return static
      */
-    public function withFragment($fragment)
+    public function withFragment($fragment): UriInterface
     {
         $fragment = $this->filterFragment($fragment);
         $clone = clone $this;
