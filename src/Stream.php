@@ -14,6 +14,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 
+use function error_get_last;
 use function fclose;
 use function feof;
 use function fread;
@@ -26,7 +27,6 @@ use function is_resource;
 use function is_string;
 use function pclose;
 use function rewind;
-use function stream_get_contents;
 use function stream_get_meta_data;
 use function strstr;
 
@@ -354,7 +354,16 @@ class Stream implements StreamInterface
         $contents = false;
 
         if ($this->stream) {
-            $contents = stream_get_contents($this->stream);
+            $contents = '';
+
+            while (!feof($this->stream)) {
+                $result = @fread($this->stream, 16372);
+                if ($result === false) {
+                    throw new RuntimeException('Unable to read from stream: ' . (error_get_last()['message'] ?? ''));
+                }
+
+                $contents .= $result;
+            }
         }
 
         if (is_string($contents)) {
