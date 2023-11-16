@@ -404,7 +404,7 @@ class Stream implements StreamInterface
      *
      * return string The contents
      */
-    public function getStreamContents(): string
+    protected function getStreamContents(): string
     {
         $contents = false;
         $exception = null;
