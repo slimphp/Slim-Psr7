@@ -13,8 +13,8 @@ namespace Slim\Psr7;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
+use Throwable;
 
-use function error_get_last;
 use function fclose;
 use function feof;
 use function fread;
@@ -26,7 +26,10 @@ use function is_array;
 use function is_resource;
 use function is_string;
 use function pclose;
+use function restore_error_handler;
 use function rewind;
+use function set_error_handler;
+use function stream_get_contents;
 use function stream_get_meta_data;
 use function strstr;
 
@@ -354,16 +357,7 @@ class Stream implements StreamInterface
         $contents = false;
 
         if ($this->stream) {
-            $contents = '';
-
-            while (!feof($this->stream)) {
-                $result = @fread($this->stream, 16372);
-                if ($result === false) {
-                    throw new RuntimeException('Unable to read from stream: ' . (error_get_last()['message'] ?? ''));
-                }
-
-                $contents .= $result;
-            }
+            $contents = $this->getStreamContents();
         }
 
         if (is_string($contents)) {
@@ -401,5 +395,37 @@ class Stream implements StreamInterface
         }
 
         return $this->isPipe;
+    }
+
+    /**
+     * Reads stream into a string.
+     *
+     * @throws RuntimeException
+     *
+     * return string The contents
+     */
+    public function getStreamContents(): string
+    {
+        $contents = false;
+        $exception = null;
+
+        set_error_handler(static function ($type, $message) use (&$exception) {
+            throw $exception = new RuntimeException('Unable to read stream contents: ' . $message);
+        });
+
+        try {
+            $contents = stream_get_contents($this->stream);
+        } catch (Throwable $e) {
+            throw $e === $exception ? $e :
+                new RuntimeException('Unable to read stream contents: ' . $e->getMessage(), 0, $e);
+        } finally {
+            restore_error_handler();
+        }
+
+        if (is_string($contents)) {
+            return $contents;
+        }
+
+        throw new RuntimeException('Could not get contents of stream.');
     }
 }
