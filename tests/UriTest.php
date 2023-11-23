@@ -215,6 +215,13 @@ class UriTest extends TestCase
         $this->uriFactory()->withPort('Foo');
     }
 
+    public function testWithPortIntegerAsString()
+    {
+        $uri = $this->uriFactory()->withPort("1");
+
+        $this->assertEquals(1, $uri->getPort());
+    }
+
     public function testGetPath()
     {
         $this->assertEquals('/foo/bar', $this->uriFactory()->getPath());
