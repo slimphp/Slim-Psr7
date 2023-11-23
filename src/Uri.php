@@ -300,7 +300,13 @@ class Uri implements UriInterface
      */
     protected function filterPort($port): ?int
     {
-        if (is_null($port) || (is_integer($port) && ($port >= 1 && $port <= 65535))) {
+        if (is_null($port)) {
+            return null;
+        }
+
+        $port = (int) $port;
+
+        if ($port >= 1 && $port <= 65535) {
             return $port;
         }
 
