@@ -292,7 +292,7 @@ class Uri implements UriInterface
     /**
      * Filter Uri port.
      *
-     * @param  int|null $port The Uri port number.
+     * @param  int|string|null $port The Uri port number.
      *
      * @return int|null
      *
