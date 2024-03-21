@@ -29,7 +29,7 @@ Override::apply($classLoader, [
         }
     ],
     Message::class => [
-        'header' => function (string $string, bool $replace = true, int $statusCode = null): void {
+        'header' => function (string $string, bool $replace = true, ?int $statusCode = null): void {
             HeaderStack::push(
                 [
                     'header'      => $string,
