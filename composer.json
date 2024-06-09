@@ -9,22 +9,22 @@
     {
       "name": "Josh Lockhart",
       "email": "hello@joshlockhart.com",
-      "homepage": "http://joshlockhart.com"
+      "homepage": "https://joshlockhart.com"
     },
     {
       "name": "Andrew Smith",
       "email": "a.smith@silentworks.co.uk",
-      "homepage": "http://silentworks.co.uk"
+      "homepage": "https://silentworks.co.uk"
     },
     {
       "name": "Rob Allen",
       "email": "rob@akrabat.com",
-      "homepage": "http://akrabat.com"
+      "homepage": "https://akrabat.com"
     },
     {
       "name": "Pierre Berube",
       "email": "pierre@lgse.com",
-      "homepage": "http://www.lgse.com"
+      "homepage": "https://www.lgse.com"
     }
   ],
   "require": {
@@ -66,17 +66,11 @@
       "@phpcs",
       "@phpstan"
     ],
-    "phpunit": "phpunit",
-    "phpcs": "phpcs",
-    "phpstan": "phpstan --memory-limit=-1"
+    "phpunit": "@php phpunit",
+    "phpcs": "@php phpcs",
+    "phpstan": "@php phpstan --memory-limit=-1"
   },
   "config": {
     "sort-packages": true
-  },
-  "archive": {
-      "exclude": [
-          "/tests",
-          "/phpunit.xml.dist"
-      ]
   }
 }
