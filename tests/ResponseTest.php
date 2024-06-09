@@ -21,6 +21,12 @@ use Slim\Psr7\Stream;
 use function fopen;
 use function property_exists;
 
+final class TestException implements \Stringable {
+    public function __toString(): string {
+        return 'Slim OK';
+    }
+}
+
 class ResponseTest extends TestCase
 {
     public function testConstructorWithDefaultArgs()
@@ -144,13 +150,7 @@ class ResponseTest extends TestCase
 
     public function testWithStatusValidReasonPhraseObject()
     {
-        $mock = $this->getMockBuilder('ResponseTestReasonPhrase')->setMethods(['__toString'])->getMock();
-        $mock->expects($this->once())
-            ->method('__toString')
-            ->will($this->returnValue('Slim OK'));
-
-        $response = new Response();
-        $response = $response->withStatus(200, $mock);
+        $response = $response->withStatus(200, new TestException());
         $this->assertEquals('Slim OK', $response->getReasonPhrase());
     }
 
