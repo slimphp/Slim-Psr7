@@ -15,15 +15,6 @@ use PHPUnit\Framework\TestCase;
 use Slim\Psr7\Uri;
 use stdClass;
 
-final class TestObject implements \Stringable {
-
-    public function __construct(private readonly string $value) {}
-
-    public function __toString(): string {
-        return $this->value;
-    }
-}
-
 class UriTest extends TestCase
 {
     public function uriFactory(): Uri
@@ -142,7 +133,7 @@ class UriTest extends TestCase
 
     public function testWithHostValidObject()
     {
-        $mock = new TestObject('host.test');
+        $mock = new StringableTestObject('host.test');
 
         $uri = $this->uriFactory()->withHost($mock);
         $this->assertEquals('host.test', $uri->getHost());
@@ -304,7 +295,7 @@ class UriTest extends TestCase
 
     public function testWithQueryValidObject()
     {
-        $mock = new TestObject('xyz=123');
+        $mock = new StringableTestObject('xyz=123');
 
         $uri = $this->uriFactory()->withQuery($mock);
         $this->assertEquals('xyz=123', $uri->getQuery());
@@ -353,7 +344,7 @@ class UriTest extends TestCase
 
     public function testWithFragmentValidObject()
     {
-        $mock = new TestObject('other-fragment');
+        $mock = new StringableTestObject('other-fragment');
 
         $uri = $this->uriFactory()->withFragment($mock);
         $this->assertEquals('other-fragment', $uri->getFragment());
