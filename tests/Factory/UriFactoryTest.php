@@ -13,6 +13,7 @@ namespace Slim\Tests\Psr7\Factory;
 use Interop\Http\Factory\UriFactoryTestCase;
 use Slim\Psr7\Environment;
 use Slim\Psr7\Factory\UriFactory;
+use Slim\Psr7\Uri;
 
 class UriFactoryTest extends UriFactoryTestCase
 {
@@ -239,5 +240,85 @@ class UriFactoryTest extends UriFactoryTestCase
     {
         $expected = 'https://0:0@0:1/0?0#0';
         $this->assertSame($expected, (string) $this->createUriFactory()->createUri($expected));
+    }
+
+    public function testEnableInheritedUriObjectUsingInheritanceOfFactory()
+    {
+        $factory = new class () extends UriFactory {
+            protected function makeUriObject(
+                string $scheme,
+                string $host,
+                ?int $port = null,
+                string $path = '/',
+                string $query = '',
+                string $fragment = '',
+                string $user = '',
+                string $password = ''
+            ): Uri {
+                return new class (
+                    $scheme,
+                    $host,
+                    $port,
+                    $path,
+                    $query,
+                    $fragment,
+                    $user,
+                    $password,
+                ) extends Uri {
+                };
+            }
+        };
+
+        $uri = $factory->createUri('');
+        $this->assertInstanceOf(Uri::class, $uri);
+        $this->assertNotSame(Uri::class, get_class($uri));
+    }
+
+    public function testEnableNoUriSchemeFilteringThroughInheritance()
+    {
+        $factory = new class () extends UriFactory {
+            protected function makeUriObject(
+                string $scheme,
+                string $host,
+                ?int $port = null,
+                string $path = '/',
+                string $query = '',
+                string $fragment = '',
+                string $user = '',
+                string $password = ''
+            ): Uri {
+                return new class (
+                    $scheme,
+                    $host,
+                    $port,
+                    $path,
+                    $query,
+                    $fragment,
+                    $user,
+                    $password,
+                ) extends Uri {
+                    public const SUPPORTED_SCHEMES = null;
+                };
+            }
+        };
+
+        // The following are all valid URIs
+        (function () use ($factory) {
+            $uri = $factory->createUri('smtp://smtp.dakujem.dev:25');
+            $this->assertEquals('smtp', $uri->getScheme());
+        })();
+        (function () use ($factory) {
+            $uri = $factory->createUri('tel:+1-816-555-1212');
+            $this->assertEquals('tel', $uri->getScheme());
+            $this->assertEquals('+1-816-555-1212', $uri->getPath());
+        })();
+        (function () use ($factory) {
+            $uri = $factory->createUri('ftp://ftp.is.co.za/rfc/rfc1808.txt');
+            $this->assertEquals('ftp', $uri->getScheme());
+        })();
+        (function () use ($factory) {
+            $uri = $factory->createUri('ldap://[2001:db8::7]/c=GB?objectClass?one');
+            $this->assertEquals('ldap', $uri->getScheme());
+        })();
     }
 }

@@ -129,6 +129,11 @@ class Uri implements UriInterface
             throw new InvalidArgumentException('Uri scheme must be a string.');
         }
 
+        // In case the supported schemes list is null, do no filtering.
+        if (null === static::SUPPORTED_SCHEMES) {
+            return $scheme;
+        }
+
         $scheme = str_replace('://', '', strtolower($scheme));
         if (!key_exists($scheme, static::SUPPORTED_SCHEMES)) {
             throw new InvalidArgumentException(
@@ -286,6 +291,9 @@ class Uri implements UriInterface
      */
     protected function hasStandardPort(): bool
     {
+        if (!isset(static::SUPPORTED_SCHEMES[$this->scheme])) {
+            return null === $this->port;
+        }
         return static::SUPPORTED_SCHEMES[$this->scheme] === $this->port;
     }
 

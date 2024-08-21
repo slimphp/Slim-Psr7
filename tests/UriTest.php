@@ -43,6 +43,14 @@ class UriTest extends TestCase
         $this->assertEquals('ws', $wsUri->getScheme());
     }
 
+    public function testSupportNoSchemeFilteringUsingInheritance()
+    {
+        $uri = new class ('whatever', 'example.com') extends Uri {
+            public const SUPPORTED_SCHEMES = null;
+        };
+        $this->assertEquals('whatever', $uri->getScheme());
+    }
+
     public function testGetScheme()
     {
         $this->assertEquals('https', $this->uriFactory()->getScheme());
@@ -168,6 +176,35 @@ class UriTest extends TestCase
 
         $this->assertNull($uriHttp->getPort());
         $this->assertNull($uriHttps->getPort());
+    }
+
+    public function testGetPortWithoutSchemeOrStandardPort()
+    {
+        $uri = new Uri('', 'www.example.com', 80);
+
+        $this->assertEquals(80, $uri->getPort());
+    }
+
+    public function testSupportNoSchemeWithStandardPort()
+    {
+        $uri = new class ('', 'example.com', 80) extends Uri {
+            public const SUPPORTED_SCHEMES = [
+                '' => 80,
+            ];
+        };
+
+        $this->assertNull($uri->getPort());
+    }
+
+    public function testSupportNoSchemeWithoutStandardPort()
+    {
+        $uri = new class ('', 'example.com', 1234) extends Uri {
+            public const SUPPORTED_SCHEMES = [
+                '' => 80,
+            ];
+        };
+
+        $this->assertEquals(1234, $uri->getPort());
     }
 
     public function testGetPortWithoutSchemeAndPort()
