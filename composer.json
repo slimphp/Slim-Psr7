@@ -39,7 +39,7 @@
     "ext-json": "*",
     "adriansuter/php-autoload-override": "^1.4",
     "http-interop/http-factory-tests": "^1.1.0",
-    "php-http/psr7-integration-tests": "1.3.0",
+    "php-http/psr7-integration-tests": "1.4.0",
     "phpspec/prophecy": "^1.19",
     "phpspec/prophecy-phpunit": "^2.2",
     "phpstan/phpstan": "^1.11",
