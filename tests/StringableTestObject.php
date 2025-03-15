@@ -12,8 +12,12 @@ namespace Slim\Tests\Psr7;
 
 final class StringableTestObject implements \Stringable
 {
-    public function __construct(private string $value)
+    /** @var string */
+    private $value;
+
+    public function __construct(string $value)
     {
+        $this->value = $value;
     }
 
     public function __toString(): string
