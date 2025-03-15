@@ -10,17 +10,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [7.2, 7.3, 7.4, 8.0]
+        php: [7.2, 7.3, 7.4, 8.0, 8.1, 8.2, 8.3, 8.4]
         experimental: [false]
         include:
           - php: 8.0
             analysis: true
-          - php: 8.1
+          - php: nightly
             experimental: true
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up PHP ${{ matrix.php }}
         uses: shivammathur/setup-php@v2
