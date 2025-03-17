@@ -46,7 +46,7 @@ jobs:
         run: vendor/bin/phpstan analyse src
 
       - name: Tests
-        run: vendor/bin/phpunit --coverage-clover clover.xml
+        run: vendor/bin/phpunit --no-coverage
 
       - name: Upload coverage results to Coveralls
         if: matrix.analysis
