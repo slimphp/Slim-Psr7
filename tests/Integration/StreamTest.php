@@ -28,7 +28,8 @@ class StreamTest extends StreamIntegrationTest
      * @var array with functionName => reason
      */
     protected $skippedTests = [
-        'testGetContentsError' => 'PHP 7.3 and 7.4 fail this test: stream_get_contents(): supplied resource is not a valid stream resource'
+        'testGetContentsError' => 'PHP 7.3 and 7.4 fail this test: stream_get_contents()'
+                                . ': supplied resource is not a valid stream resource'
     ];
 
     /**
