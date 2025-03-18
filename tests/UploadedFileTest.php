@@ -452,7 +452,7 @@ class UploadedFileTest extends TestCase
         new UploadedFile($stream);
     }
 
-    public function providerCreateFromGlobals()
+    public static function providerCreateFromGlobals()
     {
         return [
             // no nest: <input name="avatar" type="file">
