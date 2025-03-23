@@ -141,13 +141,8 @@ class ResponseTest extends TestCase
 
     public function testWithStatusValidReasonPhraseObject()
     {
-        $mock = $this->getMockBuilder(stdClass::class)->addMethods(['__toString'])->getMock();
-        $mock->expects($this->once())
-            ->method('__toString')
-            ->will($this->returnValue('Slim OK'));
-
         $response = new Response();
-        $response = $response->withStatus(200, $mock);
+        $response = $response->withStatus(200, new StringableTestObject('Slim OK'));
         $this->assertEquals('Slim OK', $response->getReasonPhrase());
     }
 

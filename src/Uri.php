@@ -198,7 +198,7 @@ class Uri implements UriInterface
         }
 
         $match =  preg_replace_callback(
-            '/(?:[^a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=]+|%(?![A-Fa-f0-9]{2}))/u',
+            '/(?:[^%a-zA-Z0-9_\-\.~!\$&\'\(\)\*\+,;=]+|%(?![A-Fa-f0-9]{2}))/',
             function ($match) {
                 return rawurlencode($match[0]);
             },
@@ -311,7 +311,14 @@ class Uri implements UriInterface
      */
     public function getPath(): string
     {
-        return $this->path;
+        $path = $this->path;
+
+        // If the path starts with a / then remove all leading slashes except one.
+        if (strpos($path, '/') === 0) {
+            $path = '/' . ltrim($path, '/');
+        }
+
+        return $path;
     }
 
     /**
@@ -466,7 +473,7 @@ class Uri implements UriInterface
     {
         $scheme = $this->getScheme();
         $authority = $this->getAuthority();
-        $path = $this->getPath();
+        $path = $this->path;
         $query = $this->getQuery();
         $fragment = $this->getFragment();
 
@@ -480,7 +487,8 @@ class Uri implements UriInterface
                 if ($authority === '') {
                     // If the path is starting with more than one "/" and no authority is present,
                     // the starting slashes MUST be reduced to one.
-                    $path = '/' . ltrim($path, '/');
+                    $path = ltrim($path, '/');
+                    $path = '/' . $path;
                 }
             }
         }
