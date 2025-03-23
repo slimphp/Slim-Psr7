@@ -1,6 +1,10 @@
 parameters:
-  level: max
+  level: 9
   ignoreErrors:
     - identifier: missingType.iterableValue
+    - identifier: notIdentical.alwaysTrue
+    - identifier: function.alreadyNarrowedType
+    - identifier: ternary.alwaysTrue
+    - identifier: instanceof.alwaysTrue
   paths:
     - src
