@@ -487,9 +487,8 @@ class Uri implements UriInterface
                 if ($authority === '') {
                     // If the path is starting with more than one "/" and no authority is present,
                     // the starting slashes MUST be reduced to one.
-                    if (! str_starts_with($path, '/')) {
-                        $path = '/' . $path;
-                    }
+                    $path = ltrim($path, '/');
+                    $path = '/' . $path;
                 }
             }
         }
