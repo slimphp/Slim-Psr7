@@ -27,6 +27,7 @@ use function explode;
 use function fopen;
 use function in_array;
 use function is_string;
+use function file_get_contents;
 
 class ServerRequestFactory implements ServerRequestFactoryInterface
 {
@@ -101,8 +102,20 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
         }
 
         $contentTypesWithParsedBodies = ['application/x-www-form-urlencoded', 'multipart/form-data'];
-        if ($method === 'POST' && in_array($parsedContentType, $contentTypesWithParsedBodies)) {
-            return $request->withParsedBody($_POST);
+        if (in_array($method, ['POST', 'PUT', 'PATCH']) && in_array($parsedContentType, $contentTypesWithParsedBodies)) {
+            $parsedBody = $_POST;
+            if (empty($parsedBody)) {
+                if ($request->getBody()->getContents()) {
+                    $items = explode('&', $request->getBody()->getContents());
+
+                    foreach ($items as $item) {
+                        $parts = explode('=', $item);
+                        $parsedBody[$parts[0]] = $parts[1];
+                    }
+                }
+            }
+
+            return $request->withParsedBody($parsedBody);
         }
 
         return $request;

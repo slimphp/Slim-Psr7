@@ -13,6 +13,7 @@ use Slim\Psr7\Factory;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Message;
 use Slim\Psr7\NonBufferedBody;
+use Slim\Psr7\Stream;
 use Slim\Psr7\UploadedFile;
 use Slim\Tests\Psr7\Assets\HeaderStack;
 
@@ -86,6 +87,10 @@ Override::apply($classLoader, [
                 return isset($GLOBALS['fopen_return']);
             }
 
+            if ($filename === 'php://input' && isset($GLOBALS['php_input_mock'])) {
+                return $GLOBALS['php_input_mock'];
+            }
+
             return fopen($filename, $mode);
         },
         'is_readable' => function (string $filename) {
@@ -94,6 +99,15 @@ Override::apply($classLoader, [
             }
 
             return is_readable($filename);
+        },
+    ],
+    Stream::class => [
+        'stream_get_contents' => function ($stream) {
+            if (isset($GLOBALS['stream_get_contents_return'])) {
+                return $GLOBALS['stream_get_contents_return'];
+            }
+
+            return stream_get_contents($stream);
         }
     ]
 ]);

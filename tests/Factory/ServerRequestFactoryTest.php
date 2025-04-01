@@ -91,7 +91,7 @@ class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
         $this->assertEquals('', $uri->getFragment());
     }
 
-    public function testCreateFromGlobalsWithParsedBody()
+    public function testCreateFromGlobalsWithPostParsedBody()
     {
         $_SERVER = Environment::mock([
             'HTTP_CONTENT_TYPE' => 'multipart/form-data',
@@ -204,5 +204,24 @@ class ServerRequestFactoryTest extends ServerRequestFactoryTestCase
 
         $env = Environment::mock();
         $this->createServerRequestFactory()->createServerRequest('GET', new stdClass(), $env);
+    }
+
+    public function testCreateFromGlobalsWithPutParsedBody()
+    {
+        $_SERVER = Environment::mock([
+            'HTTP_CONTENT_TYPE' => 'multipart/form-data',
+            'REQUEST_METHOD' => 'PUT',
+        ]);
+
+        $GLOBALS['stream_get_contents_return'] = 'def=456&ghi=789';
+
+        $request = ServerRequestFactory::createFromGlobals();
+
+        $expectedArray = [];
+        parse_str($GLOBALS['stream_get_contents_return'], $expectedArray);
+
+        $this->assertEquals($expectedArray, $request->getParsedBody());
+
+        unset($GLOBALS['stream_get_contents_return']);
     }
 }
