@@ -32,8 +32,7 @@
     "fig/http-message-util": "^1.1.5",
     "psr/http-factory": "^1.1",
     "psr/http-message": "^1.0 || ^2.0",
-    "ralouphie/getallheaders": "^3.0",
-    "symfony/polyfill-php80": "^1.32"
+    "ralouphie/getallheaders": "^3.0"
   },
   "require-dev": {
     "ext-json": "*",
