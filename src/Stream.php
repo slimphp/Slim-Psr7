@@ -65,8 +65,8 @@ class Stream implements StreamInterface
     protected ?StreamInterface $cache;
 
     /**
-     * @param  resource         $stream A PHP resource handle.
-     * @param  ?StreamInterface $cache  A stream to cache $stream (useful for non-seekable streams)
+     * @param resource             $stream A PHP resource handle.
+     * @param StreamInterface|null $cache  A stream to cache $stream (useful for non-seekable streams)
      *
      * @throws InvalidArgumentException If argument is not a resource.
      */

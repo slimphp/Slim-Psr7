@@ -251,7 +251,7 @@ class Headers implements HeadersInterface
      * @param string        $name
      * @param array|string  $value
      *
-     * @throws InvalidArgumentException;
+     * @throws InvalidArgumentException
      */
     protected function validateHeader($name, $value): void
     {

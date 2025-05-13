@@ -199,7 +199,7 @@ class Uri implements UriInterface
         }
 
         $match =  preg_replace_callback(
-            '/(?:[^%a-zA-Z0-9_\-\.~\pL!\$&\'\(\)\*\+,;=]+|%(?![A-Fa-f0-9]{2}))/u',
+            '/(?:[^%a-zA-Z0-9_\-\.~\pL!\$&\'\(\)\*\+,;=]+|%(?![A-Fa-f0-9]{2}))/',
             function ($match) {
                 return rawurlencode($match[0]);
             },
@@ -490,7 +490,8 @@ class Uri implements UriInterface
                 if ($authority === '') {
                     // If the path is starting with more than one "/" and no authority is present,
                     // the starting slashes MUST be reduced to one.
-                    $path = '/' . ltrim($path, '/');
+                    $path = ltrim($path, '/');
+                    $path = '/' . $path;
                 }
             }
         }
