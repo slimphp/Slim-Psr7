@@ -17,6 +17,8 @@ jobs:
         experimental: [false]
         composer-options: ['']
         include:
+          - php: 8.0
+            dependency-versions: "lowest"
           - php: 8.2
             analysis: true
           - php: nightly
