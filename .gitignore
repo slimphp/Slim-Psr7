@@ -2,7 +2,6 @@
 .idea
 .tmp
 .phpunit.result.cache
-composer.lock
 phpunit.xml
 clover.xml
 vendor
