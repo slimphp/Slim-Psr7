@@ -17,7 +17,7 @@ jobs:
         experimental: [false]
         composer-options: ['']
         include:
-          - php: 8.2
+          - php: 8.4
             analysis: true
           - php: nightly
             experimental: true
