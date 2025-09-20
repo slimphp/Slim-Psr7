@@ -12,6 +12,8 @@ namespace Slim\Tests\Psr7;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Depends;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -98,6 +100,7 @@ class UploadedFileTest extends TestCase
      *
      * @dataProvider providerCreateFromGlobals
      */
+    #[DataProvider('providerCreateFromGlobals')]
     public function testCreateFromGlobalsFromFilesSuperglobal(array $input, array $expected)
     {
         $_FILES = $input;
@@ -111,7 +114,8 @@ class UploadedFileTest extends TestCase
      *
      * @dataProvider providerCreateFromGlobals
      */
-    public function testCreateFromGlobalsFromUserData(array $input)
+    #[DataProvider('providerCreateFromGlobals')]
+    public function testCreateFromGlobalsFromUserData(array $input, array $unused)
     {
         //If slim.files provided - it will return what was provided
         $userData['slim.files'] = $input;
@@ -191,6 +195,7 @@ class UploadedFileTest extends TestCase
      *
      * @return UploadedFile
      */
+    #[Depends('testConstructor')]
     public function testGetStream(UploadedFile $uploadedFile): UploadedFile
     {
         $stream = $uploadedFile->getStream();
@@ -206,6 +211,7 @@ class UploadedFileTest extends TestCase
      * @param UploadedFile $uploadedFile
      *
      */
+    #[Depends('testConstructor')]
     public function testMoveToNotWritable(UploadedFile $uploadedFile)
     {
         $this->expectException(InvalidArgumentException::class);
@@ -222,6 +228,7 @@ class UploadedFileTest extends TestCase
      *
      * @return UploadedFile
      */
+    #[Depends('testConstructor')]
     public function testMoveTo(UploadedFile $uploadedFile): UploadedFile
     {
         $tempName = uniqid('file-');
@@ -255,6 +262,7 @@ class UploadedFileTest extends TestCase
      * @param UploadedFile $uploadedFile
      *
      */
+    #[Depends('testConstructorSapi')]
     public function testMoveToSapiNonUploadedFile(UploadedFile $uploadedFile)
     {
         $this->expectException(RuntimeException::class);
@@ -270,6 +278,7 @@ class UploadedFileTest extends TestCase
      * @param UploadedFile $uploadedFile
      *
      */
+    #[Depends('testConstructorSapi')]
     public function testMoveToSapiMoveUploadedFileFails(UploadedFile $uploadedFile)
     {
         $this->expectException(RuntimeException::class);
@@ -288,6 +297,7 @@ class UploadedFileTest extends TestCase
      * @param UploadedFile $uploadedFile
      *
      */
+    #[Depends('testMoveTo')]
     public function testMoveToCannotBeDoneTwice(UploadedFile $uploadedFile)
     {
         $this->expectException(RuntimeException::class);
@@ -309,6 +319,7 @@ class UploadedFileTest extends TestCase
      * @param UploadedFile $uploadedFile
      *
      */
+    #[Depends('testConstructor')]
     public function testMoveToAgain(UploadedFile $uploadedFile)
     {
         $this->expectException(RuntimeException::class);
@@ -326,6 +337,7 @@ class UploadedFileTest extends TestCase
      * @param UploadedFile $uploadedFile
      *
      */
+    #[Depends('testConstructor')]
     public function testMovedStream(UploadedFile $uploadedFile)
     {
         $this->expectException(RuntimeException::class);
