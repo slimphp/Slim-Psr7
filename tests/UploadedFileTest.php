@@ -14,7 +14,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Depends;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use ReflectionProperty;
@@ -46,8 +45,6 @@ use const UPLOAD_ERR_OK;
 
 class UploadedFileTest extends TestCase
 {
-    use ProphecyTrait;
-
     private static string $filename = './phpUxcOty';
 
     private static array $tmpFiles = ['./phpUxcOty'];
@@ -428,14 +425,11 @@ class UploadedFileTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $streamProphecy = $this->prophesize(StreamInterface::class);
-
-        /** @noinspection PhpUndefinedMethodInspection */
-        $streamProphecy
-            ->getMetadata('uri')
-            ->willReturn(null)
-            ->shouldBeCalled();
-        $stream = $streamProphecy->reveal();
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->expects($this->once())
+            ->method('getMetadata')
+            ->with('uri')
+            ->willReturn(null);
 
         // Test with a StreamInterface that returns `null`
         // when `$stream->getMetadata('uri')` is called (which is an invalid case).

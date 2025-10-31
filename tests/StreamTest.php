@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -25,8 +24,6 @@ use function trim;
 
 class StreamTest extends TestCase
 {
-    use ProphecyTrait;
-
     /**
      * @var resource pipe stream file handle
      */
@@ -184,13 +181,9 @@ class StreamTest extends TestCase
     {
         $this->openPipeStream();
 
-        $streamProphecy = $this->prophesize(Stream::class);
-
-        /** @noinspection PhpUndefinedMethodInspection */
-        $streamProphecy->detach()->shouldBeCalled();
-
-        /** @var Stream $stream */
-        $stream = $streamProphecy->reveal();
+        $stream = $this->createMock(Stream::class);
+        $stream->expects($this->once())
+            ->method('detach');
 
         $streamProperty = new ReflectionProperty(Stream::class, 'stream');
         $streamProperty->setAccessible(true);
