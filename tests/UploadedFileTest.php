@@ -16,6 +16,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Depends;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
 use Slim\Psr7\Environment;
@@ -76,6 +77,15 @@ class UploadedFileTest extends TestCase
         if (isset($GLOBALS['rename_return'])) {
             unset($GLOBALS['rename_return']);
         }
+    }
+
+    protected function setAccessible(ReflectionProperty|ReflectionMethod $property, bool $accessible = true): void
+    {
+        // only if PHP version < 8.1
+        if (PHP_VERSION_ID > 80100) {
+            return;
+        }
+        $property->setAccessible($accessible);
     }
 
     protected function generateNewTmpFile(): UploadedFile
@@ -347,7 +357,7 @@ class UploadedFileTest extends TestCase
         $uploadedFile = $this->generateNewTmpFile();
 
         $fileProperty = new ReflectionProperty($uploadedFile, 'file');
-        $fileProperty->setAccessible(true);
+        $this->setAccessible($fileProperty);
         $fileName = $fileProperty->getValue($uploadedFile);
 
         $contents = file_get_contents($fileName);

@@ -39,6 +39,15 @@ class StreamTest extends TestCase
         }
     }
 
+    protected function setAccessible(ReflectionProperty|ReflectionMethod $property, bool $accessible = true): void
+    {
+        // only if PHP version < 8.1
+        if (PHP_VERSION_ID > 80100) {
+            return;
+        }
+        $property->setAccessible($accessible);
+    }
+
     public function testIsPipe()
     {
         $this->openPipeStream();
@@ -186,11 +195,11 @@ class StreamTest extends TestCase
             ->method('detach');
 
         $streamProperty = new ReflectionProperty(Stream::class, 'stream');
-        $streamProperty->setAccessible(true);
+        $this->setAccessible($streamProperty);
         $streamProperty->setValue($stream, $this->pipeFh);
 
         $attachMethod = new ReflectionMethod(Stream::class, 'attach');
-        $attachMethod->setAccessible(true);
+        $this->setAccessible($attachMethod);
         $attachMethod->invoke($stream, $this->pipeFh);
     }
 
@@ -257,9 +266,9 @@ class StreamTest extends TestCase
         $stream->detach();
 
         $cacheProperty = new ReflectionProperty(Stream::class, 'cache');
-        $cacheProperty->setAccessible(true);
+        $this->setAccessible($cacheProperty);
         $finishedProperty = new ReflectionProperty(Stream::class, 'finished');
-        $finishedProperty->setAccessible(true);
+        $this->setAccessible($finishedProperty);
 
         $this->assertNull($cacheProperty->getValue($stream));
         $this->assertFalse($finishedProperty->getValue($stream));

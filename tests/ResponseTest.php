@@ -24,15 +24,24 @@ use function property_exists;
 
 class ResponseTest extends TestCase
 {
+    protected function setAccessible(ReflectionProperty|ReflectionMethod $property, bool $accessible = true): void
+    {
+        // only if PHP version < 8.1
+        if (PHP_VERSION_ID > 80100) {
+            return;
+        }
+        $property->setAccessible($accessible);
+    }
+
     public function testConstructorWithDefaultArgs()
     {
         $response = new Response();
 
         $headersReflection = new ReflectionProperty($response, 'headers');
-        $headersReflection->setAccessible(true);
+        $this->setAccessible($headersReflection);
 
         $bodyReflection = new ReflectionProperty($response, 'body');
-        $bodyReflection->setAccessible(true);
+        $this->setAccessible($bodyReflection);
 
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertInstanceOf(Headers::class, $headersReflection->getValue($response));
@@ -46,10 +55,10 @@ class ResponseTest extends TestCase
         $response = new Response(404, $headers, $body);
 
         $headersReflection = new ReflectionProperty($response, 'headers');
-        $headersReflection->setAccessible(true);
+        $this->setAccessible($headersReflection);
 
         $bodyReflection = new ReflectionProperty($response, 'body');
-        $bodyReflection->setAccessible(true);
+        $this->setAccessible($bodyReflection);
 
         $this->assertEquals(404, $response->getStatusCode());
         $this->assertSame($headers, $headersReflection->getValue($response));
@@ -64,7 +73,7 @@ class ResponseTest extends TestCase
         $clone = clone $response;
 
         $headersReflection = new ReflectionProperty($response, 'headers');
-        $headersReflection->setAccessible(true);
+        $this->setAccessible($headersReflection);
 
         $this->assertEquals(404, $clone->getStatusCode());
         $this->assertEquals('1.1', $clone->getProtocolVersion());
@@ -83,7 +92,7 @@ class ResponseTest extends TestCase
     {
         $response = new Response();
         $responseStatus = new ReflectionProperty($response, 'status');
-        $responseStatus->setAccessible(true);
+        $this->setAccessible($responseStatus);
         $responseStatus->setValue($response, 404);
 
         $this->assertEquals(404, $response->getStatusCode());

@@ -26,6 +26,15 @@ use function sprintf;
 
 class RequestTest extends TestCase
 {
+    protected function setAccessible(ReflectionProperty|ReflectionMethod $property, bool $accessible = true): void
+    {
+        // only if PHP version < 8.1
+        if (PHP_VERSION_ID > 80100) {
+            return;
+        }
+        $property->setAccessible($accessible);
+    }
+
     public function requestFactory($envData = []): Request
     {
         $env = Environment::mock($envData);
@@ -126,7 +135,7 @@ class RequestTest extends TestCase
     {
         $request = $this->requestFactory();
         $prop = new ReflectionProperty($request, 'requestTarget');
-        $prop->setAccessible(true);
+        $this->setAccessible($prop);
         $prop->setValue($request, '/foo/bar?abc=123');
 
         $this->assertEquals('/foo/bar?abc=123', $request->getRequestTarget());
@@ -136,7 +145,7 @@ class RequestTest extends TestCase
     {
         $request = $this->requestFactory();
         $prop = new ReflectionProperty($request, 'uri');
-        $prop->setAccessible(true);
+        $this->setAccessible($prop);
         $prop->setValue($request, null);
 
         $this->assertEquals('/', $request->getRequestTarget());
@@ -248,7 +257,7 @@ class RequestTest extends TestCase
     {
         $request = $this->requestFactory();
         $prop = new ReflectionProperty($request, 'queryParams');
-        $prop->setAccessible(true);
+        $this->setAccessible($prop);
         $prop->setValue($request, ['foo' => 'bar']);
 
         $this->assertEquals(['foo' => 'bar'], $request->getQueryParams());
@@ -278,7 +287,7 @@ class RequestTest extends TestCase
     {
         $request = $this->requestFactory();
         $prop = new ReflectionProperty($request, 'uri');
-        $prop->setAccessible(true);
+        $this->setAccessible($prop);
         $prop->setValue($request, null);
 
         $this->assertEquals([], $request->getQueryParams());
@@ -323,7 +332,7 @@ class RequestTest extends TestCase
     {
         $request = $this->requestFactory();
         $attrProp = new ReflectionProperty($request, 'attributes');
-        $attrProp->setAccessible(true);
+        $this->setAccessible($attrProp);
         $attrProp->setValue($request, ['foo' => 'bar']);
 
         $this->assertEquals(['foo' => 'bar'], $request->getAttributes());
@@ -333,7 +342,7 @@ class RequestTest extends TestCase
     {
         $request = $this->requestFactory();
         $attrProp = new ReflectionProperty($request, 'attributes');
-        $attrProp->setAccessible(true);
+        $this->setAccessible($attrProp);
         $attrProp->setValue($request, ['foo' => 'bar']);
 
         $this->assertEquals('bar', $request->getAttribute('foo'));
@@ -345,7 +354,7 @@ class RequestTest extends TestCase
     {
         $request = $this->requestFactory();
         $attrProp = new ReflectionProperty($request, 'attributes');
-        $attrProp->setAccessible(true);
+        $this->setAccessible($attrProp);
         $attrProp->setValue($request, ['foo' => 'bar']);
         $clone = $request->withAttribute('test', '123');
 
@@ -356,7 +365,7 @@ class RequestTest extends TestCase
     {
         $request = $this->requestFactory();
         $attrProp = new ReflectionProperty($request, 'attributes');
-        $attrProp->setAccessible(true);
+        $this->setAccessible($attrProp);
         $attrProp->setValue($request, ['foo' => 'bar']);
         $clone = $request->withoutAttribute('foo');
 
@@ -367,7 +376,7 @@ class RequestTest extends TestCase
     {
         $request = $this->requestFactory();
         $prop = new ReflectionProperty($request, 'parsedBody');
-        $prop->setAccessible(true);
+        $this->setAccessible($prop);
         $prop->setValue($request, ['foo' => 'bar']);
 
         $this->assertEquals(['foo' => 'bar'], $request->getParsedBody());
@@ -377,7 +386,7 @@ class RequestTest extends TestCase
     {
         $request = $this->requestFactory();
         $prop = new ReflectionProperty($request, 'body');
-        $prop->setAccessible(true);
+        $this->setAccessible($prop);
         $prop->setValue($request, null);
 
         $this->assertNull($request->getParsedBody());
