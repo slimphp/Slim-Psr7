@@ -39,8 +39,6 @@
     "adriansuter/php-autoload-override": "^1.5|| ^2.0",
     "http-interop/http-factory-tests": "^1.0 || ^2.0",
     "php-http/psr7-integration-tests": "^1.4",
-    "phpspec/prophecy": "^1.22",
-    "phpspec/prophecy-phpunit": "^2.2",
     "phpstan/phpstan": "^2.1",
     "phpunit/phpunit": "^9.6 || ^10",
     "squizlabs/php_codesniffer": "^3.13"
@@ -61,9 +59,9 @@
   },
   "scripts": {
     "test": [
-      "@phpunit",
       "@phpcs",
-      "@phpstan"
+      "@phpstan",
+      "@phpunit"
     ],
     "phpunit": "@php phpunit",
     "phpcs": "@php phpcs",

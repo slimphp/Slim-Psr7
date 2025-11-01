@@ -14,9 +14,9 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Depends;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use ReflectionMethod;
 use ReflectionProperty;
 use RuntimeException;
 use Slim\Psr7\Environment;
@@ -46,8 +46,6 @@ use const UPLOAD_ERR_OK;
 
 class UploadedFileTest extends TestCase
 {
-    use ProphecyTrait;
-
     private static string $filename = './phpUxcOty';
 
     private static array $tmpFiles = ['./phpUxcOty'];
@@ -79,6 +77,15 @@ class UploadedFileTest extends TestCase
         if (isset($GLOBALS['rename_return'])) {
             unset($GLOBALS['rename_return']);
         }
+    }
+
+    protected function setAccessible(ReflectionProperty|ReflectionMethod $property, bool $accessible = true): void
+    {
+        // only if PHP version < 8.1
+        if (PHP_VERSION_ID > 80100) {
+            return;
+        }
+        $property->setAccessible($accessible);
     }
 
     protected function generateNewTmpFile(): UploadedFile
@@ -350,7 +357,7 @@ class UploadedFileTest extends TestCase
         $uploadedFile = $this->generateNewTmpFile();
 
         $fileProperty = new ReflectionProperty($uploadedFile, 'file');
-        $fileProperty->setAccessible(true);
+        $this->setAccessible($fileProperty);
         $fileName = $fileProperty->getValue($uploadedFile);
 
         $contents = file_get_contents($fileName);
@@ -428,14 +435,11 @@ class UploadedFileTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $streamProphecy = $this->prophesize(StreamInterface::class);
-
-        /** @noinspection PhpUndefinedMethodInspection */
-        $streamProphecy
-            ->getMetadata('uri')
-            ->willReturn(null)
-            ->shouldBeCalled();
-        $stream = $streamProphecy->reveal();
+        $stream = $this->createMock(StreamInterface::class);
+        $stream->expects($this->once())
+            ->method('getMetadata')
+            ->with('uri')
+            ->willReturn(null);
 
         // Test with a StreamInterface that returns `null`
         // when `$stream->getMetadata('uri')` is called (which is an invalid case).

@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace Slim\Tests\Psr7;
 
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -25,8 +24,6 @@ use function trim;
 
 class StreamTest extends TestCase
 {
-    use ProphecyTrait;
-
     /**
      * @var resource pipe stream file handle
      */
@@ -40,6 +37,15 @@ class StreamTest extends TestCase
             // prevent broken pipe error message
             stream_get_contents($this->pipeFh);
         }
+    }
+
+    protected function setAccessible(ReflectionProperty|ReflectionMethod $property, bool $accessible = true): void
+    {
+        // only if PHP version < 8.1
+        if (PHP_VERSION_ID > 80100) {
+            return;
+        }
+        $property->setAccessible($accessible);
     }
 
     public function testIsPipe()
@@ -184,20 +190,16 @@ class StreamTest extends TestCase
     {
         $this->openPipeStream();
 
-        $streamProphecy = $this->prophesize(Stream::class);
-
-        /** @noinspection PhpUndefinedMethodInspection */
-        $streamProphecy->detach()->shouldBeCalled();
-
-        /** @var Stream $stream */
-        $stream = $streamProphecy->reveal();
+        $stream = $this->createMock(Stream::class);
+        $stream->expects($this->once())
+            ->method('detach');
 
         $streamProperty = new ReflectionProperty(Stream::class, 'stream');
-        $streamProperty->setAccessible(true);
+        $this->setAccessible($streamProperty);
         $streamProperty->setValue($stream, $this->pipeFh);
 
         $attachMethod = new ReflectionMethod(Stream::class, 'attach');
-        $attachMethod->setAccessible(true);
+        $this->setAccessible($attachMethod);
         $attachMethod->invoke($stream, $this->pipeFh);
     }
 
@@ -264,9 +266,9 @@ class StreamTest extends TestCase
         $stream->detach();
 
         $cacheProperty = new ReflectionProperty(Stream::class, 'cache');
-        $cacheProperty->setAccessible(true);
+        $this->setAccessible($cacheProperty);
         $finishedProperty = new ReflectionProperty(Stream::class, 'finished');
-        $finishedProperty->setAccessible(true);
+        $this->setAccessible($finishedProperty);
 
         $this->assertNull($cacheProperty->getValue($stream));
         $this->assertFalse($finishedProperty->getValue($stream));
