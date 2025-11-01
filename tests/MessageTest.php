@@ -13,6 +13,7 @@ namespace Slim\Tests\Psr7;
 use InvalidArgumentException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use Slim\Psr7\Headers;
 use Slim\Psr7\Stream;
 use Slim\Tests\Psr7\Mocks\MessageStub;
@@ -144,6 +145,7 @@ class MessageTest extends TestCase
     /**
      * @doesNotPerformAssertions
      */
+    #[DoesNotPerformAssertions]
     public function testWithoutHeaderByIncompatibleStringWithRFC()
     {
         $headers = new Headers();
