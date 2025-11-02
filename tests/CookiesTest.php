@@ -242,7 +242,7 @@ class CookiesTest extends TestCase
             ]
         ];
         $time = time();
-        $formattedDate = gmdate('D, d-M-Y H:i:s e', $time);
+        $formattedDate = gmdate('D, d M Y H:i:s \G\M\T', $time);
         $propertiesComplex = [
             'name' => 'test_complex',
             'properties' => [
@@ -257,7 +257,7 @@ class CookiesTest extends TestCase
             ]
         ];
         $stringDate = '2016-01-01 12:00:00';
-        $formattedStringDate = gmdate('D, d-M-Y H:i:s e', strtotime($stringDate));
+        $formattedStringDate = gmdate('D, d M Y H:i:s \G\M\T', strtotime($stringDate));
         $propertiesStringDate = [
             'name' => 'test_date',
             'properties' => [
