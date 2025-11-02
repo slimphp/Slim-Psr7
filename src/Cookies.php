@@ -148,7 +148,7 @@ class Cookies
                 $timestamp = (int) $properties['expires'];
             }
             if ($timestamp && $timestamp !== 0) {
-                $result .= '; expires=' . gmdate('D, d-M-Y H:i:s e', $timestamp);
+                $result .= '; expires=' . gmdate('D, d M Y H:i:s', $timestamp) . ' GMT';
             }
         }
 
