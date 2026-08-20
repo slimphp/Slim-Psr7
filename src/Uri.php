@@ -14,7 +14,6 @@ use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 
 use function filter_var;
-use function is_integer;
 use function is_null;
 use function is_object;
 use function is_string;
