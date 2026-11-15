@@ -268,9 +268,9 @@ class UploadedFile implements UploadedFileInterface
                     $subArray[$fileIdx]['tmp_name'] = $uploadedFile['tmp_name'][$fileIdx];
                     $subArray[$fileIdx]['error'] = $uploadedFile['error'][$fileIdx];
                     $subArray[$fileIdx]['size'] = $uploadedFile['size'][$fileIdx];
-
-                    $parsed[$field] = self::parseUploadedFiles($subArray);
                 }
+
+                $parsed[$field] = self::parseUploadedFiles($subArray);
             }
         }
 
