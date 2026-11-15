@@ -17,7 +17,7 @@ use Psr\Http\Message\StreamInterface;
 use Slim\Psr7\Factory\StreamFactory;
 use Slim\Psr7\Interfaces\HeadersInterface;
 
-use function is_integer;
+use function is_int;
 use function is_object;
 use function is_string;
 use function method_exists;
@@ -179,7 +179,7 @@ class Response extends Message implements ResponseInterface
      */
     protected function filterStatus($status): int
     {
-        if (!is_integer($status) || $status < StatusCodeInterface::STATUS_CONTINUE || $status > 599) {
+        if (!is_int($status) || $status < StatusCodeInterface::STATUS_CONTINUE || $status > 599) {
             throw new InvalidArgumentException('Invalid HTTP status code.');
         }
 
